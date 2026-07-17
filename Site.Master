@@ -8,8 +8,8 @@
     <title><%: Page.Title %> - CloudPhoria</title>
 
     <%-- Shared stylesheets --%>
-    <link href="<%: ResolveUrl("~/Content/bootstrap.css") %>" rel="stylesheet" type="text/css" />
-    <link href="<%: ResolveUrl("~/Content/Site.css") %>" rel="stylesheet" type="text/css" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 
     <%-- Page-specific head content (styles, meta tags) --%>

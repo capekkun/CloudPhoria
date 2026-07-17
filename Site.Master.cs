@@ -60,10 +60,17 @@ namespace CloudPhoria
         // -------------------------------------------------------
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Public pages (landing, about, contact) skip the auth check.
+            // Nothing runs here on first load.
+            // Auth and user data are loaded in Page_PreRender so that
+            // content pages have already had a chance to set IsPublicPage
+            // in their own Page_Load before we check it.
+        }
+
+        protected void Page_PreRender(object sender, EventArgs e)
+        {
+            // Public pages skip auth checks and hide the authenticated UI.
             if (IsPublicPage)
             {
-                // Hide the authenticated layout elements on public pages.
                 pnlUserMenu.Visible      = false;
                 pnlNotifications.Visible = false;
                 return;

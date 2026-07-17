@@ -7,11 +7,16 @@ namespace CloudPhoria
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Mark this as a public page so the Master Page skips the auth check.
-            SiteMaster master = (SiteMaster)this.Master;
-            if (master != null)
+            // If the user is already logged in, send them to the right dashboard.
+            if (Session["UserID"] != null && Session["Role"] != null)
             {
-                master.IsPublicPage = true;
+                string role = Session["Role"].ToString();
+                if (role == "Student")
+                    Response.Redirect("~/Student/Dashboard.aspx");
+                else if (role == "Instructor")
+                    Response.Redirect("~/Instructor/Dashboard.aspx");
+                else if (role == "Admin")
+                    Response.Redirect("~/Admin/Dashboard.aspx");
             }
         }
     }
