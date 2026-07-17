@@ -1,21 +1,1208 @@
-﻿/* Wrapping element */
-/* Set some basic padding to keep content from hitting the edges */
+﻿/* =============================================================
+   CloudPhoria – Shared Stylesheet
+   Content/Site.css
+   Design system for the CloudPhoria learning platform.
+   All shared component classes use the cp- prefix.
+   ============================================================= */
+
+/* -------------------------------------------------------------
+   1. CSS Variables (Locked Colour System)
+   ------------------------------------------------------------- */
+:root {
+    /* Primary */
+    --cp-primary:        #0EA5E9;
+    --cp-primary-dark:   #0284C7;
+    --cp-indigo:         #6366F1;
+    --cp-indigo-dark:    #4F46E5;
+
+    /* Layout */
+    --cp-sidebar:        #0F172A;
+    --cp-sidebar-surface: #172033;
+    --cp-page-bg:        #F4F7FB;
+    --cp-surface:        #FFFFFF;
+
+    /* Text */
+    --cp-text:           #172033;
+    --cp-text-muted:     #64748B;
+    --cp-border:         #E2E8F0;
+
+    /* Status */
+    --cp-success:        #22C55E;
+    --cp-warning:        #F59E0B;
+    --cp-danger:         #EF4444;
+    --cp-info:           #0EA5E9;
+    --cp-locked:         #94A3B8;
+
+    /* Radius scale */
+    --cp-radius-sm:      8px;
+    --cp-radius-md:      12px;
+    --cp-radius-lg:      18px;
+
+    /* Shadows */
+    --cp-shadow-sm:      0 2px 8px rgba(15, 23, 42, 0.06);
+    --cp-shadow-md:      0 10px 30px rgba(15, 23, 42, 0.10);
+
+    /* Sidebar dimensions */
+    --cp-sidebar-width:  260px;
+    --cp-topbar-height:  64px;
+
+    /* Spacing scale */
+    --cp-space-xs:       4px;
+    --cp-space-sm:       8px;
+    --cp-space-md:       16px;
+    --cp-space-lg:       24px;
+    --cp-space-xl:       32px;
+    --cp-space-2xl:      48px;
+}
+
+/* -------------------------------------------------------------
+   2. Reset and Base
+   ------------------------------------------------------------- */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    color: var(--cp-text);
+    background-color: var(--cp-page-bg);
+}
+
+/* -------------------------------------------------------------
+   3. Application Layout Wrapper
+   ------------------------------------------------------------- */
+.cp-layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--cp-page-bg);
+}
+
+/* -------------------------------------------------------------
+   4. Sidebar
+   ------------------------------------------------------------- */
+.cp-sidebar {
+    width: var(--cp-sidebar-width);
+    min-width: var(--cp-sidebar-width);
+    background-color: var(--cp-sidebar);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    z-index: 200;
+    transition: transform 0.25s ease;
+}
+
+/* Scrollbar styling inside sidebar */
+.cp-sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+.cp-sidebar::-webkit-scrollbar-track {
+    background: var(--cp-sidebar);
+}
+.cp-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.12);
+    border-radius: 2px;
+}
+
+/* Brand / Logo area */
+.cp-sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--cp-space-sm);
+    padding: var(--cp-space-lg) var(--cp-space-md);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    text-decoration: none;
+    color: #FFFFFF;
+}
+.cp-sidebar-brand:hover {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.cp-sidebar-logo {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--cp-primary) 0%, var(--cp-indigo) 100%);
+    border-radius: var(--cp-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 800;
+    color: #FFFFFF;
+    flex-shrink: 0;
+}
+
+.cp-sidebar-wordmark {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: #FFFFFF;
+    line-height: 1.2;
+}
+
+.cp-sidebar-wordmark span {
+    color: var(--cp-primary);
+}
+
+/* Navigation sections */
+.cp-nav-section {
+    padding: var(--cp-space-md) 0 var(--cp-space-sm) 0;
+    flex: 1;
+}
+
+.cp-nav-group-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    padding: var(--cp-space-md) var(--cp-space-md) var(--cp-space-xs) var(--cp-space-md);
+    display: block;
+}
+
+/* Nav links */
+.cp-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px var(--cp-space-md);
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 500;
+    border-radius: 0;
+    transition: background 0.15s, color 0.15s;
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.cp-nav-link:hover {
+    background-color: rgba(255,255,255,0.07);
+    color: #FFFFFF;
+    text-decoration: none;
+}
+.cp-nav-link.active,
+.cp-nav-link.cp-active {
+    background-color: rgba(14, 165, 233, 0.15);
+    color: var(--cp-primary);
+    font-weight: 600;
+}
+.cp-nav-link.active::before,
+.cp-nav-link.cp-active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--cp-primary);
+    border-radius: 0 2px 2px 0;
+}
+
+/* Nav link icon area */
+.cp-nav-icon {
+    width: 20px;
+    text-align: center;
+    font-size: 15px;
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+.cp-nav-link:hover .cp-nav-icon,
+.cp-nav-link.active .cp-nav-icon,
+.cp-nav-link.cp-active .cp-nav-icon {
+    opacity: 1;
+}
+
+/* Nav divider */
+.cp-nav-divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    margin: var(--cp-space-sm) var(--cp-space-md);
+}
+
+/* Sidebar status message (e.g. pending instructor) */
+.cp-sidebar-status {
+    margin: var(--cp-space-sm) var(--cp-space-md);
+    padding: var(--cp-space-sm) var(--cp-space-md);
+    background-color: rgba(245,158,11,0.15);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: var(--cp-radius-sm);
+    color: #F59E0B;
+    font-size: 12px;
+    line-height: 1.5;
+}
+.cp-sidebar-status strong {
+    display: block;
+    margin-bottom: 2px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Profile summary at bottom of sidebar */
+.cp-sidebar-profile {
+    padding: var(--cp-space-md);
+    border-top: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    gap: var(--cp-space-sm);
+    background-color: var(--cp-sidebar-surface);
+    flex-shrink: 0;
+}
+
+.cp-sidebar-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--cp-indigo) 0%, var(--cp-primary) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #FFFFFF;
+    flex-shrink: 0;
+    text-transform: uppercase;
+}
+
+.cp-sidebar-profile-info {
+    flex: 1;
+    min-width: 0;
+}
+.cp-sidebar-profile-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #FFFFFF;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+.cp-sidebar-profile-role {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    display: block;
+    margin-top: 1px;
+}
+
+/* Sidebar close button (mobile only) */
+.cp-sidebar-close {
+    display: none;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px 8px;
+    margin-left: auto;
+    border-radius: var(--cp-radius-sm);
+    line-height: 1;
+}
+.cp-sidebar-close:hover {
+    background: rgba(255,255,255,0.08);
+    color: #FFFFFF;
+}
+.cp-sidebar-close:focus-visible {
+    outline: 2px solid var(--cp-primary);
+    outline-offset: 2px;
+}
+
+/* -------------------------------------------------------------
+   5. Main Area
+   ------------------------------------------------------------- */
+.cp-main-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+}
+
+/* -------------------------------------------------------------
+   6. Topbar
+   ------------------------------------------------------------- */
+.cp-topbar {
+    height: var(--cp-topbar-height);
+    min-height: var(--cp-topbar-height);
+    background-color: var(--cp-surface);
+    border-bottom: 1px solid var(--cp-border);
+    display: flex;
+    align-items: center;
+    padding: 0 var(--cp-space-lg);
+    gap: var(--cp-space-md);
+    z-index: 100;
+    flex-shrink: 0;
+}
+
+/* Mobile menu toggle */
+.cp-topbar-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--cp-border);
+    color: var(--cp-text-muted);
+    padding: 6px 10px;
+    border-radius: var(--cp-radius-sm);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+.cp-topbar-toggle:hover {
+    background-color: var(--cp-page-bg);
+    color: var(--cp-text);
+}
+.cp-topbar-toggle:focus-visible {
+    outline: 2px solid var(--cp-primary);
+    outline-offset: 2px;
+}
+
+/* Page title area */
+.cp-topbar-title {
+    flex: 1;
+    min-width: 0;
+}
+.cp-topbar-title h1 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--cp-text);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.cp-topbar-title .cp-topbar-subtitle {
+    font-size: 12px;
+    color: var(--cp-text-muted);
+    margin: 0;
+    display: block;
+}
+
+/* Topbar actions slot (for page-specific buttons) */
+.cp-topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--cp-space-sm);
+    flex-shrink: 0;
+}
+
+/* Notification bell */
+.cp-topbar-notif {
+    position: relative;
+    background: none;
+    border: 1px solid var(--cp-border);
+    color: var(--cp-text-muted);
+    padding: 6px 10px;
+    border-radius: var(--cp-radius-sm);
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.cp-topbar-notif:hover {
+    background-color: var(--cp-page-bg);
+    color: var(--cp-text);
+    text-decoration: none;
+}
+.cp-topbar-notif:focus-visible {
+    outline: 2px solid var(--cp-primary);
+    outline-offset: 2px;
+}
+.cp-notif-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 16px;
+    height: 16px;
+    background-color: var(--cp-danger);
+    color: #FFFFFF;
+    font-size: 9px;
+    font-weight: 700;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3px;
+    line-height: 1;
+}
+
+/* User menu */
+.cp-user-menu {
+    position: relative;
+}
+.cp-user-menu-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--cp-space-sm);
+    background: none;
+    border: 1px solid var(--cp-border);
+    border-radius: var(--cp-radius-md);
+    padding: 5px 10px 5px 5px;
+    cursor: pointer;
+    color: var(--cp-text);
+    transition: background 0.15s;
+}
+.cp-user-menu-toggle:hover {
+    background-color: var(--cp-page-bg);
+}
+.cp-user-menu-toggle:focus-visible {
+    outline: 2px solid var(--cp-primary);
+    outline-offset: 2px;
+}
+.cp-topbar-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--cp-indigo) 0%, var(--cp-primary) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #FFFFFF;
+    flex-shrink: 0;
+    text-transform: uppercase;
+}
+.cp-user-name-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--cp-text);
+    white-space: nowrap;
+}
+.cp-user-role-label {
+    font-size: 11px;
+    color: var(--cp-text-muted);
+    display: block;
+}
+
+/* User dropdown */
+.cp-user-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background-color: var(--cp-surface);
+    border: 1px solid var(--cp-border);
+    border-radius: var(--cp-radius-md);
+    box-shadow: var(--cp-shadow-md);
+    min-width: 190px;
+    z-index: 500;
+    display: none;
+    overflow: hidden;
+}
+.cp-user-dropdown.open {
+    display: block;
+}
+.cp-user-dropdown a,
+.cp-user-dropdown button {
+    display: block;
+    width: 100%;
+    padding: 9px var(--cp-space-md);
+    font-size: 13px;
+    color: var(--cp-text);
+    text-decoration: none;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+.cp-user-dropdown a:hover,
+.cp-user-dropdown button:hover {
+    background-color: var(--cp-page-bg);
+    text-decoration: none;
+}
+.cp-user-dropdown .cp-dropdown-divider {
+    border: none;
+    border-top: 1px solid var(--cp-border);
+    margin: 4px 0;
+}
+.cp-user-dropdown .cp-dropdown-danger {
+    color: var(--cp-danger);
+}
+
+/* -------------------------------------------------------------
+   7. Page Workspace
+   ------------------------------------------------------------- */
+.cp-page {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--cp-space-lg) var(--cp-space-xl);
+    background-color: var(--cp-page-bg);
+}
+
+/* Page header */
+.cp-page-header {
+    margin-bottom: var(--cp-space-xl);
+}
+.cp-page-header h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--cp-text);
+    margin: 0 0 4px 0;
+}
+.cp-page-header p {
+    font-size: 14px;
+    color: var(--cp-text-muted);
+    margin: 0;
+}
+.cp-page-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--cp-space-md);
+    flex-wrap: wrap;
+}
+
+/* Mobile overlay behind open sidebar */
+.cp-sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 150;
+}
+.cp-sidebar-overlay.active {
+    display: block;
+}
+
+/* -------------------------------------------------------------
+   8. Cards
+   ------------------------------------------------------------- */
+.cp-card {
+    background-color: var(--cp-surface);
+    border: 1px solid var(--cp-border);
+    border-radius: var(--cp-radius-md);
+    box-shadow: var(--cp-shadow-sm);
+    padding: var(--cp-space-lg);
+    margin-bottom: var(--cp-space-md);
+}
+.cp-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--cp-text);
+    margin: 0 0 var(--cp-space-sm) 0;
+}
+.cp-card-subtitle {
+    font-size: 13px;
+    color: var(--cp-text-muted);
+    margin: 0 0 var(--cp-space-md) 0;
+}
+
+/* Stat card (dashboard counters) */
+.cp-stat-card {
+    background-color: var(--cp-surface);
+    border: 1px solid var(--cp-border);
+    border-radius: var(--cp-radius-md);
+    box-shadow: var(--cp-shadow-sm);
+    padding: var(--cp-space-lg);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--cp-space-md);
+}
+.cp-stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--cp-radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+.cp-stat-icon.blue   { background: rgba(14,165,233,0.12); color: var(--cp-primary); }
+.cp-stat-icon.indigo { background: rgba(99,102,241,0.12); color: var(--cp-indigo); }
+.cp-stat-icon.green  { background: rgba(34,197,94,0.12);  color: var(--cp-success); }
+.cp-stat-icon.amber  { background: rgba(245,158,11,0.12); color: var(--cp-warning); }
+.cp-stat-icon.red    { background: rgba(239,68,68,0.12);  color: var(--cp-danger); }
+
+.cp-stat-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--cp-text);
+    line-height: 1.1;
+}
+.cp-stat-label {
+    font-size: 12px;
+    color: var(--cp-text-muted);
+    margin-top: 2px;
+}
+
+/* Module / content card */
+.cp-module-card {
+    background-color: var(--cp-surface);
+    border: 1px solid var(--cp-border);
+    border-radius: var(--cp-radius-md);
+    box-shadow: var(--cp-shadow-sm);
+    padding: var(--cp-space-md) var(--cp-space-lg);
+    transition: box-shadow 0.15s, border-color 0.15s;
+    text-decoration: none;
+    display: block;
+    color: var(--cp-text);
+    margin-bottom: var(--cp-space-sm);
+}
+.cp-module-card:hover {
+    box-shadow: var(--cp-shadow-md);
+    border-color: var(--cp-primary);
+    text-decoration: none;
+    color: var(--cp-text);
+}
+
+/* Locked state for content cards */
+.cp-card-locked {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+.cp-card-locked:hover {
+    box-shadow: var(--cp-shadow-sm);
+    border-color: var(--cp-border);
+}
+
+/* -------------------------------------------------------------
+   9. Buttons
+   ------------------------------------------------------------- */
+.cp-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border-radius: var(--cp-radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    text-decoration: none;
+    line-height: 1.4;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+.cp-btn:focus-visible {
+    outline: 2px solid var(--cp-primary);
+    outline-offset: 2px;
+}
+
+.cp-btn-primary {
+    background-color: var(--cp-primary);
+    color: #FFFFFF;
+    border-color: var(--cp-primary);
+}
+.cp-btn-primary:hover {
+    background-color: var(--cp-primary-dark);
+    border-color: var(--cp-primary-dark);
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.cp-btn-secondary {
+    background-color: var(--cp-indigo);
+    color: #FFFFFF;
+    border-color: var(--cp-indigo);
+}
+.cp-btn-secondary:hover {
+    background-color: var(--cp-indigo-dark);
+    border-color: var(--cp-indigo-dark);
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.cp-btn-outline {
+    background-color: transparent;
+    color: var(--cp-primary);
+    border-color: var(--cp-primary);
+}
+.cp-btn-outline:hover {
+    background-color: var(--cp-primary);
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.cp-btn-ghost {
+    background-color: transparent;
+    color: var(--cp-text-muted);
+    border-color: var(--cp-border);
+}
+.cp-btn-ghost:hover {
+    background-color: var(--cp-page-bg);
+    color: var(--cp-text);
+    text-decoration: none;
+}
+
+.cp-btn-success {
+    background-color: var(--cp-success);
+    color: #FFFFFF;
+    border-color: var(--cp-success);
+}
+.cp-btn-success:hover {
+    background-color: #16A34A;
+    border-color: #16A34A;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.cp-btn-danger {
+    background-color: var(--cp-danger);
+    color: #FFFFFF;
+    border-color: var(--cp-danger);
+}
+.cp-btn-danger:hover {
+    background-color: #DC2626;
+    border-color: #DC2626;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.cp-btn-sm {
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+.cp-btn:disabled,
+.cp-btn[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* -------------------------------------------------------------
+   10. Status Badges and Pills
+   ------------------------------------------------------------- */
+.cp-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
+.cp-badge-blue    { background: rgba(14,165,233,0.12);  color: var(--cp-primary); }
+.cp-badge-indigo  { background: rgba(99,102,241,0.12);  color: var(--cp-indigo); }
+.cp-badge-green   { background: rgba(34,197,94,0.12);   color: #16A34A; }
+.cp-badge-amber   { background: rgba(245,158,11,0.12);  color: #B45309; }
+.cp-badge-red     { background: rgba(239,68,68,0.12);   color: #DC2626; }
+.cp-badge-grey    { background: rgba(100,116,139,0.12); color: var(--cp-text-muted); }
+
+/* Status pill (larger, for page-level status) */
+.cp-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.cp-status-pending  { background: rgba(245,158,11,0.12); color: #B45309; border: 1px solid rgba(245,158,11,0.25); }
+.cp-status-approved { background: rgba(34,197,94,0.12);  color: #16A34A; border: 1px solid rgba(34,197,94,0.25); }
+.cp-status-rejected { background: rgba(239,68,68,0.12);  color: #DC2626; border: 1px solid rgba(239,68,68,0.25); }
+.cp-status-active   { background: rgba(14,165,233,0.12); color: var(--cp-primary); border: 1px solid rgba(14,165,233,0.25); }
+
+/* Dot indicator */
+.cp-status::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+}
+
+/* -------------------------------------------------------------
+   11. Progress Bars
+   ------------------------------------------------------------- */
+.cp-progress-wrap {
+    background-color: var(--cp-border);
+    border-radius: 4px;
+    height: 6px;
+    overflow: hidden;
+}
+.cp-progress-bar {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--cp-primary) 0%, var(--cp-indigo) 100%);
+    transition: width 0.3s ease;
+}
+.cp-progress-bar.success { background: var(--cp-success); }
+.cp-progress-bar.warning { background: var(--cp-warning); }
+.cp-progress-bar.danger  { background: var(--cp-danger); }
+
+.cp-progress-label {
+    font-size: 12px;
+    color: var(--cp-text-muted);
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* -------------------------------------------------------------
+   12. Empty States
+   ------------------------------------------------------------- */
+.cp-empty-state {
+    text-align: center;
+    padding: var(--cp-space-2xl) var(--cp-space-xl);
+    color: var(--cp-text-muted);
+}
+.cp-empty-state-icon {
+    font-size: 40px;
+    margin-bottom: var(--cp-space-md);
+    opacity: 0.45;
+    display: block;
+}
+.cp-empty-state h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--cp-text);
+    margin: 0 0 var(--cp-space-xs) 0;
+}
+.cp-empty-state p {
+    font-size: 13px;
+    color: var(--cp-text-muted);
+    margin: 0 0 var(--cp-space-md) 0;
+}
+
+/* -------------------------------------------------------------
+   13. Alerts
+   ------------------------------------------------------------- */
+.cp-alert {
+    padding: var(--cp-space-md);
+    border-radius: var(--cp-radius-sm);
+    border: 1px solid transparent;
+    font-size: 13px;
+    margin-bottom: var(--cp-space-md);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--cp-space-sm);
+}
+.cp-alert-info    { background: rgba(14,165,233,0.08);  border-color: rgba(14,165,233,0.25);  color: #0369A1; }
+.cp-alert-success { background: rgba(34,197,94,0.08);   border-color: rgba(34,197,94,0.25);   color: #16A34A; }
+.cp-alert-warning { background: rgba(245,158,11,0.08);  border-color: rgba(245,158,11,0.25);  color: #B45309; }
+.cp-alert-danger  { background: rgba(239,68,68,0.08);   border-color: rgba(239,68,68,0.25);   color: #DC2626; }
+
+/* -------------------------------------------------------------
+   14. Tables
+   ------------------------------------------------------------- */
+.cp-table-wrap {
+    overflow-x: auto;
+    border-radius: var(--cp-radius-md);
+    border: 1px solid var(--cp-border);
+    background: var(--cp-surface);
+    box-shadow: var(--cp-shadow-sm);
+}
+.cp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+.cp-table thead tr {
+    border-bottom: 1px solid var(--cp-border);
+}
+.cp-table th {
+    padding: 10px var(--cp-space-md);
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--cp-text-muted);
+    text-align: left;
+    background: var(--cp-page-bg);
+}
+.cp-table td {
+    padding: 10px var(--cp-space-md);
+    color: var(--cp-text);
+    border-bottom: 1px solid var(--cp-border);
+    vertical-align: middle;
+}
+.cp-table tbody tr:last-child td {
+    border-bottom: none;
+}
+.cp-table tbody tr:hover td {
+    background-color: rgba(14,165,233,0.04);
+}
+
+/* -------------------------------------------------------------
+   15. Form Controls
+   ------------------------------------------------------------- */
+.cp-form-group {
+    margin-bottom: var(--cp-space-md);
+}
+.cp-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--cp-text);
+    margin-bottom: 5px;
+}
+.cp-label .required {
+    color: var(--cp-danger);
+    margin-left: 2px;
+}
+.cp-input,
+.cp-select,
+.cp-textarea {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--cp-text);
+    background-color: var(--cp-surface);
+    border: 1px solid var(--cp-border);
+    border-radius: var(--cp-radius-sm);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    font-family: inherit;
+}
+.cp-input:focus,
+.cp-select:focus,
+.cp-textarea:focus {
+    outline: none;
+    border-color: var(--cp-primary);
+    box-shadow: 0 0 0 3px rgba(14,165,233,0.12);
+}
+.cp-input.is-invalid,
+.cp-select.is-invalid,
+.cp-textarea.is-invalid {
+    border-color: var(--cp-danger);
+}
+.cp-input.is-invalid:focus,
+.cp-select.is-invalid:focus,
+.cp-textarea.is-invalid:focus {
+    box-shadow: 0 0 0 3px rgba(239,68,68,0.12);
+}
+.cp-form-hint {
+    font-size: 12px;
+    color: var(--cp-text-muted);
+    margin-top: 4px;
+}
+.cp-form-error {
+    font-size: 12px;
+    color: var(--cp-danger);
+    margin-top: 4px;
+}
+
+/* Search field */
+.cp-search-wrap {
+    position: relative;
+}
+.cp-search-wrap .cp-input {
+    padding-left: 34px;
+}
+.cp-search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--cp-text-muted);
+    font-size: 14px;
+    pointer-events: none;
+}
+
+/* Modal shell */
+.cp-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 900;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+.cp-modal-backdrop.open {
+    display: flex;
+}
+.cp-modal {
+    background: var(--cp-surface);
+    border-radius: var(--cp-radius-lg);
+    box-shadow: var(--cp-shadow-md);
+    padding: var(--cp-space-xl);
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+.cp-modal-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--cp-text);
+    margin: 0 0 var(--cp-space-md) 0;
+}
+.cp-modal-close {
+    position: absolute;
+    top: var(--cp-space-md);
+    right: var(--cp-space-md);
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--cp-text-muted);
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: var(--cp-radius-sm);
+    line-height: 1;
+}
+.cp-modal-close:hover { background: var(--cp-page-bg); color: var(--cp-text); }
+.cp-modal-close:focus-visible { outline: 2px solid var(--cp-primary); outline-offset: 2px; }
+
+/* -------------------------------------------------------------
+   16. Achievement Chip / XP Display
+   ------------------------------------------------------------- */
+.cp-xp-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(245,158,11,0.12);
+    border: 1px solid rgba(245,158,11,0.25);
+    color: #B45309;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* -------------------------------------------------------------
+   17. Grids
+   ------------------------------------------------------------- */
+.cp-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--cp-space-md);
+}
+.cp-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--cp-space-md);
+}
+.cp-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--cp-space-md);
+}
+
+/* -------------------------------------------------------------
+   18. Locked Content State
+   ------------------------------------------------------------- */
+.cp-locked-overlay {
+    position: relative;
+    overflow: hidden;
+}
+.cp-locked-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(244,247,251,0.75);
+    border-radius: inherit;
+}
+.cp-locked-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--cp-locked);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* -------------------------------------------------------------
+   19. Utility helpers
+   ------------------------------------------------------------- */
+.cp-text-muted  { color: var(--cp-text-muted); }
+.cp-text-success { color: var(--cp-success); }
+.cp-text-warning { color: var(--cp-warning); }
+.cp-text-danger  { color: var(--cp-danger); }
+.cp-text-primary { color: var(--cp-primary); }
+
+.cp-mt-sm { margin-top: var(--cp-space-sm); }
+.cp-mt-md { margin-top: var(--cp-space-md); }
+.cp-mt-lg { margin-top: var(--cp-space-lg); }
+.cp-mb-sm { margin-bottom: var(--cp-space-sm); }
+.cp-mb-md { margin-bottom: var(--cp-space-md); }
+.cp-mb-lg { margin-bottom: var(--cp-space-lg); }
+
+.cp-flex-row  { display: flex; align-items: center; gap: var(--cp-space-sm); }
+.cp-flex-between { display: flex; align-items: center; justify-content: space-between; gap: var(--cp-space-sm); }
+
+/* Preserve legacy .body-content used by Default/About/Contact pages */
 .body-content {
-    margin-top: 15px;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding: var(--cp-space-md) var(--cp-space-xl);
 }
 
-/* Set widths on the form inputs since otherwise they're 100% wide */
-input,
-select,
-textarea {
-    max-width: 280px;
-}
+/* -------------------------------------------------------------
+   20. Responsive Behaviour
+   ------------------------------------------------------------- */
 
-/* Responsive: Portrait tablets and up */
-@media screen and (min-width: 768px) {
-    .body-content {
-        padding: 0;
+/* Tablet: sidebar collapses, shown with toggle */
+@media screen and (max-width: 1024px) {
+    .cp-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        transform: translateX(-100%);
+        z-index: 200;
     }
+    .cp-sidebar.open {
+        transform: translateX(0);
+    }
+    .cp-sidebar-close {
+        display: flex;
+    }
+    .cp-topbar-toggle {
+        display: flex;
+    }
+    .cp-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .cp-grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .cp-page {
+        padding: var(--cp-space-md) var(--cp-space-lg);
+    }
+}
+
+/* Mobile */
+@media screen and (max-width: 600px) {
+    .cp-grid-2,
+    .cp-grid-3,
+    .cp-grid-4 {
+        grid-template-columns: 1fr;
+    }
+    .cp-page {
+        padding: var(--cp-space-md);
+    }
+    .cp-topbar {
+        padding: 0 var(--cp-space-md);
+        gap: var(--cp-space-sm);
+    }
+    .cp-user-name-label,
+    .cp-user-role-label {
+        display: none;
+    }
+    .cp-user-menu-toggle {
+        padding: 5px;
+    }
+    .cp-page-header h2 {
+        font-size: 18px;
+    }
+    .cp-card {
+        padding: var(--cp-space-md);
+    }
+    .cp-stat-card {
+        padding: var(--cp-space-md);
+    }
+}
+
+/* Ensure normal input widths in Site.css do not interfere with cp- forms */
+.cp-input,
+.cp-select,
+.cp-textarea {
+    max-width: 100%;
 }

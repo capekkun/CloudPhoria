@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace CloudPhoria
 {
@@ -11,7 +7,12 @@ namespace CloudPhoria
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            // Mark this as a public page so the Master Page skips the auth check.
+            SiteMaster master = (SiteMaster)this.Master;
+            if (master != null)
+            {
+                master.IsPublicPage = true;
+            }
         }
     }
 }

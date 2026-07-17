@@ -1,69 +1,363 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="CloudPhoria.SiteMaster" %>
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.Master.cs" Inherits="CloudPhoria.SiteMaster" %>
 
 <!DOCTYPE html>
-
 <html lang="en">
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%: Page.Title %> - My ASP.NET Application</title>
+    <title><%: Page.Title %> - CloudPhoria</title>
 
-    <asp:PlaceHolder runat="server">
-        <%: Scripts.Render("~/bundles/modernizr") %>
-    </asp:PlaceHolder>
-
-    <webopt:bundlereference runat="server" path="~/Content/css" />
+    <%-- Shared stylesheets --%>
+    <webopt:BundleReference runat="server" Path="~/Content/css" />
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 
+    <%-- Page-specific head content (styles, meta tags) --%>
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
 </head>
 <body>
-    <form runat="server">
-        <asp:ScriptManager runat="server">
-            <Scripts>
-                <%--To learn more about bundling scripts in ScriptManager see https://go.microsoft.com/fwlink/?LinkID=301884 --%>
-                <%--Framework Scripts--%>
-                <asp:ScriptReference Name="MsAjaxBundle" />
-                <asp:ScriptReference Name="jquery" />
-                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
-                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
-                <asp:ScriptReference Name="MenuStandards.js" Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
-                <asp:ScriptReference Name="GridView.js" Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
-                <asp:ScriptReference Name="DetailsView.js" Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
-                <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
-                <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
-                <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
-                <asp:ScriptReference Name="WebFormsBundle" />
-                <%--Site Scripts--%>
-            </Scripts>
-        </asp:ScriptManager>
+<form runat="server">
+<asp:ScriptManager runat="server">
+    <Scripts>
+        <asp:ScriptReference Name="MsAjaxBundle" />
+        <asp:ScriptReference Name="jquery" />
+        <asp:ScriptReference Name="WebForms.js"       Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
+        <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
+        <asp:ScriptReference Name="MenuStandards.js"  Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
+        <asp:ScriptReference Name="GridView.js"       Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
+        <asp:ScriptReference Name="DetailsView.js"    Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
+        <asp:ScriptReference Name="TreeView.js"       Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
+        <asp:ScriptReference Name="WebParts.js"       Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
+        <asp:ScriptReference Name="Focus.js"          Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
+        <asp:ScriptReference Name="WebFormsBundle" />
+    </Scripts>
+</asp:ScriptManager>
 
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
-            <div class="container">
-                <a class="navbar-brand" runat="server" href="~/">Application name</a>
-                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item"><a class="nav-link" runat="server" href="~/">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" runat="server" href="~/About">About</a></li>
-                        <li class="nav-item"><a class="nav-link" runat="server" href="~/Contact">Contact</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <div class="container body-content">
-            <asp:ContentPlaceHolder ID="MainContent" runat="server">
-            </asp:ContentPlaceHolder>
-            <hr />
-            <footer>
-                <p>&copy; <%: DateTime.Now.Year %> - My ASP.NET Application</p>
-            </footer>
+<%-- ============================================================
+     Application Layout Wrapper
+     Contains: Sidebar | Main Area (Topbar + Page workspace)
+     ============================================================ --%>
+<div class="cp-layout">
+
+    <%-- --------------------------------------------------------
+         Mobile Overlay  (behind open sidebar on small screens)
+         -------------------------------------------------------- --%>
+    <div id="cpSidebarOverlay" class="cp-sidebar-overlay" aria-hidden="true"></div>
+
+    <%-- --------------------------------------------------------
+         Sidebar
+         -------------------------------------------------------- --%>
+    <nav id="cpSidebar" class="cp-sidebar" aria-label="Main navigation">
+
+        <%-- Brand row --%>
+        <div class="cp-sidebar-brand">
+            <span class="cp-sidebar-logo" aria-hidden="true">CP</span>
+            <span class="cp-sidebar-wordmark">Cloud<span>Phoria</span></span>
+            <%-- Close button (visible on mobile only via CSS) --%>
+            <button id="cpSidebarClose" class="cp-sidebar-close"
+                    type="button"
+                    aria-label="Close navigation menu">&#x2715;</button>
         </div>
-    </form>
-    <asp:PlaceHolder runat="server">
-        <%: Scripts.Render("~/Scripts/bootstrap.js") %>
-    </asp:PlaceHolder>
+
+        <%-- Navigation content --%>
+        <div class="cp-nav-section">
+
+            <%-- ---- STUDENT navigation ---- --%>
+            <asp:Panel ID="pnlStudentNav" runat="server" Visible="false">
+                <span class="cp-nav-group-label">Learning</span>
+                <a class="cp-nav-link" runat="server" href="~/Student/Dashboard.aspx"      id="navStudentDashboard">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x2302;</span> Dashboard
+                </a>
+                <a class="cp-nav-link" runat="server" href="~/Student/Pathways.aspx"       id="navStudentPathways">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x25B6;</span> Learning Pathways
+                </a>
+                <a class="cp-nav-link" runat="server" href="~/Student/MyLearning.aspx"     id="navStudentMyLearning">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x1F4DA;</span> My Learning
+                </a>
+                <a class="cp-nav-link" runat="server" href="~/Student/Practice.aspx"       id="navStudentPractice">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x270F;</span> Practice
+                </a>
+                <a class="cp-nav-link" runat="server" href="~/Student/Exams.aspx"          id="navStudentExams">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x1F4CB;</span> Module Exams
+                </a>
+
+                <hr class="cp-nav-divider" />
+                <span class="cp-nav-group-label">Community</span>
+                <a class="cp-nav-link" runat="server" href="~/Student/Classrooms.aspx"     id="navStudentClassrooms">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x1F3EB;</span> Classrooms
+                </a>
+                <a class="cp-nav-link" runat="server" href="~/Student/Challenges.aspx"     id="navStudentChallenges">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x26A1;</span> Challenges
+                </a>
+                <a class="cp-nav-link" runat="server" href="~/Student/FunRooms.aspx"       id="navStudentFunRooms">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x1F3AE;</span> Fun Rooms
+                </a>
+                <a class="cp-nav-link" runat="server" href="~/Student/BossFights.aspx"     id="navStudentBossFights">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x1F480;</span> Boss Fights
+                </a>
+                <a class="cp-nav-link" runat="server" href="~/Student/Discussions.aspx"    id="navStudentDiscussions">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x1F4AC;</span> Discussions
+                </a>
+                <a class="cp-nav-link" runat="server" href="~/Student/Consultations.aspx"  id="navStudentConsultations">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x1F4C5;</span> Consultations
+                </a>
+
+                <hr class="cp-nav-divider" />
+                <span class="cp-nav-group-label">Progress</span>
+                <a class="cp-nav-link" runat="server" href="~/Student/Achievements.aspx"   id="navStudentAchievements">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x1F3C5;</span> Achievements
+                </a>
+                <a class="cp-nav-link" runat="server" href="~/Student/Notifications.aspx"  id="navStudentNotifications">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x1F514;</span> Notifications
+                </a>
+                <a class="cp-nav-link" runat="server" href="~/Student/Profile.aspx"        id="navStudentProfile">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x1F464;</span> Profile
+                </a>
+            </asp:Panel>
+
+            <%-- ---- INSTRUCTOR navigation ---- --%>
+            <asp:Panel ID="pnlInstructorNav" runat="server" Visible="false">
+
+                <%-- Status notice for pending/rejected instructors --%>
+                <asp:Panel ID="pnlInstructorPending" runat="server" Visible="false">
+                    <div class="cp-sidebar-status">
+                        <strong>Account Pending</strong>
+                        Your instructor licence is awaiting admin approval.
+                        Full features will unlock once approved.
+                    </div>
+                </asp:Panel>
+                <asp:Panel ID="pnlInstructorRejected" runat="server" Visible="false">
+                    <div class="cp-sidebar-status" style="background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.3);color:#DC2626;">
+                        <strong>Licence Rejected</strong>
+                        Your instructor application was not approved.
+                        Please contact an administrator.
+                    </div>
+                </asp:Panel>
+
+                <%-- Full instructor nav — only shown when licence is Approved --%>
+                <asp:Panel ID="pnlInstructorApprovedNav" runat="server" Visible="false">
+                    <span class="cp-nav-group-label">Teaching</span>
+                    <a class="cp-nav-link" runat="server" href="~/Instructor/Dashboard.aspx"      id="navInstructorDashboard">
+                        <span class="cp-nav-icon" aria-hidden="true">&#x2302;</span> Dashboard
+                    </a>
+                    <a class="cp-nav-link" runat="server" href="~/Instructor/Modules.aspx"        id="navInstructorModules">
+                        <span class="cp-nav-icon" aria-hidden="true">&#x1F4D6;</span> Modules
+                    </a>
+                    <a class="cp-nav-link" runat="server" href="~/Instructor/SubTopics.aspx"      id="navInstructorSubTopics">
+                        <span class="cp-nav-icon" aria-hidden="true">&#x1F4C4;</span> Subtopics
+                    </a>
+                    <a class="cp-nav-link" runat="server" href="~/Instructor/Questions.aspx"      id="navInstructorQuestions">
+                        <span class="cp-nav-icon" aria-hidden="true">&#x2753;</span> Questions
+                    </a>
+                    <a class="cp-nav-link" runat="server" href="~/Instructor/Classrooms.aspx"     id="navInstructorClassrooms">
+                        <span class="cp-nav-icon" aria-hidden="true">&#x1F3EB;</span> Classrooms
+                    </a>
+                    <a class="cp-nav-link" runat="server" href="~/Instructor/Materials.aspx"      id="navInstructorMaterials">
+                        <span class="cp-nav-icon" aria-hidden="true">&#x1F4CE;</span> Materials
+                    </a>
+                    <a class="cp-nav-link" runat="server" href="~/Instructor/Assignments.aspx"    id="navInstructorAssignments">
+                        <span class="cp-nav-icon" aria-hidden="true">&#x1F4DD;</span> Assignments
+                    </a>
+                    <a class="cp-nav-link" runat="server" href="~/Instructor/Challenges.aspx"     id="navInstructorChallenges">
+                        <span class="cp-nav-icon" aria-hidden="true">&#x26A1;</span> Challenges
+                    </a>
+
+                    <hr class="cp-nav-divider" />
+                    <span class="cp-nav-group-label">Communication</span>
+                    <a class="cp-nav-link" runat="server" href="~/Instructor/Consultations.aspx"  id="navInstructorConsultations">
+                        <span class="cp-nav-icon" aria-hidden="true">&#x1F4C5;</span> Consultations
+                    </a>
+                    <a class="cp-nav-link" runat="server" href="~/Instructor/Discussions.aspx"    id="navInstructorDiscussions">
+                        <span class="cp-nav-icon" aria-hidden="true">&#x1F4AC;</span> Discussions
+                    </a>
+                    <a class="cp-nav-link" runat="server" href="~/Instructor/Notifications.aspx"  id="navInstructorNotifications">
+                        <span class="cp-nav-icon" aria-hidden="true">&#x1F514;</span> Notifications
+                    </a>
+                    <a class="cp-nav-link" runat="server" href="~/Instructor/Profile.aspx"        id="navInstructorProfile">
+                        <span class="cp-nav-icon" aria-hidden="true">&#x1F464;</span> Profile
+                    </a>
+                </asp:Panel>
+
+                <%-- Limited nav for pending/rejected — profile and notifications only --%>
+                <asp:Panel ID="pnlInstructorLimitedNav" runat="server" Visible="false">
+                    <span class="cp-nav-group-label">Account</span>
+                    <a class="cp-nav-link" runat="server" href="~/Instructor/Notifications.aspx"  id="navInstructorNotifLtd">
+                        <span class="cp-nav-icon" aria-hidden="true">&#x1F514;</span> Notifications
+                    </a>
+                    <a class="cp-nav-link" runat="server" href="~/Instructor/Profile.aspx"        id="navInstructorProfileLtd">
+                        <span class="cp-nav-icon" aria-hidden="true">&#x1F464;</span> Profile
+                    </a>
+                </asp:Panel>
+
+            </asp:Panel>
+
+            <%-- ---- ADMIN navigation ---- --%>
+            <asp:Panel ID="pnlAdminNav" runat="server" Visible="false">
+                <span class="cp-nav-group-label">Administration</span>
+                <a class="cp-nav-link" runat="server" href="~/Admin/Dashboard.aspx"             id="navAdminDashboard">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x2302;</span> Dashboard
+                </a>
+                <a class="cp-nav-link" runat="server" href="~/Admin/Users.aspx"                 id="navAdminUsers">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x1F465;</span> Users
+                </a>
+                <a class="cp-nav-link" runat="server" href="~/Admin/InstructorApprovals.aspx"   id="navAdminApprovals">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x2714;</span> Instructor Approvals
+                </a>
+
+                <hr class="cp-nav-divider" />
+                <span class="cp-nav-group-label">Content</span>
+                <a class="cp-nav-link" runat="server" href="~/Admin/LearningContent.aspx"       id="navAdminContent">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x1F4D6;</span> Learning Content
+                </a>
+                <a class="cp-nav-link" runat="server" href="~/Admin/FunRoomReviews.aspx"        id="navAdminFunRooms">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x1F3AE;</span> Fun Room Reviews
+                </a>
+                <a class="cp-nav-link" runat="server" href="~/Admin/BossFights.aspx"            id="navAdminBossFights">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x1F480;</span> Boss Fight Management
+                </a>
+                <a class="cp-nav-link" runat="server" href="~/Admin/Challenges.aspx"            id="navAdminChallenges">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x26A1;</span> Challenges
+                </a>
+
+                <hr class="cp-nav-divider" />
+                <span class="cp-nav-group-label">Monitoring</span>
+                <a class="cp-nav-link" runat="server" href="~/Admin/Reports.aspx"               id="navAdminReports">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x1F4CA;</span> Reports
+                </a>
+                <a class="cp-nav-link" runat="server" href="~/Admin/AuditLogs.aspx"             id="navAdminAuditLogs">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x1F4CB;</span> Audit Logs
+                </a>
+                <a class="cp-nav-link" runat="server" href="~/Admin/Notifications.aspx"         id="navAdminNotifications">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x1F514;</span> Notifications
+                </a>
+                <a class="cp-nav-link" runat="server" href="~/Admin/Profile.aspx"               id="navAdminProfile">
+                    <span class="cp-nav-icon" aria-hidden="true">&#x1F464;</span> Profile
+                </a>
+            </asp:Panel>
+
+        </div><%-- end cp-nav-section --%>
+
+        <%-- Profile summary at the bottom of the sidebar --%>
+        <div class="cp-sidebar-profile">
+            <div class="cp-sidebar-avatar" aria-hidden="true">
+                <asp:Literal ID="litSidebarInitials" runat="server" />
+            </div>
+            <div class="cp-sidebar-profile-info">
+                <span class="cp-sidebar-profile-name">
+                    <asp:Literal ID="litSidebarName" runat="server" />
+                </span>
+                <span class="cp-sidebar-profile-role">
+                    <asp:Literal ID="litSidebarRole" runat="server" />
+                </span>
+            </div>
+        </div>
+
+    </nav><%-- end cp-sidebar --%>
+
+    <%-- --------------------------------------------------------
+         Main Area  (Topbar + Page Workspace)
+         -------------------------------------------------------- --%>
+    <div class="cp-main-area">
+
+        <%-- Topbar --%>
+        <header class="cp-topbar" role="banner">
+
+            <%-- Mobile sidebar open button --%>
+            <button id="cpSidebarToggle"
+                    class="cp-topbar-toggle"
+                    type="button"
+                    aria-controls="cpSidebar"
+                    aria-expanded="false"
+                    aria-label="Open navigation menu">&#x2630;</button>
+
+            <%-- Page title region --%>
+            <div class="cp-topbar-title">
+                <h1>
+                    <asp:Literal ID="litPageTitle" runat="server" Text="CloudPhoria" />
+                </h1>
+                <asp:Panel ID="pnlPageSubtitle" runat="server" Visible="false">
+                    <span class="cp-topbar-subtitle">
+                        <asp:Literal ID="litPageSubtitle" runat="server" />
+                    </span>
+                </asp:Panel>
+            </div>
+
+            <%-- Page-specific topbar actions (placeholder for content pages) --%>
+            <div class="cp-topbar-actions">
+                <asp:ContentPlaceHolder ID="TopbarActions" runat="server" />
+            </div>
+
+            <%-- Notification bell --%>
+            <asp:Panel ID="pnlNotifications" runat="server" Visible="false">
+                <a class="cp-topbar-notif"
+                   runat="server"
+                   id="lnkNotifications"
+                   href="~/Student/Notifications.aspx"
+                   aria-label="Notifications">
+                    &#x1F514;
+                    <asp:Panel ID="pnlNotifBadge" runat="server" Visible="false"
+                               CssClass="cp-notif-badge" role="status" aria-live="polite">
+                        <asp:Literal ID="litNotifCount" runat="server" />
+                    </asp:Panel>
+                </a>
+            </asp:Panel>
+
+            <%-- User menu --%>
+            <asp:Panel ID="pnlUserMenu" runat="server" Visible="false">
+                <div class="cp-user-menu">
+                    <button id="cpUserMenuToggle"
+                            class="cp-user-menu-toggle"
+                            type="button"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                            aria-controls="cpUserDropdown">
+                        <div class="cp-topbar-avatar" aria-hidden="true">
+                            <asp:Literal ID="litTopbarInitials" runat="server" />
+                        </div>
+                        <span>
+                            <span class="cp-user-name-label">
+                                <asp:Literal ID="litTopbarName" runat="server" />
+                            </span>
+                            <span class="cp-user-role-label">
+                                <asp:Literal ID="litTopbarRole" runat="server" />
+                            </span>
+                        </span>
+                    </button>
+                    <div id="cpUserDropdown" class="cp-user-dropdown" role="menu">
+                        <asp:HyperLink ID="lnkProfile" runat="server"
+                                       NavigateUrl="~/Student/Profile.aspx"
+                                       role="menuitem">&#x1F464; My Profile</asp:HyperLink>
+                        <hr class="cp-dropdown-divider" />
+                        <asp:LinkButton ID="btnLogout" runat="server"
+                                        CssClass="cp-dropdown-danger"
+                                        OnClick="btnLogout_Click"
+                                        role="menuitem"
+                                        OnClientClick="return confirm('Are you sure you want to log out?');">
+                            &#x2192; Log Out
+                        </asp:LinkButton>
+                    </div>
+                </div>
+            </asp:Panel>
+
+        </header><%-- end cp-topbar --%>
+
+        <%-- Page content placeholder --%>
+        <main id="mainContent" class="cp-page" role="main" aria-label="Page content">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+        </main>
+
+    </div><%-- end cp-main-area --%>
+
+</div><%-- end cp-layout --%>
+
+<%-- Shared JavaScript --%>
+<asp:PlaceHolder runat="server">
+    <%: Scripts.Render("~/Scripts/bootstrap.bundle.js") %>
+</asp:PlaceHolder>
+<script src="<%: ResolveUrl("~/Scripts/cloudphoria.js") %>"></script>
+
+<%-- Page-specific scripts placeholder --%>
+<asp:ContentPlaceHolder ID="PageScripts" runat="server" />
+
+</form>
 </body>
 </html>
