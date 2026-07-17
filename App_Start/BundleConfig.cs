@@ -14,6 +14,11 @@ namespace CloudPhoria
         {
             RegisterJQueryScriptManager();
 
+            // CSS bundle – must be registered here so webopt:BundleReference works.
+            bundles.Add(new StyleBundle("~/Content/css").Include(
+                            "~/Content/bootstrap.css",
+                            "~/Content/Site.css"));
+
             bundles.Add(new ScriptBundle("~/bundles/WebFormsJs").Include(
                             "~/Scripts/WebForms/WebForms.js",
                             "~/Scripts/WebForms/WebUIValidation.js",
