@@ -265,6 +265,8 @@
     <Content Include="Content\bootstrap-grid.css.map" />
     <Content Include="app.config" />
     <Content Include="connectionStrings.config" />
+    <Content Include="CloudPhoria_DataSchema.md" />
+    <Content Include="CloudPhoria_ProjectRules.md" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -373,6 +375,7 @@
   <ItemGroup>
     <Folder Include="Admin\" />
     <Folder Include="App_Data\" />
+    <Folder Include="Database\" />
     <Folder Include="Instructor\" />
   </ItemGroup>
   <ItemGroup>
