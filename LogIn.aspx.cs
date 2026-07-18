@@ -273,9 +273,8 @@ namespace CloudPhoria
         // -------------------------------------------------------
         private void CreateSession(int userID, string fullName, string role)
         {
-            // Clear any previous session values to prevent session fixation.
+            // Clear any previous session values to prevent carrying over old data.
             Session.Clear();
-            Session.Abandon();
 
             Session["UserID"]   = userID;
             Session["Role"]     = role;
