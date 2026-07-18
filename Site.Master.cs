@@ -10,69 +10,16 @@ namespace CloudPhoria
 {
     public partial class SiteMaster : MasterPage
     {
-        // -------------------------------------------------------
-        // IsPublicPage – set to true from a content page's
-        // Page_Load (before base.OnInit) to skip the authentication
-        // check.  Use this only for genuinely public pages such as
-        // the landing page, about page, or contact page that do not
-        // require a login.
-        // -------------------------------------------------------
         public bool IsPublicPage { get; set; } = false;
 
-        // -------------------------------------------------------
-        // Public properties so content pages can set the topbar
-        // title and subtitle without duplicating topbar markup.
-        // -------------------------------------------------------
+        public string PageHeading { set { /* no longer needed — pages set their own title */ } }
+        public string PageSubtitle { set { } }
 
-        /// <summary>
-        /// Sets the visible page title shown in the topbar.
-        /// </summary>
-        public string PageHeading
-        {
-            set
-            {
-                if (litPageTitle != null)
-                    litPageTitle.Text = HttpUtility.HtmlEncode(value);
-            }
-        }
-
-        /// <summary>
-        /// Sets a subtitle line beneath the topbar title.
-        /// Setting this to a non-empty string also makes it visible.
-        /// </summary>
-        public string PageSubtitle
-        {
-            set
-            {
-                if (litPageSubtitle != null && pnlPageSubtitle != null)
-                {
-                    if (!string.IsNullOrWhiteSpace(value))
-                    {
-                        litPageSubtitle.Text = HttpUtility.HtmlEncode(value);
-                        pnlPageSubtitle.Visible = true;
-                    }
-                }
-            }
-        }
-
-        // -------------------------------------------------------
-        // Page lifecycle
-        // -------------------------------------------------------
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            // CSS is loaded via <link runat="server"> in the .master markup.
-            // Nothing else needed in Page_Load.
-        }
+        protected void Page_Load(object sender, EventArgs e) { }
 
         protected void Page_PreRender(object sender, EventArgs e)
         {
-            // Public pages skip auth checks and hide the authenticated UI.
-            if (IsPublicPage)
-            {
-                pnlUserMenu.Visible      = false;
-                pnlNotifications.Visible = false;
-                return;
-            }
+            if (IsPublicPage) { HideAuthUI(); return; }
 
             CheckAuthentication();
             LoadCurrentUser();
@@ -81,126 +28,81 @@ namespace CloudPhoria
             {
                 ConfigureNavigation();
                 LoadNotificationCount();
+                LoadXP();
             }
         }
 
-        // -------------------------------------------------------
-        // Step 1 – Verify that a valid authenticated session exists.
-        // Redirect to the login page when no session is found.
-        // Public pages (Login, Guest) do not use this Master Page
-        // so this check is always appropriate here.
-        // -------------------------------------------------------
+        private void HideAuthUI()
+        {
+            pnlUserMenu.Visible      = false;
+            pnlNotifications.Visible = false;
+            pnlXPCounter.Visible     = false;
+        }
+
         private void CheckAuthentication()
         {
-            // Read session values safely without assuming they exist.
-            object sessionUserID = Session["UserID"];
-            object sessionRole   = Session["Role"];
+            object uid = Session["UserID"];
+            object role = Session["Role"];
 
-            if (sessionUserID == null || sessionRole == null)
-            {
-                // No valid session – send to login page.
-                Response.Redirect("~/LogIn.aspx", true);
-                return;
-            }
+            if (uid == null || role == null)
+            { Response.Redirect("~/LogIn.aspx", true); return; }
 
-            // Parse UserID safely.
             int userID;
-            if (!int.TryParse(sessionUserID.ToString(), out userID) || userID <= 0)
-            {
-                // Session value is not a valid integer – clear and redirect.
-                Session.Abandon();
-                Response.Redirect("~/LogIn.aspx", true);
-                return;
-            }
+            if (!int.TryParse(uid.ToString(), out userID) || userID <= 0)
+            { Session.Abandon(); Response.Redirect("~/LogIn.aspx", true); return; }
 
-            // Validate the role is one of the three supported values.
-            string role = sessionRole.ToString();
-            if (role != "Student" && role != "Instructor" && role != "Admin")
-            {
-                Session.Abandon();
-                Response.Redirect("~/LogIn.aspx", true);
-                return;
-            }
+            string r = role.ToString();
+            if (r != "Student" && r != "Instructor" && r != "Admin")
+            { Session.Abandon(); Response.Redirect("~/LogIn.aspx", true); return; }
         }
 
-        // -------------------------------------------------------
-        // Step 2 – Load the current user's name, role, and
-        // relevant role-table IDs from the database so the layout
-        // shows real data rather than session strings only.
-        // -------------------------------------------------------
         private void LoadCurrentUser()
         {
-            object sessionUserID = Session["UserID"];
-            if (sessionUserID == null) { return; }
+            object uid = Session["UserID"];
+            if (uid == null) return;
 
             int userID;
-            if (!int.TryParse(sessionUserID.ToString(), out userID)) { return; }
+            if (!int.TryParse(uid.ToString(), out userID)) return;
 
-            string role = Session["Role"] != null ? Session["Role"].ToString() : string.Empty;
+            string role = Session["Role"] != null ? Session["Role"].ToString() : "";
+            string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
 
-            string connString = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
-
-            // Verify the account is still active and not banned in the database.
-            // Also re-read the name in case it was updated since login.
-            string sql = @"SELECT FullName, IsActive, IsBanned
-                           FROM   Users
-                           WHERE  UserID = @UserID";
-
-            string fullName  = string.Empty;
-            bool   isActive  = false;
-            bool   isBanned  = false;
-
+            string fullName = "";
             try
             {
-                using (SqlConnection conn = new SqlConnection(connString))
+                using (SqlConnection conn = new SqlConnection(cs))
                 {
                     conn.Open();
-                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    using (SqlCommand cmd = new SqlCommand(
+                        "SELECT FullName, IsActive, IsBanned FROM Users WHERE UserID=@UID", conn))
                     {
-                        cmd.Parameters.Add("@UserID", SqlDbType.Int).Value = userID;
-                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        cmd.Parameters.Add("@UID", SqlDbType.Int).Value = userID;
+                        using (SqlDataReader rdr = cmd.ExecuteReader())
                         {
-                            if (reader.Read())
+                            if (rdr.Read())
                             {
-                                fullName = reader["FullName"].ToString();
-                                isActive = Convert.ToBoolean(reader["IsActive"]);
-                                isBanned = Convert.ToBoolean(reader["IsBanned"]);
+                                fullName = rdr["FullName"].ToString();
+                                if (!Convert.ToBoolean(rdr["IsActive"]) || Convert.ToBoolean(rdr["IsBanned"]))
+                                { Session.Abandon(); Response.Redirect("~/LogIn.aspx", true); return; }
                             }
                             else
-                            {
-                                // User row no longer exists.
-                                Session.Abandon();
-                                Response.Redirect("~/LogIn.aspx", true);
-                                return;
-                            }
+                            { Session.Abandon(); Response.Redirect("~/LogIn.aspx", true); return; }
                         }
                     }
                 }
             }
             catch (SqlException)
             {
-                // Database unavailable – fall back gracefully.
-                // The user will still see their session name but
-                // the topbar will show a placeholder.
                 fullName = Session["FullName"] != null ? Session["FullName"].ToString() : "User";
-                SetUserDisplay(fullName, role);
-                return;
             }
 
-            // Enforce account status on every request.
-            if (!isActive || isBanned)
-            {
-                Session.Abandon();
-                Response.Redirect("~/LogIn.aspx", true);
-                return;
-            }
+            // Set display values
+            string initials = GetInitials(fullName);
+            litTopbarInitials.Text = HttpUtility.HtmlEncode(initials);
+            litTopbarName.Text     = HttpUtility.HtmlEncode(fullName);
+            litTopbarRole.Text     = HttpUtility.HtmlEncode(role);
+            pnlUserMenu.Visible    = true;
 
-            SetUserDisplay(fullName, role);
-
-            // Show the user menu and notification bell now that we have a user.
-            pnlUserMenu.Visible = true;
-
-            // Set the profile link destination based on role.
             if (role == "Student")
                 lnkProfile.NavigateUrl = "~/Student/Profile.aspx";
             else if (role == "Instructor")
@@ -209,224 +111,101 @@ namespace CloudPhoria
                 lnkProfile.NavigateUrl = "~/Admin/Profile.aspx";
         }
 
-        // -------------------------------------------------------
-        // Helper – populate display literals for the topbar and
-        // sidebar profile area.
-        // -------------------------------------------------------
-        private void SetUserDisplay(string fullName, string role)
-        {
-            // Build two-character initials for the avatar.
-            string initials = GetInitials(fullName);
-
-            // Sidebar profile area.
-            if (litSidebarInitials != null) litSidebarInitials.Text = HttpUtility.HtmlEncode(initials);
-            if (litSidebarName     != null) litSidebarName.Text     = HttpUtility.HtmlEncode(fullName);
-            if (litSidebarRole     != null) litSidebarRole.Text     = HttpUtility.HtmlEncode(role);
-
-            // Topbar user menu area.
-            if (litTopbarInitials != null) litTopbarInitials.Text = HttpUtility.HtmlEncode(initials);
-            if (litTopbarName     != null) litTopbarName.Text     = HttpUtility.HtmlEncode(fullName);
-            if (litTopbarRole     != null) litTopbarRole.Text     = HttpUtility.HtmlEncode(role);
-        }
-
-        // -------------------------------------------------------
-        // Step 3 – Show the correct navigation panel and configure
-        // the notification bell destination based on role.
-        // For Instructors, check LicenseStatus as well.
-        // -------------------------------------------------------
         private void ConfigureNavigation()
         {
-            object sessionRole = Session["Role"];
-            if (sessionRole == null) { return; }
-            string role = sessionRole.ToString();
+            string role = Session["Role"] != null ? Session["Role"].ToString() : "";
 
             if (role == "Student")
             {
-                pnlStudentNav.Visible    = true;
-                pnlNotifications.Visible = true;
-                // Notification bell links to student notifications page.
-                lnkNotifications.HRef    = ResolveUrl("~/Student/Notifications.aspx");
-                // Footer
+                pnlStudentNav.Visible        = true;
+                pnlNotifications.Visible     = true;
+                pnlXPCounter.Visible         = true;
                 pnlFooterStudentLinks.Visible = true;
-                pnlFooterRole.Visible         = true;
-                litFooterRole.Text            = "Student";
+                lnkNotifications.HRef        = ResolveUrl("~/Student/Notifications.aspx");
             }
             else if (role == "Instructor")
             {
-                pnlInstructorNav.Visible = true;
-                pnlNotifications.Visible = true;
-                lnkNotifications.HRef    = ResolveUrl("~/Instructor/Notifications.aspx");
-                ConfigureInstructorLicence();
-                // Footer
+                pnlInstructorNav.Visible        = true;
+                pnlNotifications.Visible        = true;
                 pnlFooterInstructorLinks.Visible = true;
-                pnlFooterRole.Visible            = true;
-                litFooterRole.Text               = "Instructor";
+                lnkNotifications.HRef           = ResolveUrl("~/Instructor/Notifications.aspx");
             }
             else if (role == "Admin")
             {
-                pnlAdminNav.Visible      = true;
-                pnlNotifications.Visible = true;
-                lnkNotifications.HRef    = ResolveUrl("~/Admin/Notifications.aspx");
-                // Footer
+                pnlAdminNav.Visible        = true;
+                pnlNotifications.Visible   = true;
                 pnlFooterAdminLinks.Visible = true;
-                pnlFooterRole.Visible       = true;
-                litFooterRole.Text          = "Admin";
+                lnkNotifications.HRef      = ResolveUrl("~/Admin/Notifications.aspx");
             }
         }
 
-        // -------------------------------------------------------
-        // Instructor licence – read LicenseStatus from the DB
-        // and show the appropriate nav panel.
-        // -------------------------------------------------------
-        private void ConfigureInstructorLicence()
+        private void LoadXP()
         {
-            object sessionUserID = Session["UserID"];
-            if (sessionUserID == null) { return; }
+            if (Session["Role"] == null || Session["Role"].ToString() != "Student") return;
 
-            int instructorID;
-            if (!int.TryParse(sessionUserID.ToString(), out instructorID)) { return; }
-
-            string connString = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
-
-            string sql = @"SELECT LicenseStatus
-                           FROM   Instructors
-                           WHERE  InstructorID = @InstructorID";
-
-            string licenseStatus = "Pending"; // Default to most restrictive if not found.
+            int studentID = Convert.ToInt32(Session["UserID"]);
+            string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connString))
+                using (SqlConnection conn = new SqlConnection(cs))
                 {
                     conn.Open();
-                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    using (SqlCommand cmd = new SqlCommand(
+                        "SELECT TotalXP FROM Students WHERE StudentID=@SID", conn))
                     {
-                        cmd.Parameters.Add("@InstructorID", SqlDbType.Int).Value = instructorID;
-                        object result = cmd.ExecuteScalar();
-                        if (result != null && result != DBNull.Value)
-                        {
-                            licenseStatus = result.ToString();
-                        }
+                        cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
+                        object r = cmd.ExecuteScalar();
+                        litTopXP.Text = (r != null && r != DBNull.Value) ? r.ToString() : "0";
                     }
                 }
             }
-            catch (SqlException)
-            {
-                // Cannot reach database – default to restricted access.
-                licenseStatus = "Pending";
-            }
-
-            // Store for other pages that may need to check licence status.
-            Session["LicenseStatus"] = licenseStatus;
-
-            if (licenseStatus == "Approved")
-            {
-                pnlInstructorApprovedNav.Visible = true;
-            }
-            else if (licenseStatus == "Pending")
-            {
-                pnlInstructorPending.Visible     = true;
-                pnlInstructorLimitedNav.Visible  = true;
-            }
-            else if (licenseStatus == "Rejected")
-            {
-                pnlInstructorRejected.Visible    = true;
-                pnlInstructorLimitedNav.Visible  = true;
-            }
-            else
-            {
-                // Unrecognised value – treat as restricted.
-                pnlInstructorPending.Visible     = true;
-                pnlInstructorLimitedNav.Visible  = true;
-            }
+            catch (SqlException) { }
         }
 
-        // -------------------------------------------------------
-        // Step 4 – Load unread notification count for the topbar
-        // bell badge.  A failure here is non-critical so the page
-        // continues to load without a count.
-        // -------------------------------------------------------
         private void LoadNotificationCount()
         {
-            object sessionUserID = Session["UserID"];
-            if (sessionUserID == null) { return; }
+            object uid = Session["UserID"];
+            if (uid == null) return;
 
-            int userID;
-            if (!int.TryParse(sessionUserID.ToString(), out userID)) { return; }
-
-            string connString = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
-
-            // Only select the count – do not load notification content here.
-            string sql = @"SELECT COUNT(*)
-                           FROM   Notifications
-                           WHERE  UserID   = @UserID
-                           AND    IsRead   = 0";
+            int userID = Convert.ToInt32(uid);
+            string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connString))
+                using (SqlConnection conn = new SqlConnection(cs))
                 {
                     conn.Open();
-                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    using (SqlCommand cmd = new SqlCommand(
+                        "SELECT COUNT(*) FROM Notifications WHERE UserID=@UID AND IsRead=0", conn))
                     {
-                        cmd.Parameters.Add("@UserID", SqlDbType.Int).Value = userID;
-                        object result = cmd.ExecuteScalar();
-                        int count = (result != null && result != DBNull.Value)
-                                    ? Convert.ToInt32(result)
-                                    : 0;
-
+                        cmd.Parameters.Add("@UID", SqlDbType.Int).Value = userID;
+                        int count = Convert.ToInt32(cmd.ExecuteScalar());
                         if (count > 0)
                         {
-                            // Cap the display at 99+ to keep the badge small.
-                            litNotifCount.Text  = count > 99 ? "99+" : count.ToString();
+                            litNotifCount.Text    = count > 99 ? "99+" : count.ToString();
                             pnlNotifBadge.Visible = true;
                         }
                     }
                 }
             }
-            catch (SqlException)
-            {
-                // Non-critical – silently skip the notification count.
-                // A database problem here should not break the whole page.
-            }
+            catch (SqlException) { }
         }
 
-        // -------------------------------------------------------
-        // Logout button event handler
-        // -------------------------------------------------------
         protected void btnLogout_Click(object sender, EventArgs e)
         {
-            // Clear all session values and abandon the session.
             Session.Clear();
             Session.Abandon();
-
-            // Return the user to the login page.
             Response.Redirect("~/LogIn.aspx", true);
         }
 
-        // -------------------------------------------------------
-        // Helper – generate two-character initials from a name.
-        // -------------------------------------------------------
-        private string GetInitials(string fullName)
+        private string GetInitials(string name)
         {
-            if (string.IsNullOrWhiteSpace(fullName))
-            {
-                return "?";
-            }
-
-            string[] parts = fullName.Trim().Split(
-                new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
+            if (string.IsNullOrWhiteSpace(name)) return "?";
+            string[] parts = name.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length == 1)
-            {
-                // Single name – return first two characters if available.
-                return parts[0].Length >= 2
-                       ? parts[0].Substring(0, 2).ToUpper()
-                       : parts[0].Substring(0, 1).ToUpper();
-            }
-
-            // First initial + last initial.
-            return (parts[0].Substring(0, 1) + parts[parts.Length - 1].Substring(0, 1)).ToUpper();
+                return parts[0].Length >= 2 ? parts[0].Substring(0, 2).ToUpper() : parts[0][0].ToString().ToUpper();
+            return (parts[0][0].ToString() + parts[parts.Length - 1][0].ToString()).ToUpper();
         }
     }
 }

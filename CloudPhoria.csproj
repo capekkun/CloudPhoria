@@ -314,6 +314,8 @@
     <Content Include="Student\PracticeQuiz.aspx" />
     <Content Include="Student\ExamStart.aspx" />
     <Content Include="Student\BossFightBattle.aspx" />
+    <Content Include="Student\ClassroomDetail.aspx" />
+    <Content Include="Student\FunRoomDetail.aspx" />
     <Content Include="ViewSwitcher.ascx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
@@ -507,6 +509,20 @@
     </Compile>
     <Compile Include="Student\BossFightBattle.aspx.designer.cs">
       <DependentUpon>BossFightBattle.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\ClassroomDetail.aspx.cs">
+      <DependentUpon>ClassroomDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\ClassroomDetail.aspx.designer.cs">
+      <DependentUpon>ClassroomDetail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\FunRoomDetail.aspx.cs">
+      <DependentUpon>FunRoomDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\FunRoomDetail.aspx.designer.cs">
+      <DependentUpon>FunRoomDetail.aspx</DependentUpon>
     </Compile>
     <Compile Include="ViewSwitcher.ascx.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>

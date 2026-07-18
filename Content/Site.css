@@ -538,13 +538,28 @@ html, body {
     flex: 1;
     overflow-y: auto;
     padding: var(--cp-space-lg) var(--cp-space-xl);
-    background-color: var(--cp-page-bg);
-    background-image:
-        linear-gradient(180deg, #F4F7FB 0%, #EEF2FA 50%, #F4F7FB 100%),
-        linear-gradient(rgba(14,165,233,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(14,165,233,0.025) 1px, transparent 1px);
-    background-size: 100% 100%, 44px 44px, 44px 44px;
     position: relative;
+
+    /* Adventurous sky gradient background */
+    background:
+        /* Distant mountains silhouette */
+        linear-gradient(175deg,
+            transparent 60%,
+            rgba(99,102,241,0.06) 60%,
+            rgba(99,102,241,0.04) 70%,
+            transparent 70%),
+        linear-gradient(170deg,
+            transparent 65%,
+            rgba(14,165,233,0.05) 65%,
+            rgba(14,165,233,0.03) 75%,
+            transparent 75%),
+        /* Sky gradient — bright blue top fading to warm light */
+        linear-gradient(180deg,
+            #E8F4FD 0%,
+            #F0F7FF 15%,
+            #F4F7FB 40%,
+            #FDF8F0 80%,
+            #F9F0E8 100%);
 }
 
 /* Page header */
@@ -612,12 +627,28 @@ html, body {
    8. Cards
    ------------------------------------------------------------- */
 .cp-card {
-    background-color: var(--cp-surface);
+    background: linear-gradient(135deg, #FFFFFF 0%, #FAFCFF 100%);
     border: 1px solid var(--cp-border);
     border-radius: var(--cp-radius-md);
     box-shadow: var(--cp-shadow-sm);
     padding: var(--cp-space-lg);
     margin-bottom: var(--cp-space-md);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.cp-card:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--cp-shadow-md);
+}
+.cp-card::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(14,165,233,0.04) 0%, transparent 70%);
+    pointer-events: none;
 }
 .cp-card-title {
     font-size: 15px;
@@ -709,22 +740,24 @@ html, body {
 
 /* Module / content card */
 .cp-module-card {
-    background-color: var(--cp-surface);
+    background: linear-gradient(135deg, #FFFFFF 0%, rgba(14,165,233,0.02) 100%);
     border: 1px solid var(--cp-border);
+    border-left: 3px solid var(--cp-primary);
     border-radius: var(--cp-radius-md);
     box-shadow: var(--cp-shadow-sm);
     padding: var(--cp-space-md) var(--cp-space-lg);
-    transition: box-shadow 0.15s, border-color 0.15s;
+    transition: box-shadow 0.15s, border-color 0.15s, transform 0.15s;
     text-decoration: none;
     display: block;
     color: var(--cp-text);
     margin-bottom: var(--cp-space-sm);
 }
 .cp-module-card:hover {
-    box-shadow: var(--cp-shadow-md);
-    border-color: var(--cp-primary);
+    box-shadow: 0 8px 24px rgba(14,165,233,0.1);
+    border-left-color: var(--cp-indigo);
     text-decoration: none;
     color: var(--cp-text);
+    transform: translateY(-1px);
 }
 
 /* Locked state for content cards */
@@ -891,8 +924,8 @@ html, body {
    ------------------------------------------------------------- */
 .cp-progress-wrap {
     background-color: var(--cp-border);
-    border-radius: 4px;
-    height: 6px;
+    border-radius: 5px;
+    height: 8px;
     overflow: hidden;
 }
 .cp-progress-bar {
@@ -900,6 +933,19 @@ html, body {
     border-radius: 4px;
     background: linear-gradient(90deg, var(--cp-primary) 0%, var(--cp-indigo) 100%);
     transition: width 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+.cp-progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: progressShimmer 2s linear infinite;
+}
+@keyframes progressShimmer {
+    0%   { left: -100%; }
+    100% { left: 100%; }
 }
 .cp-progress-bar.success { background: var(--cp-success); }
 .cp-progress-bar.warning { background: var(--cp-warning); }
@@ -1149,6 +1195,24 @@ html, body {
     border-radius: 20px;
     font-size: 12px;
     font-weight: 700;
+    position: relative;
+    overflow: hidden;
+    animation: xpPulse 2s ease-in-out infinite;
+}
+.cp-xp-chip::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.25) 50%, transparent 70%);
+    animation: chipShine 3s ease-in-out infinite;
+}
+@keyframes xpPulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); }
+    50%     { box-shadow: 0 0 8px 2px rgba(245,158,11,0.12); }
+}
+@keyframes chipShine {
+    0%   { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
 }
 
 /* -------------------------------------------------------------
