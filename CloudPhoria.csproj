@@ -236,7 +236,19 @@
     <Content Include="Global.asax" />
     <Content Include="Guest\Learn.aspx" />
     <Content Include="Instructor\Dashboard.aspx" />
+    <Content Include="Instructor\Modules.aspx" />
+    <Content Include="Instructor\SubTopics.aspx" />
+    <Content Include="Instructor\Questions.aspx" />
+    <Content Include="Instructor\Classrooms.aspx" />
+    <Content Include="Instructor\Materials.aspx" />
+    <Content Include="Instructor\Assignments.aspx" />
+    <Content Include="Instructor\Challenges.aspx" />
+    <Content Include="Instructor\Consultations.aspx" />
+    <Content Include="Instructor\Discussions.aspx" />
+    <Content Include="Instructor\Notifications.aspx" />
+    <Content Include="Instructor\Profile.aspx" />
     <Content Include="LogIn.aspx" />
+    <Content Include="Scripts\cloudphoria.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -366,6 +378,83 @@
     </Compile>
     <Compile Include="Instructor\Dashboard.aspx.designer.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Instructor\Modules.aspx.cs">
+      <DependentUpon>Modules.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Instructor\Modules.aspx.designer.cs">
+      <DependentUpon>Modules.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Instructor\SubTopics.aspx.cs">
+      <DependentUpon>SubTopics.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Instructor\SubTopics.aspx.designer.cs">
+      <DependentUpon>SubTopics.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Instructor\Questions.aspx.cs">
+      <DependentUpon>Questions.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Instructor\Questions.aspx.designer.cs">
+      <DependentUpon>Questions.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Instructor\Classrooms.aspx.cs">
+      <DependentUpon>Classrooms.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Instructor\Classrooms.aspx.designer.cs">
+      <DependentUpon>Classrooms.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Instructor\Materials.aspx.cs">
+      <DependentUpon>Materials.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Instructor\Materials.aspx.designer.cs">
+      <DependentUpon>Materials.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Instructor\Assignments.aspx.cs">
+      <DependentUpon>Assignments.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Instructor\Assignments.aspx.designer.cs">
+      <DependentUpon>Assignments.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Instructor\Challenges.aspx.cs">
+      <DependentUpon>Challenges.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Instructor\Challenges.aspx.designer.cs">
+      <DependentUpon>Challenges.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Instructor\Consultations.aspx.cs">
+      <DependentUpon>Consultations.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Instructor\Consultations.aspx.designer.cs">
+      <DependentUpon>Consultations.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Instructor\Discussions.aspx.cs">
+      <DependentUpon>Discussions.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Instructor\Discussions.aspx.designer.cs">
+      <DependentUpon>Discussions.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Instructor\Notifications.aspx.cs">
+      <DependentUpon>Notifications.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Instructor\Notifications.aspx.designer.cs">
+      <DependentUpon>Notifications.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Instructor\Profile.aspx.cs">
+      <DependentUpon>Profile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Instructor\Profile.aspx.designer.cs">
+      <DependentUpon>Profile.aspx</DependentUpon>
     </Compile>
     <Compile Include="LogIn.aspx.cs">
       <DependentUpon>LogIn.aspx</DependentUpon>

@@ -1,15 +1,195 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Dashboard.aspx.cs" Inherits="CloudPhoria.Instructor.Dashboard" %>
+﻿<%@ Page Title="Dashboard" Language="C#" MasterPageFile="~/Site.Master"
+    AutoEventWireup="true" CodeBehind="Dashboard.aspx.cs"
+    Inherits="CloudPhoria.Instructor.Dashboard" %>
 
-<!DOCTYPE html>
+<asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
+</asp:Content>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <title></title>
-</head>
-<body>
-    <form id="form1" runat="server">
-        <div>
+<asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
+
+    <%-- Page header --%>
+    <div class="cp-page-header">
+        <div class="cp-page-header-row">
+            <div>
+                <h2>Welcome back, <asp:Literal ID="litWelcomeName" runat="server" />!</h2>
+                <p>Here's your teaching overview for today.</p>
+            </div>
+            <asp:Panel ID="pnlHeaderActions" runat="server" Visible="false">
+                <a href="Classrooms.aspx" class="cp-btn cp-btn-primary">
+                    &#x1F3EB; My Classrooms
+                </a>
+            </asp:Panel>
         </div>
-    </form>
-</body>
-</html>
+    </div>
+
+    <%-- Pending approval notice --%>
+    <asp:Panel ID="pnlPendingNotice" runat="server" Visible="false">
+        <div class="cp-alert cp-alert-warning" style="margin-bottom:24px;">
+            <span style="font-size:18px;">&#x23F3;</span>
+            <div>
+                <strong>Licence Pending Approval</strong><br />
+                Your instructor account is awaiting admin approval. Full teaching features will unlock once your licence is approved.
+            </div>
+        </div>
+    </asp:Panel>
+
+    <asp:Panel ID="pnlRejectedNotice" runat="server" Visible="false">
+        <div class="cp-alert cp-alert-danger" style="margin-bottom:24px;">
+            <span style="font-size:18px;">&#x274C;</span>
+            <div>
+                <strong>Licence Rejected</strong><br />
+                Your instructor application was not approved. Please contact an administrator for further guidance.
+            </div>
+        </div>
+    </asp:Panel>
+
+    <%-- Stat cards — only shown when approved --%>
+    <asp:Panel ID="pnlStats" runat="server" Visible="false">
+        <div class="cp-grid-4 cp-mb-lg">
+            <div class="cp-stat-card">
+                <div class="cp-stat-icon indigo" aria-hidden="true">&#x1F3EB;</div>
+                <div>
+                    <div class="cp-stat-value"><asp:Literal ID="litClassroomCount" runat="server" Text="0" /></div>
+                    <div class="cp-stat-label">My Classrooms</div>
+                </div>
+            </div>
+            <div class="cp-stat-card">
+                <div class="cp-stat-icon blue" aria-hidden="true">&#x1F4D6;</div>
+                <div>
+                    <div class="cp-stat-value"><asp:Literal ID="litModuleCount" runat="server" Text="0" /></div>
+                    <div class="cp-stat-label">Modules Created</div>
+                </div>
+            </div>
+            <div class="cp-stat-card">
+                <div class="cp-stat-icon green" aria-hidden="true">&#x1F393;</div>
+                <div>
+                    <div class="cp-stat-value"><asp:Literal ID="litStudentCount" runat="server" Text="0" /></div>
+                    <div class="cp-stat-label">Total Students</div>
+                </div>
+            </div>
+            <div class="cp-stat-card">
+                <div class="cp-stat-icon amber" aria-hidden="true">&#x1F4DD;</div>
+                <div>
+                    <div class="cp-stat-value"><asp:Literal ID="litPendingAssignments" runat="server" Text="0" /></div>
+                    <div class="cp-stat-label">Pending Submissions</div>
+                </div>
+            </div>
+        </div>
+
+        <%-- Two-column layout --%>
+        <div class="cp-grid-2">
+
+            <%-- My Classrooms summary --%>
+            <div>
+                <h3 style="font-size:15px;font-weight:600;color:var(--cp-text);margin:0 0 12px;">
+                    My Classrooms
+                </h3>
+
+                <asp:Panel ID="pnlClassroomList" runat="server" Visible="false">
+                    <asp:Repeater ID="rptClassrooms" runat="server">
+                        <ItemTemplate>
+                            <div class="cp-module-card">
+                                <div class="cp-flex-between">
+                                    <div>
+                                        <div style="font-size:14px;font-weight:600;color:var(--cp-text);">
+                                            <%# HttpUtility.HtmlEncode(Eval("ClassroomName").ToString()) %>
+                                        </div>
+                                        <div style="font-size:12px;color:var(--cp-text-muted);margin-top:3px;">
+                                            <%# Eval("StudentCount") %> student(s) &bull; Code: <strong><%# HttpUtility.HtmlEncode(Eval("InviteCode").ToString()) %></strong>
+                                        </div>
+                                    </div>
+                                    <a href='Classrooms.aspx?id=<%# Eval("ClassroomID") %>'
+                                       class="cp-btn cp-btn-ghost cp-btn-sm">View</a>
+                                </div>
+                            </div>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </asp:Panel>
+
+                <asp:Panel ID="pnlNoClassrooms" runat="server" Visible="false">
+                    <div class="cp-empty-state">
+                        <span class="cp-empty-state-icon" aria-hidden="true">&#x1F3EB;</span>
+                        <h3>No classrooms yet</h3>
+                        <p>Create your first classroom to get started.</p>
+                        <a href="Classrooms.aspx" class="cp-btn cp-btn-primary">Create Classroom</a>
+                    </div>
+                </asp:Panel>
+            </div>
+
+            <%-- Recent submissions --%>
+            <div>
+                <h3 style="font-size:15px;font-weight:600;color:var(--cp-text);margin:0 0 12px;">
+                    Recent Submissions
+                </h3>
+
+                <asp:Panel ID="pnlSubmissions" runat="server" Visible="false">
+                    <div class="cp-card" style="padding:0;overflow:hidden;">
+                        <asp:Repeater ID="rptSubmissions" runat="server">
+                            <ItemTemplate>
+                                <div style="display:flex;align-items:center;justify-content:space-between;
+                                            padding:12px 16px;border-bottom:1px solid var(--cp-border);">
+                                    <div>
+                                        <div style="font-size:13px;font-weight:500;color:var(--cp-text);">
+                                            <%# HttpUtility.HtmlEncode(Eval("StudentName").ToString()) %>
+                                        </div>
+                                        <div style="font-size:11px;color:var(--cp-text-muted);margin-top:2px;">
+                                            <%# HttpUtility.HtmlEncode(Eval("AssignmentTitle").ToString()) %>
+                                            &bull; <%# Convert.ToDateTime(Eval("SubmittedAt")).ToString("dd MMM yyyy HH:mm") %>
+                                        </div>
+                                    </div>
+                                    <span class="cp-badge cp-badge-amber">Pending</span>
+                                </div>
+                            </ItemTemplate>
+                        </asp:Repeater>
+                    </div>
+                </asp:Panel>
+
+                <asp:Panel ID="pnlNoSubmissions" runat="server" Visible="false">
+                    <div class="cp-empty-state">
+                        <span class="cp-empty-state-icon" aria-hidden="true">&#x2705;</span>
+                        <h3>No pending submissions</h3>
+                        <p>All assignment submissions have been reviewed.</p>
+                    </div>
+                </asp:Panel>
+            </div>
+
+        </div>
+
+        <%-- Recent notifications --%>
+        <asp:Panel ID="pnlRecentNotif" runat="server" Visible="false">
+            <h3 style="font-size:15px;font-weight:600;color:var(--cp-text);margin:24px 0 12px;">
+                Recent Notifications
+            </h3>
+            <div class="cp-card" style="padding:0;overflow:hidden;">
+                <asp:Repeater ID="rptNotifications" runat="server">
+                    <ItemTemplate>
+                        <div style="display:flex;align-items:center;gap:12px;
+                                    padding:12px 16px;border-bottom:1px solid var(--cp-border);">
+                            <span style="font-size:16px;" aria-hidden="true">&#x1F514;</span>
+                            <div style="flex:1;min-width:0;">
+                                <div style="font-size:13px;color:var(--cp-text);">
+                                    <%# HttpUtility.HtmlEncode(Eval("Message").ToString()) %>
+                                </div>
+                                <div style="font-size:11px;color:var(--cp-text-muted);margin-top:2px;">
+                                    <%# Convert.ToDateTime(Eval("CreatedAt")).ToString("dd MMM yyyy HH:mm") %>
+                                </div>
+                            </div>
+                            <%# Convert.ToBoolean(Eval("IsRead")) ? "" :
+                                "<span class='cp-badge cp-badge-blue'>New</span>" %>
+                        </div>
+                    </ItemTemplate>
+                </asp:Repeater>
+            </div>
+            <div style="text-align:right;margin-top:8px;">
+                <a href="Notifications.aspx" style="font-size:13px;color:var(--cp-primary);">
+                    View all notifications &#x2192;
+                </a>
+            </div>
+        </asp:Panel>
+
+    </asp:Panel><%-- end pnlStats --%>
+
+</asp:Content>
+
+<asp:Content ID="PageScripts" ContentPlaceHolderID="PageScripts" runat="server">
+</asp:Content>
