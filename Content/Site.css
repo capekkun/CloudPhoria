@@ -539,11 +539,43 @@ html, body {
     overflow-y: auto;
     padding: var(--cp-space-lg) var(--cp-space-xl);
     background-color: var(--cp-page-bg);
+    background-image:
+        linear-gradient(180deg, #F4F7FB 0%, #EEF2FA 50%, #F4F7FB 100%),
+        linear-gradient(rgba(14,165,233,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.025) 1px, transparent 1px);
+    background-size: 100% 100%, 44px 44px, 44px 44px;
+    position: relative;
 }
 
 /* Page header */
 .cp-page-header {
     margin-bottom: var(--cp-space-xl);
+    padding: 24px 28px;
+    background: linear-gradient(135deg, rgba(14,165,233,0.07) 0%, rgba(99,102,241,0.05) 100%);
+    border: 1px solid rgba(14,165,233,0.12);
+    border-radius: var(--cp-radius-lg);
+    position: relative;
+    overflow: hidden;
+}
+.cp-page-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--cp-primary), var(--cp-indigo), var(--cp-primary));
+    border-radius: 3px 3px 0 0;
+}
+.cp-page-header::after {
+    content: '☁';
+    position: absolute;
+    top: -12px;
+    right: 24px;
+    font-size: 80px;
+    opacity: 0.05;
+    pointer-events: none;
+    line-height: 1;
 }
 .cp-page-header h2 {
     font-size: 22px;
@@ -609,16 +641,53 @@ html, body {
     display: flex;
     align-items: flex-start;
     gap: var(--cp-space-md);
+    border-left: 3px solid transparent;
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative;
+    overflow: hidden;
+}
+.cp-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--cp-shadow-md);
+}
+.cp-stat-card:nth-child(1) { border-left-color: var(--cp-warning); }
+.cp-stat-card:nth-child(2) { border-left-color: var(--cp-primary); }
+.cp-stat-card:nth-child(3) { border-left-color: var(--cp-success); }
+.cp-stat-card:nth-child(4) { border-left-color: var(--cp-indigo); }
+.cp-stat-card::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(14,165,233,0.05) 0%, transparent 70%);
+    pointer-events: none;
 }
 .cp-stat-icon {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     border-radius: var(--cp-radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+    font-size: 22px;
     flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+}
+.cp-stat-icon::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+    animation: iconShine 3s ease-in-out infinite;
+}
+@keyframes iconShine {
+    0%   { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
 }
 .cp-stat-icon.blue   { background: rgba(14,165,233,0.12); color: var(--cp-primary); }
 .cp-stat-icon.indigo { background: rgba(99,102,241,0.12); color: var(--cp-indigo); }
@@ -851,12 +920,26 @@ html, body {
     text-align: center;
     padding: var(--cp-space-2xl) var(--cp-space-xl);
     color: var(--cp-text-muted);
+    background: linear-gradient(135deg, rgba(14,165,233,0.03) 0%, rgba(99,102,241,0.03) 100%);
+    border: 1px dashed rgba(14,165,233,0.2);
+    border-radius: var(--cp-radius-lg);
 }
 .cp-empty-state-icon {
-    font-size: 40px;
-    margin-bottom: var(--cp-space-md);
-    opacity: 0.45;
-    display: block;
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(14,165,233,0.1), rgba(99,102,241,0.1));
+    border-radius: 50%;
+    font-size: 32px;
+    border: 2px solid rgba(14,165,233,0.15);
+    animation: emptyBob 3s ease-in-out infinite;
+}
+@keyframes emptyBob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
 }
 .cp-empty-state h3 {
     font-size: 16px;
@@ -1325,4 +1408,326 @@ html, body {
     .cp-footer-links {
         gap: 14px;
     }
+}
+
+
+/* -------------------------------------------------------------
+   Gamified Page Background — subtle grid pattern + gradient glow
+   Makes pages feel alive instead of plain white
+   ------------------------------------------------------------- */
+.cp-page {
+    background:
+        linear-gradient(180deg, #F4F7FB 0%, #EDF2FC 40%, #F4F7FB 100%),
+        linear-gradient(rgba(14,165,233,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,0.02) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+    position: relative;
+}
+
+/* Decorative floating orbs (pseudo-elements on page) */
+.cp-page::before {
+    content: '';
+    position: fixed;
+    top: 120px;
+    right: -60px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(14,165,233,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+.cp-page::after {
+    content: '';
+    position: fixed;
+    bottom: 80px;
+    left: -40px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(99,102,241,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Ensure page content sits above decorative elements */
+.cp-page > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Gamified stat card enhancements */
+.cp-stat-card {
+    border-left: 3px solid transparent;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.cp-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--cp-shadow-md);
+}
+.cp-stat-card:nth-child(1) { border-left-color: var(--cp-warning); }
+.cp-stat-card:nth-child(2) { border-left-color: var(--cp-primary); }
+.cp-stat-card:nth-child(3) { border-left-color: var(--cp-success); }
+.cp-stat-card:nth-child(4) { border-left-color: var(--cp-indigo); }
+
+/* Module card hover glow */
+.cp-module-card {
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.cp-module-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(14,165,233,0.1);
+    border-color: rgba(14,165,233,0.3);
+}
+
+/* XP chip pulse animation */
+.cp-xp-chip {
+    animation: xpPulse 2s ease-in-out infinite;
+}
+@keyframes xpPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); }
+    50%      { box-shadow: 0 0 8px 2px rgba(245,158,11,0.15); }
+}
+
+/* Badge card celebration shine */
+.cp-stat-icon {
+    position: relative;
+    overflow: hidden;
+}
+.cp-stat-icon::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255,255,255,0.15) 50%,
+        transparent 70%
+    );
+    animation: iconShine 3s ease-in-out infinite;
+}
+@keyframes iconShine {
+    0%   { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
+}
+
+/* Empty state illustration enhancement */
+.cp-empty-state-icon {
+    animation: emptyBob 3s ease-in-out infinite;
+}
+@keyframes emptyBob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+}
+
+/* Progress bar shimmer */
+.cp-progress-bar {
+    position: relative;
+    overflow: hidden;
+}
+.cp-progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,0.3),
+        transparent
+    );
+    animation: progressShimmer 2s linear infinite;
+}
+@keyframes progressShimmer {
+    0%   { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Card hover lift globally */
+.cp-card {
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.cp-card:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--cp-shadow-md);
+}
+
+/* Table row hover highlight */
+.cp-table tbody tr {
+    transition: background 0.12s;
+}
+
+
+/* =============================================================
+   GAMIFIED VISUAL ENHANCEMENTS
+   Makes every page feel alive, engaging, and cloud-themed.
+   ============================================================= */
+
+/* Page header with gradient accent and decorative cloud */
+.cp-page-header {
+    position: relative;
+    padding: 24px 28px;
+    background: linear-gradient(135deg, rgba(14,165,233,0.06) 0%, rgba(99,102,241,0.04) 100%);
+    border: 1px solid rgba(14,165,233,0.12);
+    border-radius: var(--cp-radius-lg);
+    overflow: hidden;
+}
+.cp-page-header::before {
+    content: '☁';
+    position: absolute;
+    top: -10px;
+    right: 20px;
+    font-size: 80px;
+    opacity: 0.06;
+    pointer-events: none;
+    line-height: 1;
+}
+.cp-page-header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--cp-primary), var(--cp-indigo), var(--cp-primary));
+    border-radius: 3px 3px 0 0;
+}
+
+/* Section titles with left accent bar */
+.cp-page h3 {
+    position: relative;
+    padding-left: 14px;
+}
+.cp-page h3::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 2px;
+    bottom: 2px;
+    width: 3px;
+    background: linear-gradient(180deg, var(--cp-primary), var(--cp-indigo));
+    border-radius: 3px;
+}
+
+/* Stat card icons — larger and more engaging */
+.cp-stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    font-size: 22px;
+}
+
+/* Module card with left colour accent */
+.cp-module-card {
+    border-left: 3px solid var(--cp-primary);
+    background: linear-gradient(135deg, #FFFFFF 0%, rgba(14,165,233,0.02) 100%);
+}
+.cp-module-card:hover {
+    border-left-color: var(--cp-indigo);
+}
+
+/* Card with cloud decoration */
+.cp-card {
+    position: relative;
+    overflow: hidden;
+}
+.cp-card::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(14,165,233,0.04) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+/* Empty state — more visual with gradient ring */
+.cp-empty-state {
+    padding: var(--cp-space-2xl) var(--cp-space-xl);
+    background: linear-gradient(135deg, rgba(14,165,233,0.03) 0%, rgba(99,102,241,0.03) 100%);
+    border: 1px dashed rgba(14,165,233,0.15);
+    border-radius: var(--cp-radius-lg);
+}
+.cp-empty-state-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(14,165,233,0.1), rgba(99,102,241,0.1));
+    border-radius: 50%;
+    font-size: 32px;
+    border: 2px solid rgba(14,165,233,0.15);
+}
+
+/* Alert cards — more visual */
+.cp-alert {
+    border-left: 4px solid currentColor;
+    background-size: 100% 100%, 20px 20px;
+}
+
+/* Table header with gradient */
+.cp-table th {
+    background: linear-gradient(135deg, #F8FAFC 0%, #F0F4FA 100%);
+}
+
+/* XP chip glow */
+.cp-xp-chip {
+    position: relative;
+    overflow: hidden;
+}
+.cp-xp-chip::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+    animation: chipShine 3s ease-in-out infinite;
+}
+@keyframes chipShine {
+    0%   { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
+}
+
+/* Badge cards — celebratory */
+.cp-badge-blue  { position: relative; overflow: hidden; }
+.cp-badge-green { position: relative; overflow: hidden; }
+
+/* Progress wrap enhanced */
+.cp-progress-wrap {
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #E2E8F0, #F1F5F9);
+}
+
+/* Nav link icons — slightly larger */
+.cp-nav-icon {
+    font-size: 16px;
+    width: 22px;
+}
+
+/* Footer — subtle gradient */
+.cp-footer {
+    background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+}
+
+/* Global hover lift for interactive elements */
+.cp-btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Responsive: on smaller screens reduce decorative elements */
+@media screen and (max-width: 600px) {
+    .cp-page-header::before { display: none; }
+    .cp-stat-icon { width: 40px; height: 40px; font-size: 18px; }
 }

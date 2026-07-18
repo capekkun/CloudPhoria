@@ -60,10 +60,8 @@ namespace CloudPhoria
         // -------------------------------------------------------
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Nothing runs here on first load.
-            // Auth and user data are loaded in Page_PreRender so that
-            // content pages have already had a chance to set IsPublicPage
-            // in their own Page_Load before we check it.
+            // CSS is loaded via <link runat="server"> in the .master markup.
+            // Nothing else needed in Page_Load.
         }
 
         protected void Page_PreRender(object sender, EventArgs e)

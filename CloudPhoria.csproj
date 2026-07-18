@@ -298,6 +298,22 @@
     <Content Include="Scripts\WebForms\WebUIValidation.js" />
     <Content Include="Site.Master" />
     <Content Include="Student\Dashboard.aspx" />
+    <Content Include="Student\Pathways.aspx" />
+    <Content Include="Student\MyLearning.aspx" />
+    <Content Include="Student\Practice.aspx" />
+    <Content Include="Student\Exams.aspx" />
+    <Content Include="Student\Classrooms.aspx" />
+    <Content Include="Student\Challenges.aspx" />
+    <Content Include="Student\FunRooms.aspx" />
+    <Content Include="Student\BossFights.aspx" />
+    <Content Include="Student\Discussions.aspx" />
+    <Content Include="Student\Consultations.aspx" />
+    <Content Include="Student\Achievements.aspx" />
+    <Content Include="Student\Notifications.aspx" />
+    <Content Include="Student\Profile.aspx" />
+    <Content Include="Student\PracticeQuiz.aspx" />
+    <Content Include="Student\ExamStart.aspx" />
+    <Content Include="Student\BossFightBattle.aspx" />
     <Content Include="ViewSwitcher.ascx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
@@ -379,6 +395,118 @@
     </Compile>
     <Compile Include="Student\Dashboard.aspx.designer.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\Pathways.aspx.cs">
+      <DependentUpon>Pathways.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\Pathways.aspx.designer.cs">
+      <DependentUpon>Pathways.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\MyLearning.aspx.cs">
+      <DependentUpon>MyLearning.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\MyLearning.aspx.designer.cs">
+      <DependentUpon>MyLearning.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\Practice.aspx.cs">
+      <DependentUpon>Practice.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\Practice.aspx.designer.cs">
+      <DependentUpon>Practice.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\Exams.aspx.cs">
+      <DependentUpon>Exams.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\Exams.aspx.designer.cs">
+      <DependentUpon>Exams.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\Classrooms.aspx.cs">
+      <DependentUpon>Classrooms.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\Classrooms.aspx.designer.cs">
+      <DependentUpon>Classrooms.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\Challenges.aspx.cs">
+      <DependentUpon>Challenges.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\Challenges.aspx.designer.cs">
+      <DependentUpon>Challenges.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\FunRooms.aspx.cs">
+      <DependentUpon>FunRooms.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\FunRooms.aspx.designer.cs">
+      <DependentUpon>FunRooms.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\BossFights.aspx.cs">
+      <DependentUpon>BossFights.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\BossFights.aspx.designer.cs">
+      <DependentUpon>BossFights.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\Discussions.aspx.cs">
+      <DependentUpon>Discussions.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\Discussions.aspx.designer.cs">
+      <DependentUpon>Discussions.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\Consultations.aspx.cs">
+      <DependentUpon>Consultations.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\Consultations.aspx.designer.cs">
+      <DependentUpon>Consultations.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\Achievements.aspx.cs">
+      <DependentUpon>Achievements.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\Achievements.aspx.designer.cs">
+      <DependentUpon>Achievements.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\Notifications.aspx.cs">
+      <DependentUpon>Notifications.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\Notifications.aspx.designer.cs">
+      <DependentUpon>Notifications.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\Profile.aspx.cs">
+      <DependentUpon>Profile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\Profile.aspx.designer.cs">
+      <DependentUpon>Profile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\PracticeQuiz.aspx.cs">
+      <DependentUpon>PracticeQuiz.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\PracticeQuiz.aspx.designer.cs">
+      <DependentUpon>PracticeQuiz.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\ExamStart.aspx.cs">
+      <DependentUpon>ExamStart.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\ExamStart.aspx.designer.cs">
+      <DependentUpon>ExamStart.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\BossFightBattle.aspx.cs">
+      <DependentUpon>BossFightBattle.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\BossFightBattle.aspx.designer.cs">
+      <DependentUpon>BossFightBattle.aspx</DependentUpon>
     </Compile>
     <Compile Include="ViewSwitcher.ascx.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>

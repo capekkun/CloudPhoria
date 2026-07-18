@@ -7,12 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%: Page.Title %> - CloudPhoria</title>
 
-    <%-- Shared stylesheets --%>
-    <link id="lnkBootstrap" runat="server" rel="stylesheet" type="text/css" href="~/Content/bootstrap.css" />
-    <link id="lnkSiteCss"   runat="server" rel="stylesheet" type="text/css" href="~/Content/Site.css" />
-    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link id="CssBootstrap" rel="stylesheet" href="/Content/bootstrap.css" />
+    <link id="CssSite"      rel="stylesheet" href="/Content/Site.css" />
 
-    <%-- Page-specific head content (styles, meta tags) --%>
+    <%-- Page-specific head content --%>
     <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
 </head>
 <body>
