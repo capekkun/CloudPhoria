@@ -1206,3 +1206,123 @@ html, body {
 .cp-textarea {
     max-width: 100%;
 }
+
+
+/* -------------------------------------------------------------
+   Footer
+   Sits at the bottom of cp-main-area, below the scrollable
+   cp-page content area. Stays within the authenticated layout.
+   ------------------------------------------------------------- */
+.cp-footer {
+    flex-shrink: 0;
+    background-color: var(--cp-surface);
+    border-top: 1px solid var(--cp-border);
+    padding: 14px var(--cp-space-xl);
+}
+
+.cp-footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--cp-space-md);
+    flex-wrap: wrap;
+}
+
+/* Brand + copyright */
+.cp-footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cp-footer-logo {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, var(--cp-primary), var(--cp-indigo));
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 900;
+    color: #FFFFFF;
+    flex-shrink: 0;
+}
+
+.cp-footer-wordmark {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--cp-text);
+    letter-spacing: -0.2px;
+}
+
+.cp-footer-wordmark em {
+    font-style: normal;
+    color: var(--cp-primary);
+}
+
+.cp-footer-copy {
+    display: block;
+    font-size: 11px;
+    color: var(--cp-text-muted);
+    margin-top: 1px;
+}
+
+/* Quick links */
+.cp-footer-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.cp-footer-links a {
+    font-size: 12px;
+    color: var(--cp-text-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+}
+
+.cp-footer-links a:hover {
+    color: var(--cp-primary);
+}
+
+/* Right: role badge + module */
+.cp-footer-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.cp-footer-role-badge {
+    background: rgba(14, 165, 233, 0.1);
+    color: var(--cp-primary);
+    border: 1px solid rgba(14, 165, 233, 0.2);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    text-transform: capitalize;
+}
+
+.cp-footer-module {
+    font-size: 11px;
+    color: var(--cp-text-muted);
+}
+
+/* Responsive: stack on mobile */
+@media screen and (max-width: 600px) {
+    .cp-footer {
+        padding: 12px var(--cp-space-md);
+    }
+    .cp-footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .cp-footer-links {
+        gap: 14px;
+    }
+}

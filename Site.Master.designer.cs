@@ -101,5 +101,22 @@ namespace CloudPhoria
 
         /// <summary>btnLogout – Log out button in the user dropdown.</summary>
         protected global::System.Web.UI.WebControls.LinkButton btnLogout;
+
+        // ---- Footer controls ----
+
+        /// <summary>pnlFooterStudentLinks – Student quick links in the footer.</summary>
+        protected global::System.Web.UI.WebControls.Panel pnlFooterStudentLinks;
+
+        /// <summary>pnlFooterInstructorLinks – Instructor quick links in the footer.</summary>
+        protected global::System.Web.UI.WebControls.Panel pnlFooterInstructorLinks;
+
+        /// <summary>pnlFooterAdminLinks – Admin quick links in the footer.</summary>
+        protected global::System.Web.UI.WebControls.Panel pnlFooterAdminLinks;
+
+        /// <summary>pnlFooterRole – Role badge container in the footer.</summary>
+        protected global::System.Web.UI.WebControls.Panel pnlFooterRole;
+
+        /// <summary>litFooterRole – Role name text inside the footer badge.</summary>
+        protected global::System.Web.UI.WebControls.Literal litFooterRole;
     }
 }

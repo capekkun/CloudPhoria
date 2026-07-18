@@ -9,18 +9,39 @@
 
 namespace CloudPhoria
 {
-
-
     public partial class LogIn
     {
-
-        /// <summary>
-        /// form1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
+        /// <summary>form1 control.</summary>
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+
+        /// <summary>Email address text box.</summary>
+        protected global::System.Web.UI.WebControls.TextBox txtEmail;
+
+        /// <summary>Required field validator for email.</summary>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmail;
+
+        /// <summary>Regular expression validator for email format.</summary>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revEmail;
+
+        /// <summary>Password text box.</summary>
+        protected global::System.Web.UI.WebControls.TextBox txtPassword;
+
+        /// <summary>Required field validator for password.</summary>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvPassword;
+
+        /// <summary>Login submit button.</summary>
+        protected global::System.Web.UI.WebControls.Button btnLogin;
+
+        /// <summary>General error message panel.</summary>
+        protected global::System.Web.UI.WebControls.Panel pnlError;
+
+        /// <summary>General error message literal.</summary>
+        protected global::System.Web.UI.WebControls.Literal litError;
+
+        /// <summary>Account status message panel (inactive / pending / banned).</summary>
+        protected global::System.Web.UI.WebControls.Panel pnlStatus;
+
+        /// <summary>Account status message literal.</summary>
+        protected global::System.Web.UI.WebControls.Literal litStatus;
     }
 }

@@ -346,6 +346,56 @@
             <asp:ContentPlaceHolder ID="MainContent" runat="server" />
         </main>
 
+        <%-- Shared footer --%>
+        <footer class="cp-footer" role="contentinfo">
+            <div class="cp-footer-inner">
+
+                <%-- Left: brand + copyright --%>
+                <div class="cp-footer-brand">
+                    <span class="cp-footer-logo" aria-hidden="true">CP</span>
+                    <div>
+                        <span class="cp-footer-wordmark">Cloud<em>Phoria</em></span>
+                        <span class="cp-footer-copy">
+                            &copy; <%: DateTime.Now.Year %> CloudPhoria &mdash; CT050-3-2-WAPP
+                        </span>
+                    </div>
+                </div>
+
+                <%-- Centre: quick links (role-aware, same structure as nav) --%>
+                <nav class="cp-footer-links" aria-label="Footer navigation">
+                    <asp:Panel ID="pnlFooterStudentLinks" runat="server" Visible="false">
+                        <a runat="server" href="~/Student/Dashboard.aspx">Dashboard</a>
+                        <a runat="server" href="~/Student/Pathways.aspx">Pathways</a>
+                        <a runat="server" href="~/Student/Achievements.aspx">Achievements</a>
+                        <a runat="server" href="~/Student/Profile.aspx">Profile</a>
+                    </asp:Panel>
+                    <asp:Panel ID="pnlFooterInstructorLinks" runat="server" Visible="false">
+                        <a runat="server" href="~/Instructor/Dashboard.aspx">Dashboard</a>
+                        <a runat="server" href="~/Instructor/Modules.aspx">Modules</a>
+                        <a runat="server" href="~/Instructor/Classrooms.aspx">Classrooms</a>
+                        <a runat="server" href="~/Instructor/Profile.aspx">Profile</a>
+                    </asp:Panel>
+                    <asp:Panel ID="pnlFooterAdminLinks" runat="server" Visible="false">
+                        <a runat="server" href="~/Admin/Dashboard.aspx">Dashboard</a>
+                        <a runat="server" href="~/Admin/Users.aspx">Users</a>
+                        <a runat="server" href="~/Admin/Reports.aspx">Reports</a>
+                        <a runat="server" href="~/Admin/Profile.aspx">Profile</a>
+                    </asp:Panel>
+                </nav>
+
+                <%-- Right: role badge + module info --%>
+                <div class="cp-footer-right">
+                    <asp:Panel ID="pnlFooterRole" runat="server" Visible="false">
+                        <span class="cp-footer-role-badge">
+                            <asp:Literal ID="litFooterRole" runat="server" />
+                        </span>
+                    </asp:Panel>
+                    <span class="cp-footer-module">CT050-3-2-WAPP</span>
+                </div>
+
+            </div>
+        </footer>
+
     </div><%-- end cp-main-area --%>
 
 </div><%-- end cp-layout --%>

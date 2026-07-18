@@ -9,18 +9,30 @@
 
 namespace CloudPhoria.Guest
 {
-
-
     public partial class Learn
     {
-
-        /// <summary>
-        /// form1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
+        /// <summary>form1 control.</summary>
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+
+        /// <summary>Error message panel.</summary>
+        protected global::System.Web.UI.WebControls.Panel pnlError;
+
+        /// <summary>Error message literal.</summary>
+        protected global::System.Web.UI.WebControls.Literal litError;
+
+        /// <summary>Roadmap columns panel — populated by code-behind.</summary>
+        protected global::System.Web.UI.WebControls.Panel pnlRoadmapColumns;
+
+        /// <summary>Pathway cards panel — populated by code-behind.</summary>
+        protected global::System.Web.UI.WebControls.Panel pnlPathwayCards;
+
+        /// <summary>Module list panel — populated by code-behind.</summary>
+        protected global::System.Web.UI.WebControls.Panel pnlModuleList;
+
+        /// <summary>Hero stat: pathway count.</summary>
+        protected global::System.Web.UI.WebControls.Literal litPathwayCount;
+
+        /// <summary>Hero stat: module count.</summary>
+        protected global::System.Web.UI.WebControls.Literal litModuleCount;
     }
 }

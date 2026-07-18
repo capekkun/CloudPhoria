@@ -248,6 +248,10 @@ namespace CloudPhoria
                 pnlNotifications.Visible = true;
                 // Notification bell links to student notifications page.
                 lnkNotifications.HRef    = ResolveUrl("~/Student/Notifications.aspx");
+                // Footer
+                pnlFooterStudentLinks.Visible = true;
+                pnlFooterRole.Visible         = true;
+                litFooterRole.Text            = "Student";
             }
             else if (role == "Instructor")
             {
@@ -255,12 +259,20 @@ namespace CloudPhoria
                 pnlNotifications.Visible = true;
                 lnkNotifications.HRef    = ResolveUrl("~/Instructor/Notifications.aspx");
                 ConfigureInstructorLicence();
+                // Footer
+                pnlFooterInstructorLinks.Visible = true;
+                pnlFooterRole.Visible            = true;
+                litFooterRole.Text               = "Instructor";
             }
             else if (role == "Admin")
             {
                 pnlAdminNav.Visible      = true;
                 pnlNotifications.Visible = true;
                 lnkNotifications.HRef    = ResolveUrl("~/Admin/Notifications.aspx");
+                // Footer
+                pnlFooterAdminLinks.Visible = true;
+                pnlFooterRole.Visible       = true;
+                litFooterRole.Text          = "Admin";
             }
         }
 
