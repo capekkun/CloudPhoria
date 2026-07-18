@@ -7,16 +7,29 @@
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
 
-    <%-- Page header --%>
-    <div class="cp-page-header">
-        <div class="cp-page-header-row">
-            <div>
-                <h2>Welcome back, <asp:Literal ID="litWelcomeName" runat="server" />!</h2>
-                <p>Here's your learning summary for today.</p>
-            </div>
+    <%-- Page header with CloudPhoria mascot --%>
+    <div class="cp-page-header" style="display:flex;align-items:center;justify-content:space-between;gap:20px;">
+        <div>
+            <h2>Welcome back, <asp:Literal ID="litWelcomeName" runat="server" />!</h2>
+            <p>Here's your learning summary for today.</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;">
             <a href="Pathways.aspx" class="cp-btn cp-btn-primary">
                 &#x25B6; Browse Pathways
             </a>
+            <%-- CloudPhoria Robot Mascot --%>
+            <svg width="56" height="56" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="40" cy="40" r="36" fill="#0EA5E9" opacity="0.12"/>
+                <ellipse cx="40" cy="44" rx="20" ry="18" fill="#0EA5E9"/>
+                <circle cx="33" cy="42" r="4" fill="#fff"/>
+                <circle cx="47" cy="42" r="4" fill="#fff"/>
+                <circle cx="33" cy="42" r="2" fill="#0F172A"/>
+                <circle cx="47" cy="42" r="2" fill="#0F172A"/>
+                <rect x="35" y="24" width="10" height="10" rx="5" fill="#6366F1"/>
+                <line x1="40" y1="34" x2="40" y2="28" stroke="#0EA5E9" stroke-width="2"/>
+                <circle cx="40" cy="24" r="3" fill="#F59E0B"/>
+                <ellipse cx="40" cy="58" rx="12" ry="4" fill="rgba(14,165,233,0.2)"/>
+            </svg>
         </div>
     </div>
 

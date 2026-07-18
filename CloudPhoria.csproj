@@ -248,6 +248,7 @@
     <Content Include="Instructor\Notifications.aspx" />
     <Content Include="Instructor\Profile.aspx" />
     <Content Include="LogIn.aspx" />
+    <Content Include="LogoCloudphoria.png" />
     <Content Include="Scripts\cloudphoria.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
@@ -328,6 +329,7 @@
     <Content Include="Student\BossFightBattle.aspx" />
     <Content Include="Student\ClassroomDetail.aspx" />
     <Content Include="Student\FunRoomDetail.aspx" />
+    <Content Include="Student\DiscussionThread.aspx" />
     <Content Include="ViewSwitcher.ascx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
@@ -612,6 +614,13 @@
     </Compile>
     <Compile Include="Student\FunRoomDetail.aspx.designer.cs">
       <DependentUpon>FunRoomDetail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\DiscussionThread.aspx.cs">
+      <DependentUpon>DiscussionThread.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\DiscussionThread.aspx.designer.cs">
+      <DependentUpon>DiscussionThread.aspx</DependentUpon>
     </Compile>
     <Compile Include="ViewSwitcher.ascx.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>

@@ -31,9 +31,8 @@
     .cp-topnav-wordmark { font-size:16px; font-weight:700; color:#fff; letter-spacing:-0.3px; }
     .cp-topnav-wordmark em { font-style:normal; color:#0EA5E9; }
 
-    /* Nav links — scrollable horizontally if too many */
-    .cp-topnav-links { display:flex; align-items:center; gap:2px; flex:1; overflow-x:auto;
-        scrollbar-width:none; -ms-overflow-style:none; }
+    /* Nav links — NO overflow hidden so dropdowns can show */
+    .cp-topnav-links { display:flex; align-items:center; gap:2px; flex:1; }
     .cp-topnav-links::-webkit-scrollbar { display:none; }
     .cp-topnav-link { display:flex; align-items:center; gap:6px; padding:8px 14px;
         color:rgba(255,255,255,0.6); font-size:13px; font-weight:500; border-radius:7px;
@@ -86,8 +85,8 @@
     .cp-topnav-dropdown .danger { color:#FCA5A5; }
     .cp-topnav-dropdown .danger:hover { color:#EF4444; }
 
-    /* Nav panels must be inline for flex to work */
-    .cp-topnav-links > div, .cp-topnav-links > span { display:contents; }
+    /* ASP.NET Panel renders as a div — make it flex, but not dropdown wrappers */
+    .cp-topnav-links > div:not(.cpdd) { display:flex; align-items:center; gap:2px; }
     .cp-topnav-links.show { display:flex !important; position:absolute; top:56px; left:0; right:0;
         background:#1A2332; padding:12px 24px; flex-wrap:wrap; border-bottom:1px solid rgba(255,255,255,0.06); }
 
@@ -101,20 +100,19 @@
         .cp-topnav-xp span { display:none; }
     }
 
-    /* Main content area — light background */
-    .cp-main-content { padding:24px 32px; min-height:calc(100vh - 56px); background:#F8FAFC; }
-    @media(max-width:768px) { .cp-main-content { padding:16px; } }
+    /* Dropdown — click-based */
+    .cpdd { position:relative; display:inline-flex; align-items:center; }
+    .cpdd-menu { position:absolute; top:44px; left:0; min-width:220px; background:#fff;
+        border:1px solid #E2E8F0; border-radius:12px; box-shadow:0 10px 40px rgba(0,0,0,0.15);
+        z-index:99999; padding:8px 0; display:none; }
+    .cpdd.open .cpdd-menu { display:block; }
+    .cpdd-menu a { display:block; padding:10px 18px; font-size:13px; color:#172033;
+        text-decoration:none; transition:background 0.12s; }
+    .cpdd-menu a:hover { background:#F0F9FF; color:#0EA5E9; }
 
-    /* Nav dropdowns */
-    .cp-nav-dd { position:relative; display:flex; align-items:center; }
-    .cp-nav-dd-menu { position:absolute; top:100%; left:0; min-width:210px;
-        background:#1A2332; border:1px solid rgba(255,255,255,0.08); border-radius:10px;
-        box-shadow:0 10px 40px rgba(0,0,0,0.5); z-index:400; display:none; overflow:hidden;
-        padding:6px 0; margin-top:6px; }
-    .cp-nav-dd-menu.open { display:block; }
-    .cp-nav-dd-menu a { display:block; padding:10px 16px; font-size:13px;
-        color:rgba(255,255,255,0.7); text-decoration:none; transition:background 0.12s; }
-    .cp-nav-dd-menu a:hover { background:rgba(14,165,233,0.1); color:#fff; text-decoration:none; }
+    /* Main content area — light background, lower z-index than nav dropdown */
+    .cp-main-content { padding:24px 32px; min-height:calc(100vh - 56px); background:#F8FAFC; position:relative; z-index:1; }
+    @media(max-width:768px) { .cp-main-content { padding:16px; } }
 
     /* Footer */
     .cp-site-footer { background:#1A2332; border-top:1px solid rgba(255,255,255,0.06);
@@ -160,7 +158,8 @@
 
     <%-- Brand --%>
     <a class="cp-topnav-brand" href="/Default.aspx">
-        <div class="cp-topnav-logo" aria-hidden="true">CP</div>
+        <img src="/Images/LogoCloudPhoria.png" alt="CloudPhoria" style="height:32px;width:auto;border-radius:8px;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+        <div class="cp-topnav-logo" style="display:none;" aria-hidden="true">CP</div>
         <span class="cp-topnav-wordmark">Cloud<em>Phoria</em></span>
     </a>
 
@@ -168,40 +167,27 @@
     <div class="cp-topnav-links">
         <asp:Panel ID="pnlStudentNav" runat="server" Visible="false">
             <a class="cp-topnav-link" href="/Student/Dashboard.aspx"><span class="cp-topnav-icon">&#x2302;</span> Dashboard</a>
-
-            <%-- Learn dropdown --%>
-            <div class="cp-nav-dd">
-                <button class="cp-topnav-link" type="button" onclick="toggleNavDD(this);return false;">
-                    <span class="cp-topnav-icon">&#x1F4DA;</span> Learn &#x25BE;
-                </button>
-                <div class="cp-nav-dd-menu">
+            <div class="cpdd" onclick="this.classList.toggle('open');event.stopPropagation();">
+                <span class="cp-topnav-link">&#x1F4DA; Learn &#x25BE;</span>
+                <div class="cpdd-menu" onclick="event.stopPropagation();">
                     <a href="/Student/Pathways.aspx">&#x25B6; Learning Pathways</a>
                     <a href="/Student/MyLearning.aspx">&#x1F4D6; My Learning</a>
                     <a href="/Student/Practice.aspx">&#x270F; Practice</a>
                     <a href="/Student/Exams.aspx">&#x1F4CB; Module Exams</a>
                 </div>
             </div>
-
-            <%-- Compete dropdown --%>
-            <div class="cp-nav-dd">
-                <button class="cp-topnav-link" type="button" onclick="toggleNavDD(this);return false;">
-                    <span class="cp-topnav-icon">&#x1F3AE;</span> Compete &#x25BE;
-                </button>
-                <div class="cp-nav-dd-menu">
+            <div class="cpdd" onclick="this.classList.toggle('open');event.stopPropagation();">
+                <span class="cp-topnav-link">&#x1F3AE; Compete &#x25BE;</span>
+                <div class="cpdd-menu" onclick="event.stopPropagation();">
                     <a href="/Student/Challenges.aspx">&#x26A1; Challenges</a>
                     <a href="/Student/BossFights.aspx">&#x1F480; Boss Fights</a>
                     <a href="/Student/FunRooms.aspx">&#x1F3AE; Fun Rooms</a>
                 </div>
             </div>
-
             <a class="cp-topnav-link" href="/Student/Classrooms.aspx"><span class="cp-topnav-icon">&#x1F3EB;</span> Classrooms</a>
-
-            <%-- Community dropdown --%>
-            <div class="cp-nav-dd">
-                <button class="cp-topnav-link" type="button" onclick="toggleNavDD(this);return false;">
-                    <span class="cp-topnav-icon">&#x1F4AC;</span> Community &#x25BE;
-                </button>
-                <div class="cp-nav-dd-menu">
+            <div class="cpdd" onclick="this.classList.toggle('open');event.stopPropagation();">
+                <span class="cp-topnav-link">&#x1F4AC; Community &#x25BE;</span>
+                <div class="cpdd-menu" onclick="event.stopPropagation();">
                     <a href="/Student/Discussions.aspx">&#x1F4AC; Discussions</a>
                     <a href="/Student/Consultations.aspx">&#x1F4C5; Consultations</a>
                     <a href="/Student/Achievements.aspx">&#x1F3C5; Achievements</a>
@@ -315,29 +301,13 @@
     </div>
 </footer>
 
-<%-- Close dropdown on outside click --%>
+<%-- Dropdown and close logic --%>
 <script>
-function toggleNavDD(btn) {
-    var menu = btn.nextElementSibling;
-    // Close all other open dropdowns
-    document.querySelectorAll('.cp-nav-dd-menu.open').forEach(function(m) {
-        if (m !== menu) m.classList.remove('open');
-    });
-    menu.classList.toggle('open');
-}
-document.addEventListener('click', function(e) {
-    // Close user dropdown
+document.addEventListener('click', function() {
+    var dds = document.querySelectorAll('.cpdd.open');
+    for (var i = 0; i < dds.length; i++) { dds[i].classList.remove('open'); }
     var drop = document.getElementById('cpUserDrop');
-    var btn = document.getElementById('cpAvatarBtn');
-    if (drop && !drop.contains(e.target) && e.target !== btn) {
-        drop.classList.remove('open');
-    }
-    // Close nav dropdowns if click outside
-    if (!e.target.closest('.cp-nav-dd')) {
-        document.querySelectorAll('.cp-nav-dd-menu.open').forEach(function(m) {
-            m.classList.remove('open');
-        });
-    }
+    if (drop) { drop.classList.remove('open'); }
 });
 </script>
 
