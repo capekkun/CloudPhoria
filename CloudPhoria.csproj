@@ -330,6 +330,9 @@
     <Content Include="Student\ClassroomDetail.aspx" />
     <Content Include="Student\FunRoomDetail.aspx" />
     <Content Include="Student\DiscussionThread.aspx" />
+    <Content Include="Student\DiscussionCreate.aspx" />
+    <Content Include="Student\ModuleDetail.aspx" />
+    <Content Include="Student\SubTopicView.aspx" />
     <Content Include="ViewSwitcher.ascx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
@@ -621,6 +624,27 @@
     </Compile>
     <Compile Include="Student\DiscussionThread.aspx.designer.cs">
       <DependentUpon>DiscussionThread.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\DiscussionCreate.aspx.cs">
+      <DependentUpon>DiscussionCreate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\DiscussionCreate.aspx.designer.cs">
+      <DependentUpon>DiscussionCreate.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\ModuleDetail.aspx.cs">
+      <DependentUpon>ModuleDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\ModuleDetail.aspx.designer.cs">
+      <DependentUpon>ModuleDetail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\SubTopicView.aspx.cs">
+      <DependentUpon>SubTopicView.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\SubTopicView.aspx.designer.cs">
+      <DependentUpon>SubTopicView.aspx</DependentUpon>
     </Compile>
     <Compile Include="ViewSwitcher.ascx.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
