@@ -68,6 +68,16 @@ namespace CloudPhoria.Student
                         }
                     }
 
+                    // Auto-enroll: Create ModuleProgress if not exists (marks student as enrolled)
+                    using (SqlCommand cmd = new SqlCommand(
+                        @"IF NOT EXISTS (SELECT 1 FROM ModuleProgress WHERE ModuleID=@MID AND StudentID=@SID)
+                          INSERT INTO ModuleProgress (StudentID, ModuleID, Status) VALUES (@SID, @MID, 'InProgress')", conn))
+                    {
+                        cmd.Parameters.Add("@MID", SqlDbType.Int).Value = moduleID;
+                        cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
+                        cmd.ExecuteNonQuery();
+                    }
+
                     // Subtopics with student progress
                     DataTable dtSubs = new DataTable();
                     using (SqlCommand cmd = new SqlCommand(

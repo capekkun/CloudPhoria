@@ -129,7 +129,7 @@
         <div class="mod-list">
             <asp:Repeater ID="rptModules" runat="server">
                 <ItemTemplate>
-                    <div class="mod-row">
+                    <a href="ModuleDetail.aspx?moduleID=<%# Eval("ModuleID") %>" class="mod-row" style="text-decoration:none;color:inherit;">
                         <div class="mod-ico" style="background:<%# Eval("IconBg") %>;"><%# Eval("ModIcon") %></div>
                         <div style="flex:1;min-width:0;">
                             <div style="font-size:14px;font-weight:600;color:#172033;"><%# HttpUtility.HtmlEncode(Eval("ModuleName").ToString()) %></div>
@@ -140,7 +140,7 @@
                             </div>
                         </div>
                         <span class="cp-badge cp-badge-blue"><%# Eval("SubTopicCount") %> subtopics</span>
-                    </div>
+                    </a>
                 </ItemTemplate>
             </asp:Repeater>
         </div>

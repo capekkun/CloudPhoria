@@ -63,11 +63,31 @@
 <asp:Panel ID="pnlComplete" runat="server" Visible="false">
     <div class="cp-card" style="text-align:center;">
         <p style="font-size:14px;color:#64748B;margin:0 0 16px;">
-            Finished reading? Mark this subtopic as complete to earn XP and track your progress.
+            Answer all questions correctly to complete this subtopic and earn XP.
         </p>
-        <asp:Button ID="btnComplete" runat="server" Text="&#x2713; Mark as Complete"
-            CssClass="cp-btn cp-btn-success" OnClick="btnComplete_Click" />
     </div>
+</asp:Panel>
+
+<%-- Questions section --%>
+<asp:Panel ID="pnlQuestions" runat="server" Visible="false">
+    <h3 style="font-size:16px;font-weight:700;margin:24px 0 16px;">&#x2753; Questions</h3>
+    <asp:Repeater ID="rptQuestions" runat="server">
+        <ItemTemplate>
+            <div class="cp-card" style="border-left:3px solid var(--cp-indigo);margin-bottom:16px;">
+                <div style="font-size:14px;font-weight:600;color:#172033;margin-bottom:12px;">
+                    Q<%# Container.ItemIndex + 1 %>: <%# HttpUtility.HtmlEncode(Eval("QuestionText").ToString()) %>
+                </div>
+                <div style="font-size:11px;color:#64748B;margin-bottom:8px;">
+                    Type: <%# Eval("QuestionType") %> &bull; +<%# Eval("XPReward") %> XP
+                </div>
+                <%# Eval("QuestionType").ToString() == "MCQ"
+                    ? "<div class='bf-options' style='grid-template-columns:1fr;gap:8px;max-width:100%;'>"
+                      + GetMCQOptions(Convert.ToInt32(Eval("QuestionID"))) + "</div>"
+                    : "<div style='margin-top:8px;'><input type='text' class='cp-input' placeholder='Type your answer...' "
+                      + "style='max-width:400px;' disabled /><br/><small style=\"color:#94A3B8;\">Answer submission coming soon</small></div>" %>
+            </div>
+        </ItemTemplate>
+    </asp:Repeater>
 </asp:Panel>
 
 <asp:Panel ID="pnlAlreadyDone" runat="server" Visible="false">

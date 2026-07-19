@@ -120,6 +120,29 @@ namespace CloudPhoria.Student
                         rptMaterials.DataBind();
                         pnlMaterials.Visible = true;
                     }
+
+                    // Questions for this subtopic
+                    DataTable dtQ = new DataTable();
+                    using (SqlCommand cmd = new SqlCommand(
+                        @"SELECT QuestionID, QuestionText, QuestionType, XPReward
+                          FROM Questions
+                          WHERE SubTopicID = @STID
+                          ORDER BY OrderIndex, QuestionID", conn))
+                    {
+                        cmd.Parameters.Add("@STID", SqlDbType.Int).Value = subID;
+                        using (SqlDataAdapter da = new SqlDataAdapter(cmd)) da.Fill(dtQ);
+                    }
+                    if (dtQ.Rows.Count > 0)
+                    {
+                        rptQuestions.DataSource = dtQ;
+                        rptQuestions.DataBind();
+                        pnlQuestions.Visible = true;
+                    }
+                    else
+                    {
+                        // No questions — show mark complete button directly
+                        pnlComplete.Visible = true;
+                    }
                 }
             }
             catch (SqlException)
@@ -127,6 +150,41 @@ namespace CloudPhoria.Student
                 litError.Text = "Could not load subtopic. Please try again.";
                 pnlError.Visible = true;
             }
+        }
+
+        // Helper to render MCQ options for a question
+        protected string GetMCQOptions(int questionID)
+        {
+            string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
+            var sb = new System.Text.StringBuilder();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(cs))
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand(
+                        "SELECT OptionID, OptionText FROM AnswerOptions WHERE QuestionID=@QID ORDER BY OptionID", conn))
+                    {
+                        cmd.Parameters.Add("@QID", SqlDbType.Int).Value = questionID;
+                        using (SqlDataReader rdr = cmd.ExecuteReader())
+                        {
+                            while (rdr.Read())
+                            {
+                                string optText = HttpUtility.HtmlEncode(rdr["OptionText"].ToString());
+                                sb.AppendFormat(
+                                    "<div style='padding:10px 14px;background:rgba(99,102,241,0.04);" +
+                                    "border:1px solid #E2E8F0;border-radius:8px;font-size:13px;" +
+                                    "color:#172033;cursor:pointer;transition:background 0.12s;' " +
+                                    "onmouseover=\"this.style.background='rgba(14,165,233,0.1)'\" " +
+                                    "onmouseout=\"this.style.background='rgba(99,102,241,0.04)'\">&#x25CB; {0}</div>",
+                                    optText);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException) { }
+            return sb.ToString();
         }
 
         protected void btnComplete_Click(object sender, EventArgs e)

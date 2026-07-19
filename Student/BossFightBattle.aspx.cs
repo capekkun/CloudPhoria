@@ -121,7 +121,7 @@ namespace CloudPhoria.Student
                                     </svg>";
                                 }
 
-                                pnlStart.Visible = true;
+                                pnlStart.Style["display"] = "block";
 
                                 // Store in ViewState for battle
                                 ViewState["RoomID"]      = roomID;
@@ -177,7 +177,7 @@ namespace CloudPhoria.Student
                     }
                 }
 
-                pnlStart.Visible = false;
+                pnlStart.Style["display"] = "none";
                 LoadNextQuestion();
             }
             catch (SqlException)
@@ -218,9 +218,14 @@ namespace CloudPhoria.Student
                                 ViewState["CurrentQID"]    = qID;
                                 ViewState["CurrentDamage"] = damage;
 
-                                litTurnNumber.Text   = turn.ToString();
-                                litTimeLimit.Text    = timeLimit.ToString();
+                                litTurnNumber.Text = turn.ToString();
+                                hdnTimeLimit.Value = timeLimit.ToString();
                                 litQuestionText.Text = HttpUtility.HtmlEncode(qText);
+
+                                // Set timer data attribute for JS
+                                bfTimer.Attributes["data-seconds"] = timeLimit.ToString();
+                                ScriptManager.RegisterStartupScript(this, GetType(), "startTimer",
+                                    "startBFTimer(" + timeLimit + ");", true);
 
                                 rdr.Close();
 
@@ -237,25 +242,27 @@ namespace CloudPhoria.Student
                                         da.Fill(dtOpts);
                                 }
 
-                                LinkButton[] btns = { btnOpt1, btnOpt2, btnOpt3, btnOpt4 };
-                                for (int i = 0; i < btns.Length; i++)
+                                // Render options as clickable HTML
+                                var sb = new System.Text.StringBuilder();
+                                for (int i = 0; i < dtOpts.Rows.Count; i++)
                                 {
-                                    if (i < dtOpts.Rows.Count)
-                                    {
-                                        btns[i].Text = HttpUtility.HtmlEncode(
-                                            dtOpts.Rows[i]["OptionText"].ToString());
-                                        btns[i].CommandArgument = dtOpts.Rows[i]["OptionID"].ToString();
-                                        btns[i].Visible = true;
-                                    }
-                                    else
-                                    {
-                                        btns[i].Visible = false;
-                                    }
+                                    string oid = dtOpts.Rows[i]["OptionID"].ToString();
+                                    string otext = HttpUtility.HtmlEncode(dtOpts.Rows[i]["OptionText"].ToString());
+                                    sb.AppendFormat(
+                                        "<a href='#' class='bf-opt-btn' onclick=\"document.getElementById('{0}').value='{1}';" +
+                                        "document.getElementById('{2}').click();return false;\">{3}</a>",
+                                        hdnAnswer.ClientID, oid, btnProcessAnswer.ClientID, otext);
+                                }
+                                litBFOpts.Text = sb.ToString();
+
+                                if (dtOpts.Rows.Count == 0)
+                                {
+                                    litBFOpts.Text = "<div style='color:#FCA5A5;font-size:13px;'>No options found for this question.</div>";
                                 }
 
-                                pnlQuestion.Visible   = true;
-                                pnlTurnResult.Visible = false;
-                                pnlStart.Visible      = false;
+                                pnlQuestion.Style["display"] = "block";
+                                pnlTurnResult.Style["display"] = "none";
+                                pnlStart.Style["display"] = "none";
                             }
                             else
                             {
@@ -271,11 +278,10 @@ namespace CloudPhoria.Student
             }
         }
 
-        protected void btnAnswer_Click(object sender, EventArgs e)
+        protected void btnProcessAnswer_Click(object sender, EventArgs e)
         {
-            LinkButton btn = (LinkButton)sender;
             int selectedOptionID;
-            if (!int.TryParse(btn.CommandArgument, out selectedOptionID)) return;
+            if (!int.TryParse(hdnAnswer.Value, out selectedOptionID)) return;
 
             int qID       = (int)ViewState["CurrentQID"];
             int damage    = (int)ViewState["CurrentDamage"];
@@ -347,8 +353,8 @@ namespace CloudPhoria.Student
                 if (playerHP <= 0) { EndBattle(false); return; }
 
                 // Show turn result
-                pnlQuestion.Visible   = false;
-                pnlTurnResult.Visible = true;
+                pnlQuestion.Style["display"] = "none";
+                pnlTurnResult.Style["display"] = "block";
 
                 if (isCorrect)
                 {
@@ -373,7 +379,7 @@ namespace CloudPhoria.Student
 
         protected void btnNextTurn_Click(object sender, EventArgs e)
         {
-            pnlTurnResult.Visible = false;
+            pnlTurnResult.Style["display"] = "none";
             LoadNextQuestion();
         }
 
@@ -433,10 +439,10 @@ namespace CloudPhoria.Student
             catch (SqlException) { /* non-critical for display */ }
 
             // Show result
-            pnlStart.Visible      = false;
-            pnlQuestion.Visible   = false;
-            pnlTurnResult.Visible = false;
-            pnlResult.Visible     = true;
+            pnlStart.Style["display"] = "none";
+            pnlQuestion.Style["display"] = "none";
+            pnlTurnResult.Style["display"] = "none";
+            pnlResult.Style["display"] = "block";
 
             if (won)
             {

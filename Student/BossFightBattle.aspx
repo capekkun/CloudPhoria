@@ -203,7 +203,7 @@
             </div>
 
             <%-- BATTLE STATE: Start screen --%>
-            <asp:Panel ID="pnlStart" runat="server" Visible="false">
+            <asp:Panel ID="pnlStart" runat="server" style="display:none;">
                 <div class="bf-start-screen">
                     <p style="font-size:15px;color:rgba(255,255,255,0.6);margin:0 0 12px;">
                         Answer questions to deal damage. Wrong answers let the boss attack you.
@@ -217,28 +217,27 @@
             </asp:Panel>
 
             <%-- BATTLE STATE: Active question --%>
-            <asp:Panel ID="pnlQuestion" runat="server" Visible="false">
+            <asp:Panel ID="pnlQuestion" runat="server" style="display:none;">
                 <div class="bf-question">
                     <div class="bf-q-number">
                         Turn <asp:Literal ID="litTurnNumber" runat="server" />
                     </div>
-                    <div class="bf-q-timer">
-                        &#x23F1; <asp:Literal ID="litTimeLimit" runat="server" />s per question
+                    <div class="bf-q-timer" id="bfTimer" runat="server">
+                        &#x23F1; <span id="timerCountdown"></span>s remaining
                     </div>
                     <div class="bf-q-text">
                         <asp:Literal ID="litQuestionText" runat="server" />
                     </div>
                     <div class="bf-options">
-                        <asp:LinkButton ID="btnOpt1" runat="server" CssClass="bf-opt-btn" OnClick="btnAnswer_Click" />
-                        <asp:LinkButton ID="btnOpt2" runat="server" CssClass="bf-opt-btn" OnClick="btnAnswer_Click" />
-                        <asp:LinkButton ID="btnOpt3" runat="server" CssClass="bf-opt-btn" OnClick="btnAnswer_Click" />
-                        <asp:LinkButton ID="btnOpt4" runat="server" CssClass="bf-opt-btn" OnClick="btnAnswer_Click" />
+                        <asp:Literal ID="litBFOpts" runat="server" />
                     </div>
+                    <asp:HiddenField ID="hdnAnswer" runat="server" />
+                    <asp:Button ID="btnProcessAnswer" runat="server" style="display:none;" OnClick="btnProcessAnswer_Click" />
                 </div>
             </asp:Panel>
 
             <%-- BATTLE STATE: Turn result --%>
-            <asp:Panel ID="pnlTurnResult" runat="server" Visible="false">
+            <asp:Panel ID="pnlTurnResult" runat="server" style="display:none;">
                 <div class="bf-question">
                     <div style="font-size:36px;margin-bottom:12px;">
                         <asp:Literal ID="litTurnIcon" runat="server" />
@@ -256,7 +255,7 @@
             </asp:Panel>
 
             <%-- BATTLE STATE: Battle over --%>
-            <asp:Panel ID="pnlResult" runat="server" Visible="false">
+            <asp:Panel ID="pnlResult" runat="server" style="display:none;">
                 <div class="bf-result">
                     <span class="bf-result-icon"><asp:Literal ID="litResultIcon" runat="server" /></span>
                     <h2 class="bf-result-title"><asp:Literal ID="litResultTitle" runat="server" /></h2>
@@ -276,5 +275,47 @@
     <div style="text-align:center;margin-top:16px;">
         <a href="BossFights.aspx" style="font-size:13px;color:var(--cp-primary);">&#x2190; Back to Boss Fights</a>
     </div>
+
+    <asp:HiddenField ID="hdnTimeLimit" runat="server" Value="20" />
+    <script>
+    (function(){
+        var field = document.getElementById('<%= hdnTimeLimit.ClientID %>');
+        var span = document.getElementById('timerCountdown');
+        if (!field || !span) return;
+        var seconds = parseInt(field.value) || 20;
+        span.textContent = seconds;
+        var interval = setInterval(function(){
+            seconds--;
+            span.textContent = seconds;
+            if (seconds <= 5) { span.style.color = '#EF4444'; span.style.fontWeight = '800'; }
+            if (seconds <= 0) { clearInterval(interval); span.textContent = '0'; }
+        }, 1000);
+    })();
+    </script>
+
+    <script>
+    var timerInterval = null;
+    function startBFTimer(seconds) {
+        var el = document.getElementById('bfTimer');
+        if (!el) return;
+        var remaining = seconds;
+        el.textContent = remaining + 's remaining';
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(function() {
+            remaining--;
+            if (el) el.textContent = remaining + 's remaining';
+            if (remaining <= 5 && el) el.style.color = '#EF4444';
+            if (remaining <= 0) {
+                clearInterval(timerInterval);
+                if (el) el.textContent = 'TIME UP!';
+            }
+        }, 1000);
+    }
+    // Auto-start if timer element exists
+    window.addEventListener('load', function() {
+        var t = document.getElementById('bfTimer');
+        if (t && t.dataset.seconds) { startBFTimer(parseInt(t.dataset.seconds)); }
+    });
+    </script>
 
 </asp:Content>

@@ -19,12 +19,12 @@ namespace CloudPhoria.Student
         protected global::System.Web.UI.WebControls.Button btnStartBattle;
         protected global::System.Web.UI.WebControls.Panel pnlQuestion;
         protected global::System.Web.UI.WebControls.Literal litTurnNumber;
-        protected global::System.Web.UI.WebControls.Literal litTimeLimit;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl bfTimer;
+        protected global::System.Web.UI.WebControls.HiddenField hdnTimeLimit;
         protected global::System.Web.UI.WebControls.Literal litQuestionText;
-        protected global::System.Web.UI.WebControls.LinkButton btnOpt1;
-        protected global::System.Web.UI.WebControls.LinkButton btnOpt2;
-        protected global::System.Web.UI.WebControls.LinkButton btnOpt3;
-        protected global::System.Web.UI.WebControls.LinkButton btnOpt4;
+        protected global::System.Web.UI.WebControls.Literal litBFOpts;
+        protected global::System.Web.UI.WebControls.HiddenField hdnAnswer;
+        protected global::System.Web.UI.WebControls.Button btnProcessAnswer;
         protected global::System.Web.UI.WebControls.Panel pnlTurnResult;
         protected global::System.Web.UI.WebControls.Literal litTurnIcon;
         protected global::System.Web.UI.WebControls.Literal litTurnTitle;

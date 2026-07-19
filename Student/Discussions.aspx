@@ -6,14 +6,16 @@
 </asp:Content>
 
 <asp:Content ID="TopbarActions" ContentPlaceHolderID="TopbarActions" runat="server">
-    <a href="DiscussionCreate.aspx" class="cp-btn cp-btn-primary cp-btn-sm">+ New Thread</a>
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
 
-    <div class="cp-page-header">
-        <h2>Discussions</h2>
-        <p>Ask questions, share insights, and connect with fellow students and instructors.</p>
+    <div class="cp-page-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+        <div>
+            <h2>Discussions</h2>
+            <p>Ask questions, share insights, and connect with fellow students and instructors.</p>
+        </div>
+        <a href="DiscussionCreate.aspx" class="cp-btn cp-btn-primary">+ New Thread</a>
     </div>
 
     <asp:Panel ID="pnlError" runat="server" Visible="false">
