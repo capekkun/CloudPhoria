@@ -230,6 +230,17 @@
             </div>
         </asp:Panel>
 
+        <%-- Go Pro button (Students on free plan) --%>
+        <asp:Panel ID="pnlGoPro" runat="server" Visible="false">
+            <a href="/Student/Upgrade.aspx" style="display:inline-flex;align-items:center;gap:5px;
+                background:linear-gradient(90deg,#6366F1,#8B5CF6);color:#fff;padding:6px 14px;
+                border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;
+                transition:opacity 0.15s;box-shadow:0 2px 8px rgba(99,102,241,0.3);"
+                onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                &#x1F680; Go Pro
+            </a>
+        </asp:Panel>
+
         <%-- Notifications bell --%>
         <asp:Panel ID="pnlNotifications" runat="server" Visible="false">
             <a class="cp-topnav-bell" runat="server" id="lnkNotifications"
@@ -243,10 +254,15 @@
 
         <%-- User avatar + dropdown --%>
         <asp:Panel ID="pnlUserMenu" runat="server" Visible="false">
-            <div class="cp-topnav-user">
+            <div class="cp-topnav-user" style="display:flex;align-items:center;gap:10px;">
                 <div class="cp-topnav-avatar" id="cpAvatarBtn" onclick="document.getElementById('cpUserDrop').classList.toggle('open');">
                     <asp:Literal ID="litTopbarInitials" runat="server" />
                 </div>
+                <asp:LinkButton ID="btnLogout" runat="server" CssClass="cp-topnav-link"
+                    style="color:#FCA5A5;font-size:13px;padding:6px 14px;border-radius:7px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);"
+                    OnClick="btnLogout_Click">
+                    &#x1F6AA; Log Out
+                </asp:LinkButton>
                 <div class="cp-topnav-dropdown" id="cpUserDrop">
                     <div class="cp-topnav-dropdown-header">
                         <div class="cp-topnav-dropdown-name"><asp:Literal ID="litTopbarName" runat="server" /></div>
@@ -255,11 +271,6 @@
                     <asp:HyperLink ID="lnkProfile" runat="server" NavigateUrl="/Student/Profile.aspx">&#x1F464; My Profile</asp:HyperLink>
                     <a href="/Student/Achievements.aspx">&#x1F3C5; Achievements</a>
                     <a href="/Student/Notifications.aspx">&#x1F514; Notifications</a>
-                    <asp:LinkButton ID="btnLogout" runat="server" CssClass="danger"
-                        OnClick="btnLogout_Click"
-                        OnClientClick="return confirm('Log out?');">
-                        &#x2192; Log Out
-                    </asp:LinkButton>
                 </div>
             </div>
         </asp:Panel>

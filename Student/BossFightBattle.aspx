@@ -278,44 +278,38 @@
 
     <asp:HiddenField ID="hdnTimeLimit" runat="server" Value="20" />
     <script>
-    (function(){
-        var field = document.getElementById('<%= hdnTimeLimit.ClientID %>');
-        var span = document.getElementById('timerCountdown');
-        if (!field || !span) return;
-        var seconds = parseInt(field.value) || 20;
-        span.textContent = seconds;
-        var interval = setInterval(function(){
-            seconds--;
-            span.textContent = seconds;
-            if (seconds <= 5) { span.style.color = '#EF4444'; span.style.fontWeight = '800'; }
-            if (seconds <= 0) { clearInterval(interval); span.textContent = '0'; }
-        }, 1000);
-    })();
-    </script>
-
-    <script>
     var timerInterval = null;
     function startBFTimer(seconds) {
-        var el = document.getElementById('bfTimer');
-        if (!el) return;
+        // Only start timer if the question panel is actually visible
+        var qPanel = document.getElementById('<%= pnlQuestion.ClientID %>');
+        if (!qPanel || qPanel.style.display === 'none') return;
+
+        var span = document.getElementById('timerCountdown');
+        var hdnAnswer = document.getElementById('<%= hdnAnswer.ClientID %>');
+        var btnSubmit = document.getElementById('<%= btnProcessAnswer.ClientID %>');
+        if (!span) return;
+
         var remaining = seconds;
-        el.textContent = remaining + 's remaining';
+        span.textContent = remaining;
+        span.style.color = '';
+        span.style.fontWeight = '';
+
         if (timerInterval) clearInterval(timerInterval);
         timerInterval = setInterval(function() {
             remaining--;
-            if (el) el.textContent = remaining + 's remaining';
-            if (remaining <= 5 && el) el.style.color = '#EF4444';
+            span.textContent = remaining;
+            if (remaining <= 5) { span.style.color = '#EF4444'; span.style.fontWeight = '800'; }
             if (remaining <= 0) {
                 clearInterval(timerInterval);
-                if (el) el.textContent = 'TIME UP!';
+                span.textContent = '0';
+                // Time's up — auto-submit with wrong answer (boss attacks)
+                if (hdnAnswer && btnSubmit) {
+                    hdnAnswer.value = '0';
+                    btnSubmit.click();
+                }
             }
         }, 1000);
     }
-    // Auto-start if timer element exists
-    window.addEventListener('load', function() {
-        var t = document.getElementById('bfTimer');
-        if (t && t.dataset.seconds) { startBFTimer(parseInt(t.dataset.seconds)); }
-    });
     </script>
 
 </asp:Content>

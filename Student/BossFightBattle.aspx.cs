@@ -197,15 +197,22 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
+                    // Get a random question NOT already answered in this session
+                    int sessionID = (int)ViewState["SessionID"];
                     string sql = @"SELECT TOP 1 bfq.BossFightQuestionID, bfq.QuestionText,
                                           bfq.DamageValue, bfq.TimeLimitSeconds
                                    FROM BossFightQuestions bfq
                                    WHERE bfq.RoomID = @RoomID
+                                   AND bfq.BossFightQuestionID NOT IN (
+                                       SELECT bsa.BossFightQuestionID FROM BattleSessionAnswers bsa
+                                       WHERE bsa.SessionID = @SessionID
+                                   )
                                    ORDER BY NEWID()";
 
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
                         cmd.Parameters.Add("@RoomID", SqlDbType.Int).Value = roomID;
+                        cmd.Parameters.Add("@SessionID", SqlDbType.Int).Value = sessionID;
                         using (SqlDataReader rdr = cmd.ExecuteReader())
                         {
                             if (rdr.Read())
@@ -232,10 +239,11 @@ namespace CloudPhoria.Student
                                 // Load options into the 4 static buttons
                                 DataTable dtOpts = new DataTable();
                                 using (SqlCommand optCmd = new SqlCommand(
-                                    @"SELECT OptionID, OptionText
+                                    @"SELECT TOP 4 MIN(OptionID) AS OptionID, OptionText
                                       FROM BossFightQuestionOptions
                                       WHERE BossFightQuestionID = @QID
-                                      ORDER BY NEWID()", conn))
+                                      GROUP BY OptionText
+                                      ORDER BY MIN(OptionID)", conn))
                                 {
                                     optCmd.Parameters.Add("@QID", SqlDbType.Int).Value = qID;
                                     using (SqlDataAdapter da = new SqlDataAdapter(optCmd))
@@ -281,7 +289,8 @@ namespace CloudPhoria.Student
         protected void btnProcessAnswer_Click(object sender, EventArgs e)
         {
             int selectedOptionID;
-            if (!int.TryParse(hdnAnswer.Value, out selectedOptionID)) return;
+            if (!int.TryParse(hdnAnswer.Value, out selectedOptionID))
+                selectedOptionID = 0; // timeout or invalid
 
             int qID       = (int)ViewState["CurrentQID"];
             int damage    = (int)ViewState["CurrentDamage"];
@@ -298,12 +307,16 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    using (SqlCommand cmd = new SqlCommand(
-                        "SELECT IsCorrect FROM BossFightQuestionOptions WHERE OptionID = @OID", conn))
+                    // Check if selected option is correct (0 = timeout)
+                    if (selectedOptionID > 0)
                     {
-                        cmd.Parameters.Add("@OID", SqlDbType.Int).Value = selectedOptionID;
-                        object r = cmd.ExecuteScalar();
-                        isCorrect = (r != null && Convert.ToBoolean(r));
+                        using (SqlCommand cmd = new SqlCommand(
+                            "SELECT IsCorrect FROM BossFightQuestionOptions WHERE OptionID = @OID", conn))
+                        {
+                            cmd.Parameters.Add("@OID", SqlDbType.Int).Value = selectedOptionID;
+                            object r = cmd.ExecuteScalar();
+                            isCorrect = (r != null && Convert.ToBoolean(r));
+                        }
                     }
 
                     int dmgToBoss   = isCorrect ? damage : 0;

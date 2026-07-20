@@ -329,10 +329,14 @@
     <Content Include="Student\BossFightBattle.aspx" />
     <Content Include="Student\ClassroomDetail.aspx" />
     <Content Include="Student\FunRoomDetail.aspx" />
+    <Content Include="Student\FunRoomCreate.aspx" />
+    <Content Include="Student\Upgrade.aspx" />
+    <Content Include="Student\ChallengeDetail.aspx" />
     <Content Include="Student\DiscussionThread.aspx" />
     <Content Include="Student\DiscussionCreate.aspx" />
     <Content Include="Student\ModuleDetail.aspx" />
     <Content Include="Student\SubTopicView.aspx" />
+    <Content Include="Student\PathwayDetail.aspx" />
     <Content Include="ViewSwitcher.ascx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
@@ -618,6 +622,27 @@
     <Compile Include="Student\FunRoomDetail.aspx.designer.cs">
       <DependentUpon>FunRoomDetail.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Student\FunRoomCreate.aspx.cs">
+      <DependentUpon>FunRoomCreate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\FunRoomCreate.aspx.designer.cs">
+      <DependentUpon>FunRoomCreate.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\Upgrade.aspx.cs">
+      <DependentUpon>Upgrade.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\Upgrade.aspx.designer.cs">
+      <DependentUpon>Upgrade.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\ChallengeDetail.aspx.cs">
+      <DependentUpon>ChallengeDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\ChallengeDetail.aspx.designer.cs">
+      <DependentUpon>ChallengeDetail.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Student\DiscussionThread.aspx.cs">
       <DependentUpon>DiscussionThread.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -645,6 +670,13 @@
     </Compile>
     <Compile Include="Student\SubTopicView.aspx.designer.cs">
       <DependentUpon>SubTopicView.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\PathwayDetail.aspx.cs">
+      <DependentUpon>PathwayDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\PathwayDetail.aspx.designer.cs">
+      <DependentUpon>PathwayDetail.aspx</DependentUpon>
     </Compile>
     <Compile Include="ViewSwitcher.ascx.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>

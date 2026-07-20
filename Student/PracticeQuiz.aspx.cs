@@ -97,8 +97,8 @@ namespace CloudPhoria.Student
 
             DataTable dtOpts = new DataTable();
             using (SqlCommand cmd = new SqlCommand(
-                @"SELECT OptionID, OptionText FROM PracticeQuestionOptions
-                  WHERE PracticeQuestionID=@QID ORDER BY OptionID", conn))
+                @"SELECT TOP 4 MIN(OptionID) AS OptionID, OptionText FROM PracticeQuestionOptions
+                  WHERE PracticeQuestionID=@QID GROUP BY OptionText ORDER BY MIN(OptionID)", conn))
             {
                 cmd.Parameters.Add("@QID", SqlDbType.Int).Value = questionID;
                 using (SqlDataAdapter da = new SqlDataAdapter(cmd)) da.Fill(dtOpts);
