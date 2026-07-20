@@ -17,14 +17,16 @@
     .cp-topnav {
         background: #1A2332;
         border-bottom: 1px solid rgba(255,255,255,0.06);
-        position: sticky; top: 0; z-index: 200;
-        height: 56px;
+        position: sticky; top: 0; z-index: 9999;
+        height: 72px;
         display: flex; align-items: center;
-        padding: 0 24px; gap: 0;
+        padding: 8px 24px;
+        gap: 0;
+        overflow: visible;
     }
 
     /* Brand */
-    .cp-topnav-brand { display:flex; align-items:center; gap:9px; text-decoration:none; margin-right:28px; flex-shrink:0; }
+    .cp-topnav-brand { display:flex; align-items:center; gap:9px; text-decoration:none; margin-right:28px; margin-left:12px; flex-shrink:0; }
     .cp-topnav-logo { width:32px; height:32px; background:linear-gradient(135deg,#0EA5E9,#6366F1);
         border-radius:8px; display:flex; align-items:center; justify-content:center;
         font-size:12px; font-weight:900; color:#fff; }
@@ -158,9 +160,8 @@
 
     <%-- Brand --%>
     <a class="cp-topnav-brand" href="/Default.aspx">
-        <img src="/Images/LogoCloudPhoria.png" alt="CloudPhoria" style="height:32px;width:auto;border-radius:8px;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
-        <div class="cp-topnav-logo" style="display:none;" aria-hidden="true">CP</div>
-        <span class="cp-topnav-wordmark">Cloud<em>Phoria</em></span>
+        <img src="/Images/LogoCloudPhoria.png" alt="CloudPhoria" style="height:70px;width:auto;border-radius:8px;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+        <div class="cp-topnav-logo" style="display:none;width:70px;height:70px;font-size:22px;" aria-hidden="true">CP</div>
     </a>
 
     <%-- Navigation links — role-specific --%>

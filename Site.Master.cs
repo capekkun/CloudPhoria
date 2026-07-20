@@ -23,11 +23,11 @@ namespace CloudPhoria
 
             CheckAuthentication();
             LoadCurrentUser();
+            ConfigureNavigation();
+            LoadNotificationCount();
 
             if (!IsPostBack)
             {
-                ConfigureNavigation();
-                LoadNotificationCount();
                 LoadXP();
             }
         }

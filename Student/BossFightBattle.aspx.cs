@@ -250,8 +250,8 @@ namespace CloudPhoria.Student
                                     string otext = HttpUtility.HtmlEncode(dtOpts.Rows[i]["OptionText"].ToString());
                                     sb.AppendFormat(
                                         "<a href='#' class='bf-opt-btn' onclick=\"document.getElementById('{0}').value='{1}';" +
-                                        "document.getElementById('{2}').click();return false;\">{3}</a>",
-                                        hdnAnswer.ClientID, oid, btnProcessAnswer.ClientID, otext);
+                                        "__doPostBack('{2}','');return false;\">{3}</a>",
+                                        hdnAnswer.ClientID, oid, btnProcessAnswer.UniqueID, otext);
                                 }
                                 litBFOpts.Text = sb.ToString();
 
@@ -430,6 +430,32 @@ namespace CloudPhoria.Student
                                 cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
                                 cmd.ExecuteNonQuery();
                             }
+
+                            // Create notification for the victory
+                            using (SqlCommand cmd = new SqlCommand(
+                                @"INSERT INTO Notifications (UserID, Message, NotificationType, IsRead, CreatedAt)
+                                  VALUES (@UID, @Msg, 'BossFightWon', 0, GETDATE())", conn, tran))
+                            {
+                                cmd.Parameters.Add("@UID", SqlDbType.Int).Value = studentID;
+                                cmd.Parameters.Add("@Msg", SqlDbType.NVarChar, 500).Value =
+                                    "Victory! You defeated the boss. +" + xpReward + " XP earned.";
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+
+                        // Insert notification for boss fight result
+                        string notifMsg = won
+                            ? "Victory! You defeated the boss. +" + xpReward + " XP earned."
+                            : "You were defeated by the boss. Want to try again?";
+                        string notifType = won ? "BossFightWon" : "BossFightLost";
+                        using (SqlCommand cmd = new SqlCommand(
+                            @"INSERT INTO Notifications (UserID, Message, NotificationType, IsRead, CreatedAt)
+                              VALUES (@UID, @Msg, @Type, 0, GETDATE())", conn, tran))
+                        {
+                            cmd.Parameters.Add("@UID",  SqlDbType.Int).Value = studentID;
+                            cmd.Parameters.Add("@Msg",  SqlDbType.NVarChar, 500).Value = notifMsg;
+                            cmd.Parameters.Add("@Type", SqlDbType.NVarChar, 30).Value = notifType;
+                            cmd.ExecuteNonQuery();
                         }
 
                         tran.Commit();
