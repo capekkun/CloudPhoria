@@ -166,6 +166,12 @@
 
     <%-- Navigation links — role-specific --%>
     <div class="cp-topnav-links">
+        <asp:Panel ID="pnlGuestNav" runat="server" Visible="false">
+            <a class="cp-topnav-link" href="/Student/Pathways.aspx"><span class="cp-topnav-icon">&#x1F4DA;</span> Browse Pathways</a>
+            <a class="cp-topnav-link" href="/Student/BossFights.aspx"><span class="cp-topnav-icon">&#x1F480;</span> Boss Fights</a>
+            <a class="cp-topnav-link" href="/Student/Challenges.aspx"><span class="cp-topnav-icon">&#x26A1;</span> Challenges</a>
+            <a class="cp-topnav-link" href="/Student/Upgrade.aspx"><span class="cp-topnav-icon">&#x1F4B0;</span> Pricing</a>
+        </asp:Panel>
         <asp:Panel ID="pnlStudentNav" runat="server" Visible="false">
             <a class="cp-topnav-link" href="/Student/Dashboard.aspx"><span class="cp-topnav-icon">&#x2302;</span> Dashboard</a>
             <div class="cpdd" onclick="this.classList.toggle('open');event.stopPropagation();">
@@ -211,6 +217,18 @@
 
     <%-- Right side: XP + Bell + Avatar --%>
     <div class="cp-topnav-right">
+
+        <%-- Guest buttons --%>
+        <asp:Panel ID="pnlGuestActions" runat="server" Visible="false">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <a href="/LogIn.aspx" style="padding:7px 16px;color:#fff;font-size:12px;
+                    font-weight:600;text-decoration:none;border:1px solid rgba(255,255,255,0.2);
+                    border-radius:7px;transition:background 0.15s;">Log In</a>
+                <a href="/Register.aspx" style="padding:7px 16px;
+                    background:linear-gradient(90deg,#0EA5E9,#6366F1);color:#fff;font-size:12px;
+                    font-weight:700;border-radius:7px;text-decoration:none;">Join for Free</a>
+            </div>
+        </asp:Panel>
 
         <%-- XP counter (Students only) --%>
         <asp:Panel ID="pnlXPCounter" runat="server" Visible="false">

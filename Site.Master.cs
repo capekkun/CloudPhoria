@@ -22,6 +22,11 @@ namespace CloudPhoria
             if (IsPublicPage) { HideAuthUI(); return; }
 
             CheckAuthentication();
+
+            // If guest (no session), skip user-specific loading
+            if (Session["UserID"] == null || Session["Role"] == null)
+                return;
+
             LoadCurrentUser();
             ConfigureNavigation();
             LoadNotificationCount();
@@ -45,7 +50,12 @@ namespace CloudPhoria
             object role = Session["Role"];
 
             if (uid == null || role == null)
-            { Response.Redirect("~/LogIn.aspx", true); return; }
+            {
+                // Guest mode — show guest nav, don't redirect
+                pnlGuestNav.Visible = true;
+                pnlGuestActions.Visible = true;
+                return;
+            }
 
             int userID;
             if (!int.TryParse(uid.ToString(), out userID) || userID <= 0)

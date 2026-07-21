@@ -380,37 +380,25 @@
         <%-- Centre navigation links — mirror TryHackMe's category nav --%>
         <ul class="lp-nav-links" role="list">
             <li>
-                <a href="Guest/Learn.aspx">
-                    <span class="nav-icon" aria-hidden="true">&#x1F4DA;</span>
-                    Learn
-                </a>
-            </li>
-            <li>
-                <a href="Guest/Learn.aspx">
-                    <span class="nav-icon" aria-hidden="true">&#x270F;&#xFE0F;</span>
-                    Practice
-                </a>
-            </li>
-            <li>
-                <a href="Guest/Learn.aspx">
-                    <span class="nav-icon" aria-hidden="true">&#x26A1;</span>
-                    Challenges
-                </a>
-            </li>
-            <li>
-                <a href="Guest/Learn.aspx">
+                <a href="Student/Pathways.aspx">
                     <span class="nav-icon" aria-hidden="true">&#x2601;&#xFE0F;</span>
                     Pathways
                 </a>
             </li>
             <li>
-                <a href="Guest/Learn.aspx">
-                    <span class="nav-icon" aria-hidden="true">&#x1F3EB;</span>
-                    Classrooms
+                <a href="Student/BossFights.aspx">
+                    <span class="nav-icon" aria-hidden="true">&#x1F480;</span>
+                    Boss Fights
                 </a>
             </li>
             <li>
-                <a href="Guest/Learn.aspx">
+                <a href="Student/Challenges.aspx">
+                    <span class="nav-icon" aria-hidden="true">&#x26A1;</span>
+                    Challenges
+                </a>
+            </li>
+            <li>
+                <a href="Student/Upgrade.aspx">
                     <span class="nav-icon" aria-hidden="true">&#x1F4B0;</span>
                     Pricing
                 </a>

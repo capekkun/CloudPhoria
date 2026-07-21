@@ -100,6 +100,23 @@
     </div>
 </asp:Panel>
 
+<%-- Guest prompt (instead of questions) --%>
+<asp:Panel ID="pnlGuestPrompt" runat="server" Visible="false">
+    <div style="margin-top:24px;padding:28px;background:linear-gradient(135deg,#EEF2FF,#E0E7FF);
+        border:2px solid #6366F1;border-radius:14px;text-align:center;">
+        <div style="font-size:36px;margin-bottom:12px;">&#x1F512;</div>
+        <h3 style="font-size:18px;font-weight:700;color:#312E81;margin:0 0 8px;">Want to answer questions and earn XP?</h3>
+        <p style="font-size:14px;color:#4338CA;margin:0 0 20px;">
+            Create a free account to access interactive questions, track your progress, and earn certifications.
+        </p>
+        <a href="/Register.aspx" style="display:inline-block;padding:12px 28px;
+            background:linear-gradient(90deg,#6366F1,#8B5CF6);color:#fff;font-size:14px;
+            font-weight:700;border-radius:8px;text-decoration:none;">
+            Register for Free &#x1F680;
+        </a>
+    </div>
+</asp:Panel>
+
 <asp:Panel ID="pnlAlreadyDone" runat="server" Visible="false">
     <div class="cp-alert cp-alert-success">
         &#x2713; You have completed this subtopic!

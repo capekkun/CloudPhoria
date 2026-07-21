@@ -41,7 +41,9 @@
                         </div>
                         <%# Convert.ToBoolean(Eval("HasParticipated"))
                             ? "<span class='cp-badge cp-badge-green'>&#x2713; Participated</span>"
-                            : "<a href='Challenges.aspx?challengeID=" + Eval("ChallengeID") + "' class='cp-btn cp-btn-primary cp-btn-sm'>Join Challenge</a>" %>
+                            : Session["UserID"] != null
+                                ? "<a href='Challenges.aspx?challengeID=" + Eval("ChallengeID") + "' class='cp-btn cp-btn-primary cp-btn-sm'>Join Challenge</a>"
+                                : "<a href='/Register.aspx' class='cp-btn cp-btn-outline cp-btn-sm'>Register to Join</a>" %>
                     </div>
                 </ItemTemplate>
             </asp:Repeater>

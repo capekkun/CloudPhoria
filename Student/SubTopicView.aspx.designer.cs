@@ -17,5 +17,6 @@ namespace CloudPhoria.Student
         protected global::System.Web.UI.WebControls.Panel pnlQuestions;
         protected global::System.Web.UI.WebControls.Repeater rptQuestions;
         protected global::System.Web.UI.WebControls.Panel pnlAlreadyDone;
+        protected global::System.Web.UI.WebControls.Panel pnlGuestPrompt;
     }
 }

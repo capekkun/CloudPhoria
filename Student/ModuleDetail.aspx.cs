@@ -11,9 +11,8 @@ namespace CloudPhoria.Student
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["UserID"] == null || Session["Role"] == null ||
-                Session["Role"].ToString() != "Student")
-            { Response.Redirect("~/LogIn.aspx", true); return; }
+            bool isGuest = (Session["UserID"] == null || Session["Role"] == null ||
+                Session["Role"].ToString() != "Student");
 
             if (!IsPostBack)
             {
@@ -26,7 +25,8 @@ namespace CloudPhoria.Student
 
         private void LoadModule(int moduleID)
         {
-            int studentID = Convert.ToInt32(Session["UserID"]);
+            int studentID = Session["UserID"] != null ? Convert.ToInt32(Session["UserID"]) : 0;
+            bool isGuest = (studentID == 0);
             string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
 
             try
@@ -68,7 +68,7 @@ namespace CloudPhoria.Student
                     }
 
                     // Subscription check — Free tier can only access Foundation modules
-                    if (!isFoundation)
+                    if (!isFoundation && !isGuest)
                     {
                         bool isFoundationOnly = true;
                         using (SqlCommand cmd = new SqlCommand(
@@ -89,30 +89,33 @@ namespace CloudPhoria.Student
                     }
 
                     // Check if student is enrolled in this pathway (has ModuleProgress for any module in the same pathway)
-                    bool isEnrolled = false;
-                    using (SqlCommand cmd = new SqlCommand(
-                        @"SELECT COUNT(*) FROM ModuleProgress mp
-                          INNER JOIN Modules m2 ON m2.ModuleID = mp.ModuleID
-                          INNER JOIN Modules m3 ON m3.PathwayID = m2.PathwayID AND m3.ModuleID = @MID
-                          WHERE mp.StudentID = @SID", conn))
+                    if (!isGuest)
                     {
-                        cmd.Parameters.Add("@MID", SqlDbType.Int).Value = moduleID;
-                        cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
-                        isEnrolled = Convert.ToInt32(cmd.ExecuteScalar()) > 0;
-                    }
-
-                    if (!isEnrolled)
-                    {
-                        // Student hasn't enrolled in this pathway — redirect to pathway detail
-                        int pathwayID = 0;
-                        using (SqlCommand cmd = new SqlCommand("SELECT PathwayID FROM Modules WHERE ModuleID=@MID", conn))
+                        bool isEnrolled = false;
+                        using (SqlCommand cmd = new SqlCommand(
+                            @"SELECT COUNT(*) FROM ModuleProgress mp
+                              INNER JOIN Modules m2 ON m2.ModuleID = mp.ModuleID
+                              INNER JOIN Modules m3 ON m3.PathwayID = m2.PathwayID AND m3.ModuleID = @MID
+                              WHERE mp.StudentID = @SID", conn))
                         {
                             cmd.Parameters.Add("@MID", SqlDbType.Int).Value = moduleID;
-                            object r = cmd.ExecuteScalar();
-                            if (r != null) pathwayID = Convert.ToInt32(r);
+                            cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
+                            isEnrolled = Convert.ToInt32(cmd.ExecuteScalar()) > 0;
                         }
-                        Response.Redirect("~/Student/PathwayDetail.aspx?pathwayID=" + pathwayID);
-                        return;
+
+                        if (!isEnrolled)
+                        {
+                            // Student hasn't enrolled in this pathway — redirect to pathway detail
+                            int pathwayID = 0;
+                            using (SqlCommand cmd = new SqlCommand("SELECT PathwayID FROM Modules WHERE ModuleID=@MID", conn))
+                            {
+                                cmd.Parameters.Add("@MID", SqlDbType.Int).Value = moduleID;
+                                object r = cmd.ExecuteScalar();
+                                if (r != null) pathwayID = Convert.ToInt32(r);
+                            }
+                            Response.Redirect("~/Student/PathwayDetail.aspx?pathwayID=" + pathwayID);
+                            return;
+                        }
                     }
 
                     // Subtopics with student progress

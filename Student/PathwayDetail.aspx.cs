@@ -11,9 +11,8 @@ namespace CloudPhoria.Student
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["UserID"] == null || Session["Role"] == null ||
-                Session["Role"].ToString() != "Student")
-            { Response.Redirect("~/LogIn.aspx", true); return; }
+            bool isGuest = (Session["UserID"] == null || Session["Role"] == null ||
+                Session["Role"].ToString() != "Student");
 
             if (!IsPostBack)
             {
@@ -21,13 +20,15 @@ namespace CloudPhoria.Student
                 if (!int.TryParse(Request.QueryString["pathwayID"], out pathwayID))
                 { Response.Redirect("~/Student/Pathways.aspx"); return; }
                 ViewState["PathwayID"] = pathwayID;
+                ViewState["IsGuest"] = isGuest;
                 LoadPathway(pathwayID);
             }
         }
 
         private void LoadPathway(int pathwayID)
         {
-            int studentID = Convert.ToInt32(Session["UserID"]);
+            int studentID = Session["UserID"] != null ? Convert.ToInt32(Session["UserID"]) : 0;
+            bool isGuest = (studentID == 0);
             string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
 
             try
@@ -64,7 +65,7 @@ namespace CloudPhoria.Student
 
                     // Subscription check — Free tier can only access Foundation pathway
                     bool isFreeTier = false;
-                    if (!isFoundation)
+                    if (!isFoundation && !isGuest)
                     {
                         bool isFoundationOnly = true;
                         using (SqlCommand cmd = new SqlCommand(
@@ -244,7 +245,12 @@ namespace CloudPhoria.Student
                     }
 
                     // Enrollment state
-                    if (hasEnrolled)
+                    if (isGuest)
+                    {
+                        // Guest — show register prompt
+                        pnlUpgradeNeeded.Visible = true;
+                    }
+                    else if (hasEnrolled)
                     {
                         pnlAlreadyEnrolled.Visible = true;
 

@@ -73,7 +73,9 @@
                             <span class="cp-xp-chip">+<%# Eval("XPReward") %> XP on win</span>
                             <%# Convert.ToBoolean(Eval("HasWon"))
                                 ? "<span class='cp-badge cp-badge-green'>&#x2713; Defeated</span>"
-                                : "<a href='BossFights.aspx?roomID=" + Eval("RoomID") + "' class='cp-btn cp-btn-danger cp-btn-sm'>Enter Battle</a>" %>
+                                : Session["UserID"] != null
+                                    ? "<a href='BossFights.aspx?roomID=" + Eval("RoomID") + "' class='cp-btn cp-btn-danger cp-btn-sm'>Enter Battle</a>"
+                                    : "<a href='/Register.aspx' class='cp-btn cp-btn-outline cp-btn-sm'>Register to Battle</a>" %>
                         </div>
                     </div>
                 </ItemTemplate>

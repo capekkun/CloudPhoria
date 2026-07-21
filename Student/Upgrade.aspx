@@ -110,7 +110,7 @@
                 <div class="up-btn up-btn-current">&#x2713; Current Plan</div>
             </asp:Panel>
             <asp:Panel ID="pnlFreeNotCurrent" runat="server" Visible="false">
-                <div class="up-btn up-btn-free">Free Plan</div>
+                <a href="/Register.aspx" class="up-btn up-btn-free" style="text-decoration:none;text-align:center;">Register for Free</a>
             </asp:Panel>
         </div>
 
@@ -136,9 +136,15 @@
                 <div class="up-btn up-btn-current">&#x2713; Current Plan</div>
             </asp:Panel>
             <asp:Panel ID="pnlProUpgrade" runat="server" Visible="false">
+                <% if (Session["UserID"] != null) { %>
                 <a href="javascript:void(0)" class="up-btn up-btn-pro" onclick="openPaymentModal();">
                     Upgrade to Pro &#x1F680;
                 </a>
+                <% } else { %>
+                <a href="/Register.aspx" class="up-btn up-btn-pro">
+                    Register to Get Pro &#x1F680;
+                </a>
+                <% } %>
             </asp:Panel>
         </div>
     </div>

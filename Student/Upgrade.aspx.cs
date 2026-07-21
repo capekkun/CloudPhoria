@@ -11,15 +11,21 @@ namespace CloudPhoria.Student
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["UserID"] == null || Session["Role"] == null ||
-                Session["Role"].ToString() != "Student")
-            { Response.Redirect("~/LogIn.aspx", true); return; }
-
-            ((SiteMaster)Master).PageHeading = "Upgrade";
+            bool isGuest = (Session["UserID"] == null || Session["Role"] == null ||
+                Session["Role"].ToString() != "Student");
 
             if (!IsPostBack)
             {
-                LoadCurrentPlan();
+                if (isGuest)
+                {
+                    // Guest can see pricing but buttons go to register
+                    pnlFreeNotCurrent.Visible = true;
+                    pnlProUpgrade.Visible = true;
+                }
+                else
+                {
+                    LoadCurrentPlan();
+                }
             }
         }
 
@@ -75,6 +81,12 @@ namespace CloudPhoria.Student
 
         protected void btnPay_Click(object sender, EventArgs e)
         {
+            // Guest cannot pay — redirect to register
+            if (Session["UserID"] == null || Session["Role"] == null)
+            {
+                Response.Redirect("~/Register.aspx");
+                return;
+            }
             // Validate basic card fields
             string cardName = txtCardName.Text.Trim();
             string cardNumber = txtCardNumber.Text.Trim().Replace(" ", "");

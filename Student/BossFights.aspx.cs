@@ -11,21 +11,15 @@ namespace CloudPhoria.Student
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["UserID"] == null || Session["Role"] == null ||
-                Session["Role"].ToString() != "Student")
-            {
-                Response.Redirect("~/LogIn.aspx", true);
-                return;
-            }
-
-            ((SiteMaster)Master).PageHeading = "Boss Fights";
+            bool isGuest = (Session["UserID"] == null || Session["Role"] == null ||
+                Session["Role"].ToString() != "Student");
 
             if (!IsPostBack) { LoadBossFights(); }
         }
 
         private void LoadBossFights()
         {
-            int studentID = Convert.ToInt32(Session["UserID"]);
+            int studentID = Session["UserID"] != null ? Convert.ToInt32(Session["UserID"]) : 0;
             string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
 
             try

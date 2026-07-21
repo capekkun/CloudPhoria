@@ -11,22 +11,23 @@ namespace CloudPhoria.Student
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["UserID"] == null || Session["Role"] == null ||
-                Session["Role"].ToString() != "Student")
-            { Response.Redirect("~/LogIn.aspx", true); return; }
+            bool isGuest = (Session["UserID"] == null || Session["Role"] == null ||
+                Session["Role"].ToString() != "Student");
 
             if (!IsPostBack)
             {
                 int subID;
                 if (!int.TryParse(Request.QueryString["subtopicID"], out subID))
                 { Response.Redirect("~/Student/Pathways.aspx"); return; }
+                ViewState["IsGuest"] = isGuest;
                 LoadSubTopic(subID);
             }
         }
 
         private void LoadSubTopic(int subID)
         {
-            int studentID = Convert.ToInt32(Session["UserID"]);
+            int studentID = Session["UserID"] != null ? Convert.ToInt32(Session["UserID"]) : 0;
+            bool isGuest = (studentID == 0);
             string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
 
             try
@@ -76,7 +77,7 @@ namespace CloudPhoria.Student
                     }
 
                     // Subscription check — Free tier can only access Foundation subtopics
-                    if (!isFoundation)
+                    if (!isFoundation && !isGuest)
                     {
                         bool isFoundationOnly = true;
                         using (SqlCommand cmd = new SqlCommand(
@@ -97,40 +98,47 @@ namespace CloudPhoria.Student
                         }
                     }
 
-                    // Check progress status
-                    string status = "NotStarted";
-                    using (SqlCommand cmd = new SqlCommand(
-                        "SELECT Status FROM SubTopicProgress WHERE SubTopicID=@STID AND StudentID=@SID", conn))
+                    // Check progress status (skip for guests)
+                    if (!isGuest)
                     {
-                        cmd.Parameters.Add("@STID", SqlDbType.Int).Value = subID;
-                        cmd.Parameters.Add("@SID",  SqlDbType.Int).Value = studentID;
-                        object r = cmd.ExecuteScalar();
-                        if (r != null && r != DBNull.Value) status = r.ToString();
-                    }
+                        string status = "NotStarted";
+                        using (SqlCommand cmd = new SqlCommand(
+                            "SELECT Status FROM SubTopicProgress WHERE SubTopicID=@STID AND StudentID=@SID", conn))
+                        {
+                            cmd.Parameters.Add("@STID", SqlDbType.Int).Value = subID;
+                            cmd.Parameters.Add("@SID",  SqlDbType.Int).Value = studentID;
+                            object r = cmd.ExecuteScalar();
+                            if (r != null && r != DBNull.Value) status = r.ToString();
+                        }
 
-                    if (status == "Completed")
-                    {
-                        litStatus.Text = "<span class='cp-badge cp-badge-green'>Completed</span>";
-                        pnlAlreadyDone.Visible = true;
+                        if (status == "Completed")
+                        {
+                            litStatus.Text = "<span class='cp-badge cp-badge-green'>Completed</span>";
+                            pnlAlreadyDone.Visible = true;
+                        }
+                        else
+                        {
+                            litStatus.Text = "<span class='cp-badge cp-badge-blue'>In Progress</span>";
+                            pnlComplete.Visible = true;
+
+                            // Mark as InProgress if not started
+                            if (status == "NotStarted")
+                            {
+                                using (SqlCommand cmd = new SqlCommand(
+                                    @"IF NOT EXISTS (SELECT 1 FROM SubTopicProgress WHERE SubTopicID=@STID AND StudentID=@SID)
+                                      INSERT INTO SubTopicProgress (StudentID, SubTopicID, Status) VALUES (@SID, @STID, 'InProgress')
+                                      ELSE UPDATE SubTopicProgress SET Status='InProgress' WHERE SubTopicID=@STID AND StudentID=@SID AND Status='NotStarted'", conn))
+                                {
+                                    cmd.Parameters.Add("@STID", SqlDbType.Int).Value = subID;
+                                    cmd.Parameters.Add("@SID",  SqlDbType.Int).Value = studentID;
+                                    cmd.ExecuteNonQuery();
+                                }
+                            }
+                        }
                     }
                     else
                     {
-                        litStatus.Text = "<span class='cp-badge cp-badge-blue'>In Progress</span>";
-                        pnlComplete.Visible = true;
-
-                        // Mark as InProgress if not started
-                        if (status == "NotStarted")
-                        {
-                            using (SqlCommand cmd = new SqlCommand(
-                                @"IF NOT EXISTS (SELECT 1 FROM SubTopicProgress WHERE SubTopicID=@STID AND StudentID=@SID)
-                                  INSERT INTO SubTopicProgress (StudentID, SubTopicID, Status) VALUES (@SID, @STID, 'InProgress')
-                                  ELSE UPDATE SubTopicProgress SET Status='InProgress' WHERE SubTopicID=@STID AND StudentID=@SID AND Status='NotStarted'", conn))
-                            {
-                                cmd.Parameters.Add("@STID", SqlDbType.Int).Value = subID;
-                                cmd.Parameters.Add("@SID",  SqlDbType.Int).Value = studentID;
-                                cmd.ExecuteNonQuery();
-                            }
-                        }
+                        litStatus.Text = "<span class='cp-badge cp-badge-grey'>Guest Preview</span>";
                     }
 
                     // Materials
@@ -148,27 +156,34 @@ namespace CloudPhoria.Student
                         pnlMaterials.Visible = true;
                     }
 
-                    // Questions for this subtopic
-                    DataTable dtQ = new DataTable();
-                    using (SqlCommand cmd = new SqlCommand(
-                        @"SELECT QuestionID, QuestionText, QuestionType, XPReward
-                          FROM Questions
-                          WHERE SubTopicID = @STID
-                          ORDER BY OrderIndex, QuestionID", conn))
+                    // Questions for this subtopic (hide for guests)
+                    if (!isGuest)
                     {
-                        cmd.Parameters.Add("@STID", SqlDbType.Int).Value = subID;
-                        using (SqlDataAdapter da = new SqlDataAdapter(cmd)) da.Fill(dtQ);
-                    }
-                    if (dtQ.Rows.Count > 0)
-                    {
-                        rptQuestions.DataSource = dtQ;
-                        rptQuestions.DataBind();
-                        pnlQuestions.Visible = true;
+                        DataTable dtQ = new DataTable();
+                        using (SqlCommand cmd = new SqlCommand(
+                            @"SELECT QuestionID, QuestionText, QuestionType, XPReward
+                              FROM Questions
+                              WHERE SubTopicID = @STID
+                              ORDER BY OrderIndex, QuestionID", conn))
+                        {
+                            cmd.Parameters.Add("@STID", SqlDbType.Int).Value = subID;
+                            using (SqlDataAdapter da = new SqlDataAdapter(cmd)) da.Fill(dtQ);
+                        }
+                        if (dtQ.Rows.Count > 0)
+                        {
+                            rptQuestions.DataSource = dtQ;
+                            rptQuestions.DataBind();
+                            pnlQuestions.Visible = true;
+                        }
+                        else
+                        {
+                            pnlComplete.Visible = true;
+                        }
                     }
                     else
                     {
-                        // No questions — show mark complete button directly
-                        pnlComplete.Visible = true;
+                        // Guest — show register prompt instead of questions
+                        pnlGuestPrompt.Visible = true;
                     }
                 }
             }

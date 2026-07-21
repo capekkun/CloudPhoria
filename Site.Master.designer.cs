@@ -9,9 +9,13 @@
         protected global::System.Web.UI.WebControls.ContentPlaceHolder PageScripts;
 
         // Nav panels
+        protected global::System.Web.UI.WebControls.Panel pnlGuestNav;
         protected global::System.Web.UI.WebControls.Panel pnlStudentNav;
         protected global::System.Web.UI.WebControls.Panel pnlInstructorNav;
         protected global::System.Web.UI.WebControls.Panel pnlAdminNav;
+
+        // Guest actions
+        protected global::System.Web.UI.WebControls.Panel pnlGuestActions;
 
         // XP counter
         protected global::System.Web.UI.WebControls.Panel pnlXPCounter;
