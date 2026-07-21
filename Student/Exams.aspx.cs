@@ -20,7 +20,18 @@ namespace CloudPhoria.Student
 
             ((SiteMaster)Master).PageHeading = "Module Exams";
 
-            if (!IsPostBack) { LoadExams(); }
+            if (!IsPostBack)
+            {
+                int moduleID;
+                if (int.TryParse(Request.QueryString["moduleID"], out moduleID) && moduleID > 0)
+                {
+                    // Exam detail mode — show exam info for this module
+                    // TODO: Full exam logic to be re-integrated here
+                    LoadExams();
+                    return;
+                }
+                LoadExams();
+            }
         }
 
         private void LoadExams()
@@ -37,7 +48,13 @@ namespace CloudPhoria.Student
                     // Modules with exam questions that the student hasn't passed yet.
                     string availSql = @"
                         SELECT m.ModuleID, m.ModuleName,
-                               m.ExamDurationMinutes, m.ExamPassMarkPercent, m.XPReward
+                               m.ExamDurationMinutes, m.ExamPassMarkPercent, m.XPReward,
+                               CASE WHEN (SELECT COUNT(*) FROM SubTopics st WHERE st.ModuleID=m.ModuleID AND st.IsPublished=1) > 0
+                                    AND (SELECT COUNT(*) FROM SubTopics st WHERE st.ModuleID=m.ModuleID AND st.IsPublished=1)
+                                      = (SELECT COUNT(*) FROM SubTopicProgress stp
+                                         INNER JOIN SubTopics st2 ON st2.SubTopicID=stp.SubTopicID
+                                         WHERE st2.ModuleID=m.ModuleID AND stp.StudentID=@StudentID AND stp.Status='Completed')
+                                    THEN 1 ELSE 0 END AS IsUnlocked
                         FROM Modules m
                         WHERE m.IsPublished = 1
                           AND (SELECT COUNT(*) FROM ExamQuestions eq

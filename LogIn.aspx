@@ -240,7 +240,8 @@
 
             <%-- Brand --%>
             <a class="cp-login-brand" href="Default.aspx">
-                <div class="cp-login-logo" aria-hidden="true">CP</div>
+                <img src="Images/LogoCloudPhoriaBlack.png" alt="CloudPhoria" style="height:48px;width:auto;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                <div class="cp-login-logo" style="display:none;" aria-hidden="true">CP</div>
             </a>
 
             <%-- Heading --%>
@@ -336,7 +337,9 @@
 
             <%-- Footer --%>
             <div class="cp-login-footer">
-                <a href="Default.aspx">&#x2190; Back to home</a>
+                Don't have an account? <a href="Register.aspx">Join for Free</a>
+                <br />
+                <a href="Default.aspx" style="margin-top:8px;display:inline-block;">&#x2190; Back to home</a>
             </div>
 
         </div><%-- end cp-login-body --%>

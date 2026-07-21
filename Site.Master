@@ -173,7 +173,6 @@
                 <div class="cpdd-menu" onclick="event.stopPropagation();">
                     <a href="/Student/Pathways.aspx">&#x25B6; Learning Pathways</a>
                     <a href="/Student/MyLearning.aspx">&#x1F4D6; My Learning</a>
-                    <a href="/Student/Practice.aspx">&#x270F; Practice</a>
                     <a href="/Student/Exams.aspx">&#x1F4CB; Module Exams</a>
                 </div>
             </div>
@@ -182,18 +181,9 @@
                 <div class="cpdd-menu" onclick="event.stopPropagation();">
                     <a href="/Student/Challenges.aspx">&#x26A1; Challenges</a>
                     <a href="/Student/BossFights.aspx">&#x1F480; Boss Fights</a>
-                    <a href="/Student/FunRooms.aspx">&#x1F3AE; Fun Rooms</a>
                 </div>
             </div>
             <a class="cp-topnav-link" href="/Student/Classrooms.aspx"><span class="cp-topnav-icon">&#x1F3EB;</span> Classrooms</a>
-            <div class="cpdd" onclick="this.classList.toggle('open');event.stopPropagation();">
-                <span class="cp-topnav-link">&#x1F4AC; Community &#x25BE;</span>
-                <div class="cpdd-menu" onclick="event.stopPropagation();">
-                    <a href="/Student/Discussions.aspx">&#x1F4AC; Discussions</a>
-                    <a href="/Student/Consultations.aspx">&#x1F4C5; Consultations</a>
-                    <a href="/Student/Achievements.aspx">&#x1F3C5; Achievements</a>
-                </div>
-            </div>
             <a class="cp-topnav-link" href="/Student/Upgrade.aspx" style="color:#F59E0B;"><span class="cp-topnav-icon">&#x1F680;</span> Go Pro</a>
         </asp:Panel>
         <asp:Panel ID="pnlInstructorNav" runat="server" Visible="false">
@@ -205,8 +195,6 @@
             <a class="cp-topnav-link" href="/Instructor/Materials.aspx"><span class="cp-topnav-icon">&#x1F4CE;</span> Materials</a>
             <a class="cp-topnav-link" href="/Instructor/Assignments.aspx"><span class="cp-topnav-icon">&#x1F4DD;</span> Assignments</a>
             <a class="cp-topnav-link" href="/Instructor/Challenges.aspx"><span class="cp-topnav-icon">&#x26A1;</span> Challenges</a>
-            <a class="cp-topnav-link" href="/Instructor/Consultations.aspx"><span class="cp-topnav-icon">&#x1F4C5;</span> Consultations</a>
-            <a class="cp-topnav-link" href="/Instructor/Discussions.aspx"><span class="cp-topnav-icon">&#x1F4AC;</span> Discussions</a>
         </asp:Panel>
         <asp:Panel ID="pnlAdminNav" runat="server" Visible="false">
             <a class="cp-topnav-link" href="/Admin/Dashboard.aspx"><span class="cp-topnav-icon">&#x2302;</span> Dashboard</a>

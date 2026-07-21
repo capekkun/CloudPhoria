@@ -37,10 +37,9 @@
                                 &bull; Reward: <span class="cp-xp-chip" style="font-size:11px;">+<%# Eval("XPReward") %> XP</span>
                             </div>
                         </div>
-                        <a href="ExamStart.aspx?moduleID=<%# Eval("ModuleID") %>"
-                           class="cp-btn cp-btn-primary cp-btn-sm">
-                            Start Exam
-                        </a>
+                        <%# Convert.ToBoolean(Eval("IsUnlocked"))
+                            ? "<a href='Exams.aspx?moduleID=" + Eval("ModuleID") + "' class='cp-btn cp-btn-primary cp-btn-sm'>Start Exam</a>"
+                            : "<span class='cp-badge cp-badge-grey' title='Complete all subtopics first'>&#x1F512; Locked</span>" %>
                     </div>
                 </div>
             </ItemTemplate>

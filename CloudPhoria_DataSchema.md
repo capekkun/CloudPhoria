@@ -1110,3 +1110,135 @@ This guide documents the structure, relationships, and development rules of the 
 1. Resolve the `USE CloudPhoria;` vs `USE CloudPhoriaDB;` inconsistency described in Section 1 so all script sections target the same database.
 2. Run all five scripts in the order in Section 2: `create_tables.sql` → `seed_constants.sql` → `seed_dummy_data.sql` → `cloudphoria_additional_content.sql` → `cloudphoria_exams_and_bossfights.sql`.
 3. Before re-running the full sequence again on a shared/existing database, note the duplicate-reseed issue in Section 6 — without a guard, re-running `seed_dummy_data.sql` will keep duplicating `Modules` and `BossFightRooms`.
+
+
+---
+
+## 9. Additional Tables (Added During Development)
+
+These tables were added via SQL scripts in the `Database/` folder to support new features. Run the corresponding scripts after the initial 5 scripts.
+
+### 53. `ClassroomMessages` (Classroom Chat)
+| Column | Type | Null? | Key | Notes |
+|---|---|---|---|---|
+| `MessageID` | `INT IDENTITY(1,1)` | No | PK | |
+| `ClassroomID` | `INT` | No | FK → `Classrooms.ClassroomID` | |
+| `SenderID` | `INT` | No | FK → `Users.UserID` | Any enrolled student or the classroom instructor. |
+| `MessageText` | `NVARCHAR(2000)` | No | - | |
+| `SentAt` | `DATETIME` | No | DEFAULT GETDATE() | |
+
+Index: `IX_ClassroomMessages_ClassroomID_SentAt` on `(ClassroomID, SentAt DESC)`.
+
+Script: `Database/add_classroom_chat.sql`
+
+---
+
+### 54. `FunRoomQuestions` (Fun Room Quiz Questions)
+| Column | Type | Null? | Key | Notes |
+|---|---|---|---|---|
+| `FunRoomQuestionID` | `INT IDENTITY(1,1)` | No | PK | |
+| `FunRoomID` | `INT` | No | FK → `FunRooms.FunRoomID` | |
+| `QuestionText` | `NVARCHAR(500)` | No | - | |
+| `XPReward` | `INT` | No | DEFAULT 5 | |
+| `OrderIndex` | `INT` | No | DEFAULT 0 | |
+
+### 55. `FunRoomQuestionOptions`
+| Column | Type | Null? | Key | Notes |
+|---|---|---|---|---|
+| `OptionID` | `INT IDENTITY(1,1)` | No | PK | |
+| `FunRoomQuestionID` | `INT` | No | FK → `FunRoomQuestions.FunRoomQuestionID` | |
+| `OptionText` | `NVARCHAR(300)` | No | - | |
+| `IsCorrect` | `BIT` | No | DEFAULT 0 | |
+
+Script: `Database/fix_funrooms.sql`
+
+---
+
+### 56. `ChallengeQuestions` (Live Challenge Quiz Questions)
+| Column | Type | Null? | Key | Notes |
+|---|---|---|---|---|
+| `ChallengeQuestionID` | `INT IDENTITY(1,1)` | No | PK | |
+| `ChallengeID` | `INT` | No | FK → `Challenges.ChallengeID` | |
+| `QuestionText` | `NVARCHAR(500)` | No | - | |
+| `Points` | `INT` | No | DEFAULT 10 | Points for correct answer. |
+| `TimeLimitSeconds` | `INT` | No | DEFAULT 30 | Per-question countdown. |
+| `OrderIndex` | `INT` | No | DEFAULT 0 | |
+
+### 57. `ChallengeQuestionOptions`
+| Column | Type | Null? | Key | Notes |
+|---|---|---|---|---|
+| `OptionID` | `INT IDENTITY(1,1)` | No | PK | |
+| `ChallengeQuestionID` | `INT` | No | FK → `ChallengeQuestions.ChallengeQuestionID` | |
+| `OptionText` | `NVARCHAR(300)` | No | - | |
+| `IsCorrect` | `BIT` | No | DEFAULT 0 | |
+
+Script: `Database/fix_challenges.sql`
+
+---
+
+## 10. Updated Feature Notes
+
+### Subscription Plans (Simplified)
+- Only 2 plans: **Free** (PlanID 1) and **Pro** (PlanID 2)
+- Free: `CanAccessFoundationOnly = 1`, Price = $0
+- Pro: `CanAccessFoundationOnly = 0`, Price = $9.99/month
+- Script: `Database/fix_subscription_plans.sql`
+
+### Pathway Enrollment Flow
+- Students must explicitly enroll via PathwayDetail page (no auto-enrollment)
+- Enrollment inserts `ModuleProgress` rows for all modules in the pathway with status `InProgress`
+- Non-Foundation pathways require Pro subscription; Free users see "Upgrade to Pro to Enroll"
+- Script: `Database/fix_enrollment.sql`
+
+### Module Exams
+- Exams are locked until all subtopics in the module are completed
+- Student takes exam via `ExamStart.aspx` → `ExamTake.aspx`
+- One question at a time with countdown timer
+- Score calculated server-side, XP awarded on pass
+
+### Classroom Features
+- Teams-style layout with tabs: Chat, Files, Assignments, Members
+- Real-time-style chat using `ClassroomMessages` table
+- Both students and instructor can send messages
+- Assignments are clickable → opens `AssignmentDetail.aspx` for answering
+
+### Fun Rooms
+- Now have interactive quiz questions (not just text content)
+- Students/Instructors can create rooms with up to 3 questions
+- Admin approval required before rooms become public
+- Questions are shuffled for fairness
+
+### Live Challenges
+- Admin-created timed quiz challenges with leaderboard
+- Each question has its own timer (15-30 seconds)
+- Score based on correct answers × points per question
+- Leaderboard shows top 10 participants
+- One attempt per student per challenge
+
+### Deleted Features (tables still exist in schema but pages removed)
+The following database tables exist but have NO corresponding web pages in the current implementation:
+- `FunRooms`, `FunRoomQuestions`, `FunRoomQuestionOptions` — Fun Room pages deleted
+- `PracticeQuestions`, `PracticeQuestionOptions`, `PracticeAttempts`, `PracticeAnswers` — Practice pages deleted
+- `ConsultationSlots`, `ConsultationBookings` — Consultation pages deleted
+- `DiscussionThreads`, `DiscussionReplies` — Discussion pages deleted
+- `GuestModuleAccess` — Guest browse feature not implemented
+
+These tables remain in the database for schema completeness but are not actively used by the website.
+
+### Current Page Count: 30 total
+- Shared: Default.aspx, LogIn.aspx, Register.aspx (3)
+- Admin: Dashboard.aspx (1)
+- Instructor: 10 pages
+- Student: 16 pages
+
+### SQL Script Run Order (Additional)
+Run these AFTER the original 5 scripts:
+
+| Order | Script | Purpose |
+|---:|---|---|
+| 6 | `Database/add_classroom_chat.sql` | Creates ClassroomMessages table |
+| 7 | `Database/fix_subscription_plans.sql` | Simplifies to Free + Pro plans |
+| 8 | `Database/fix_enrollment.sql` | Cleans auto-enrollment data |
+| 9 | `Database/fix_funrooms.sql` | Creates FunRoom question tables + seeds data |
+| 10 | `Database/fix_challenges.sql` | Creates Challenge question tables + seeds data |
+| 11 | `Database/add_subtopic_content.sql` | Adds detailed learning content to subtopics |

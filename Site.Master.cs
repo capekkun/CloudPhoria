@@ -209,7 +209,7 @@ namespace CloudPhoria
         {
             Session.Clear();
             Session.Abandon();
-            Response.Redirect("~/LogIn.aspx", true);
+            Response.Redirect("~/Default.aspx", true);
         }
 
         private string GetInitials(string name)

@@ -2032,3 +2032,99 @@ CloudPhoria should remain:
 - Understandable
 - Original
 - Suitable for a university Web Application Development assignment
+
+
+## 39. Additional Features (Added During Development)
+
+### Page Count Summary (30 pages total)
+
+**Shared (3 pages):** Default.aspx (landing), LogIn.aspx, Register.aspx
+
+**Admin (1 page):** Dashboard.aspx
+
+**Instructor (10 pages):** Dashboard, Modules, SubTopics, Questions, Classrooms, Materials, Assignments, Challenges, Notifications, Profile
+
+**Student (16 pages):** Dashboard, Pathways, PathwayDetail, ModuleDetail, SubTopicView, MyLearning, Exams, Challenges, BossFights, Classrooms, ClassroomDetail, AssignmentDetail, Achievements, Notifications, Profile, Upgrade
+
+### Guest Access
+- Guests can ONLY see `Default.aspx` (the landing page)
+- The landing page includes a "Browse Pathways" section showing all pathways with descriptions, module counts, and Free/Pro badges
+- Guests can read pathway names and descriptions to preview what's available
+- No navigation bar for guests — only "Browse Pathways", "Log In" and "Join for Free" buttons
+- Guests CANNOT click into modules, subtopics, or any interactive content
+- All protected pages check `Session["UserID"]` and redirect to `LogIn.aspx` if missing
+- The `Guest/` folder is empty and unused
+- The `GuestModuleAccess` table exists in the schema but is NOT used in the current implementation
+- This satisfies the "non-registered user can browse" requirement without needing extra pages
+
+### Registration (Register.aspx)
+- Students: fill name, email, password, optional TP number → instant account creation + auto-login + Free subscription assigned
+- Instructors: fill name, email, password, qualification, teaching permit description → account created with `LicenseStatus = 'Pending'` → admin notified → must wait for approval before accessing instructor features
+- Duplicate email check prevents multiple accounts
+
+### Merged Pages
+- `Exams.aspx` handles both exam listing AND exam taking (via `?moduleID=` query parameter)
+- `Challenges.aspx` handles both challenge listing AND live challenge (via `?challengeID=` parameter)
+- `BossFights.aspx` handles both boss listing AND battle (via `?roomID=` parameter)
+
+### Deleted Features (to reduce page count)
+- Fun Rooms (FunRooms, FunRoomDetail, FunRoomCreate) — REMOVED
+- Practice Quizzes (Practice, PracticeQuiz) — REMOVED
+- Consultations (Student + Instructor) — REMOVED
+- Discussions/Forum (Discussions, DiscussionThread, DiscussionCreate) — REMOVED
+- Guest/Learn page — REMOVED
+- About.aspx, Contact.aspx — REMOVED
+
+### Classroom Chat
+- Uses `ClassroomMessages` table for Teams-style messaging
+- Both enrolled students and the classroom instructor can send messages
+- Messages displayed with sender avatar initials, name, timestamp
+- Instructor messages highlighted with special badge
+- Page: `Student/ClassroomDetail.aspx` (Teams-style layout with sidebar tabs)
+
+### Live Challenges
+- Uses `ChallengeQuestions` and `ChallengeQuestionOptions` tables
+- Admin-created only (`CreatedByAdminID`)
+- Per-question countdown timer (configurable via `TimeLimitSeconds`)
+- Live leaderboard showing top 10 participants by score
+- One attempt per student per challenge (UNIQUE constraint)
+- Handled within `Student/Challenges.aspx`
+
+### Subscription / Upgrade
+- Simplified to 2 plans: Free ($0) and Pro ($9.99/month)
+- "Go Pro" link visible in navigation bar for free-tier students
+- Upgrade page: `Student/Upgrade.aspx` with payment modal
+- On upgrade: deactivates old subscription, inserts new Pro subscription
+
+### Pathway Enrollment
+- No auto-enrollment when visiting modules
+- Students must click "Enroll in Pathway" on `PathwayDetail.aspx`
+- Enrollment creates `ModuleProgress` rows for ALL modules in the pathway
+- Non-Foundation pathways blocked for Free users (shows "Upgrade to Pro to Enroll")
+- Foundation pathway freely enrollable by all students
+
+### Module Exams
+- Exams locked until all subtopics completed (checked server-side)
+- Handled within `Student/Exams.aspx` (merged page)
+- One question at a time with countdown timer
+- Score calculated server-side; XP awarded on pass
+
+### Assignments
+- Instructor creates assignments with questions via `Instructor/Assignments.aspx`
+- Supports Objective (MCQ) and Subjective (free-text) questions
+- Students view and answer via `Student/AssignmentDetail.aspx`
+- One submission per student per question (UNIQUE constraint)
+- Instructor can view submissions and give feedback/grades
+
+### Subtopic Learning Content
+- All subtopics have detailed HTML lesson content in `ContentBody`
+- Content displays before questions on `SubTopicView.aspx`
+- Clear visual separator between lesson and assessment questions
+- "Mark as Complete" button appears after questions
+
+### Navigation
+- Top navigation bar with role-specific links
+- "Go Pro" link (golden) in student nav for free-tier users
+- Logout button always visible next to avatar (red styling)
+- Dropdown menus for Learn and Compete sections
+- Logout redirects to `Default.aspx` (landing page)
