@@ -373,8 +373,9 @@
 
         <%-- Brand --%>
         <a class="lp-brand" href="Default.aspx" aria-label="CloudPhoria home">
-            <div class="lp-brand-icon" aria-hidden="true">CP</div>
-            <span class="lp-brand-name">Cloud<em>Phoria</em></span>
+            <img src="Images/LogoCloudPhoria.png" alt="CloudPhoria" style="height:40px;width:auto;border-radius:8px;"
+                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+            <div class="lp-brand-icon" style="display:none;" aria-hidden="true">CP</div>
         </a>
 
         <%-- Centre navigation links — mirror TryHackMe's category nav --%>
