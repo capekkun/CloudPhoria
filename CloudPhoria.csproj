@@ -235,6 +235,12 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Guest\Learn.aspx" />
+    <Content Include="Guest\Dashboard.aspx" />
+    <Content Include="Guest\Pathways.aspx" />
+    <Content Include="Guest\Modules.aspx" />
+    <Content Include="Guest\Practice.aspx" />
+    <Content Include="Guest\Pricing.aspx" />
+    <Content Include="Guest\Certifications.aspx" />
     <Content Include="Instructor\Dashboard.aspx" />
     <Content Include="Instructor\Modules.aspx" />
     <Content Include="Instructor\SubTopics.aspx" />
@@ -378,6 +384,48 @@
     </Compile>
     <Compile Include="Guest\Learn.aspx.designer.cs">
       <DependentUpon>Learn.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Guest\Dashboard.aspx.cs">
+      <DependentUpon>Dashboard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Guest\Dashboard.aspx.designer.cs">
+      <DependentUpon>Dashboard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Guest\Pathways.aspx.cs">
+      <DependentUpon>Pathways.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Guest\Pathways.aspx.designer.cs">
+      <DependentUpon>Pathways.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Guest\Modules.aspx.cs">
+      <DependentUpon>Modules.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Guest\Modules.aspx.designer.cs">
+      <DependentUpon>Modules.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Guest\Practice.aspx.cs">
+      <DependentUpon>Practice.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Guest\Practice.aspx.designer.cs">
+      <DependentUpon>Practice.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Guest\Pricing.aspx.cs">
+      <DependentUpon>Pricing.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Guest\Pricing.aspx.designer.cs">
+      <DependentUpon>Pricing.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Guest\Certifications.aspx.cs">
+      <DependentUpon>Certifications.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Guest\Certifications.aspx.designer.cs">
+      <DependentUpon>Certifications.aspx</DependentUpon>
     </Compile>
     <Compile Include="Instructor\Dashboard.aspx.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>
