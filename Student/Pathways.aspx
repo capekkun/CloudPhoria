@@ -93,7 +93,7 @@
         <div class="pw-grid">
             <asp:Repeater ID="rptPathways" runat="server">
                 <ItemTemplate>
-                    <a class="pw-card" href="MyLearning.aspx?pathwayID=<%# Eval("PathwayID") %>">
+                    <a class="pw-card" href="PathwayDetail.aspx?pathwayID=<%# Eval("PathwayID") %>">
                         <div class="pw-card-top" style="background:<%# Eval("AccentColour") %>;"></div>
                         <div class="pw-card-body">
                             <span class="pw-card-icon"><%# Eval("Icon") %></span>

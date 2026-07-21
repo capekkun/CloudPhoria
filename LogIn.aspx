@@ -241,7 +241,6 @@
             <%-- Brand --%>
             <a class="cp-login-brand" href="Default.aspx">
                 <div class="cp-login-logo" aria-hidden="true">CP</div>
-                <span class="cp-login-wordmark">Cloud<span>Phoria</span></span>
             </a>
 
             <%-- Heading --%>

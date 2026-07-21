@@ -17,14 +17,16 @@
     .cp-topnav {
         background: #1A2332;
         border-bottom: 1px solid rgba(255,255,255,0.06);
-        position: sticky; top: 0; z-index: 200;
-        height: 56px;
+        position: sticky; top: 0; z-index: 9999;
+        height: 72px;
         display: flex; align-items: center;
-        padding: 0 24px; gap: 0;
+        padding: 8px 24px;
+        gap: 0;
+        overflow: visible;
     }
 
     /* Brand */
-    .cp-topnav-brand { display:flex; align-items:center; gap:9px; text-decoration:none; margin-right:28px; flex-shrink:0; }
+    .cp-topnav-brand { display:flex; align-items:center; gap:9px; text-decoration:none; margin-right:28px; margin-left:12px; flex-shrink:0; }
     .cp-topnav-logo { width:32px; height:32px; background:linear-gradient(135deg,#0EA5E9,#6366F1);
         border-radius:8px; display:flex; align-items:center; justify-content:center;
         font-size:12px; font-weight:900; color:#fff; }
@@ -158,9 +160,8 @@
 
     <%-- Brand --%>
     <a class="cp-topnav-brand" href="/Default.aspx">
-        <img src="/Images/LogoCloudPhoria.png" alt="CloudPhoria" style="height:32px;width:auto;border-radius:8px;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
-        <div class="cp-topnav-logo" style="display:none;" aria-hidden="true">CP</div>
-        <span class="cp-topnav-wordmark">Cloud<em>Phoria</em></span>
+        <img src="/Images/LogoCloudPhoria.png" alt="CloudPhoria" style="height:70px;width:auto;border-radius:8px;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+        <div class="cp-topnav-logo" style="display:none;width:70px;height:70px;font-size:22px;" aria-hidden="true">CP</div>
     </a>
 
     <%-- Navigation links — role-specific --%>
@@ -193,6 +194,7 @@
                     <a href="/Student/Achievements.aspx">&#x1F3C5; Achievements</a>
                 </div>
             </div>
+            <a class="cp-topnav-link" href="/Student/Upgrade.aspx" style="color:#F59E0B;"><span class="cp-topnav-icon">&#x1F680;</span> Go Pro</a>
         </asp:Panel>
         <asp:Panel ID="pnlInstructorNav" runat="server" Visible="false">
             <a class="cp-topnav-link" href="/Instructor/Dashboard.aspx"><span class="cp-topnav-icon">&#x2302;</span> Dashboard</a>
@@ -229,6 +231,17 @@
             </div>
         </asp:Panel>
 
+        <%-- Go Pro button (Students on free plan) --%>
+        <asp:Panel ID="pnlGoPro" runat="server" Visible="false">
+            <a href="/Student/Upgrade.aspx" style="display:inline-flex;align-items:center;gap:5px;
+                background:linear-gradient(90deg,#6366F1,#8B5CF6);color:#fff;padding:6px 14px;
+                border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;
+                transition:opacity 0.15s;box-shadow:0 2px 8px rgba(99,102,241,0.3);"
+                onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                &#x1F680; Go Pro
+            </a>
+        </asp:Panel>
+
         <%-- Notifications bell --%>
         <asp:Panel ID="pnlNotifications" runat="server" Visible="false">
             <a class="cp-topnav-bell" runat="server" id="lnkNotifications"
@@ -242,10 +255,15 @@
 
         <%-- User avatar + dropdown --%>
         <asp:Panel ID="pnlUserMenu" runat="server" Visible="false">
-            <div class="cp-topnav-user">
+            <div class="cp-topnav-user" style="display:flex;align-items:center;gap:10px;">
                 <div class="cp-topnav-avatar" id="cpAvatarBtn" onclick="document.getElementById('cpUserDrop').classList.toggle('open');">
                     <asp:Literal ID="litTopbarInitials" runat="server" />
                 </div>
+                <asp:LinkButton ID="btnLogout" runat="server" CssClass="cp-topnav-link"
+                    style="color:#FCA5A5;font-size:13px;padding:6px 14px;border-radius:7px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);"
+                    OnClick="btnLogout_Click">
+                    &#x1F6AA; Log Out
+                </asp:LinkButton>
                 <div class="cp-topnav-dropdown" id="cpUserDrop">
                     <div class="cp-topnav-dropdown-header">
                         <div class="cp-topnav-dropdown-name"><asp:Literal ID="litTopbarName" runat="server" /></div>
@@ -254,11 +272,6 @@
                     <asp:HyperLink ID="lnkProfile" runat="server" NavigateUrl="/Student/Profile.aspx">&#x1F464; My Profile</asp:HyperLink>
                     <a href="/Student/Achievements.aspx">&#x1F3C5; Achievements</a>
                     <a href="/Student/Notifications.aspx">&#x1F514; Notifications</a>
-                    <asp:LinkButton ID="btnLogout" runat="server" CssClass="danger"
-                        OnClick="btnLogout_Click"
-                        OnClientClick="return confirm('Log out?');">
-                        &#x2192; Log Out
-                    </asp:LinkButton>
                 </div>
             </div>
         </asp:Panel>

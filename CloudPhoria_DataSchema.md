@@ -24,15 +24,17 @@ GO
 
 ## 2. SQL Script Run Order
 
-The full script is combined into one file, but it is built from three logical parts that must run in this order:
+The database is built up from five scripts, run in this order, each as a single batch:
 
 | Order | Section | Purpose |
 |---:|---|---|
 | 1 | `create_tables.sql` | Creates the `CloudPhoria` database objects — 52 tables, PKs, FKs, unique constraints, check constraints, and indexes. Includes the core schema plus the Boss Fight Fun Rooms extension. |
 | 2 | `seed_constants.sql` | Inserts seeded/constant data: subscription plans, pathways, certifications. |
 | 3 | `seed_dummy_data.sql` | Inserts sample users, students, instructors, admins, and all activity data (modules, subtopics, quizzes, exams, progress, XP, badges, classrooms, forums, boss fights, etc.). |
+| 4 | `cloudphoria_additional_content.sql` | Fills out `Modules`/`SubTopics`/`LearningMaterials`/`Questions`/`AnswerOptions` so every one of the 7 `Pathways` has 4–8 modules and every module has 3+ subtopics. |
+| 5 | `cloudphoria_exams_and_bossfights.sql` | Tops up `PracticeQuestions` and `ExamQuestions` to 10 per module, and adds `Bosses` + `BossFightQuestions`/`BossFightQuestionOptions` for `BossFightRooms` 5–12. |
 
-Do not run insert sections before table creation. If SQL Server says `Invalid object name`, it normally means table creation did not run successfully, the query ran against the wrong database, or the `USE` statement mismatch described in Section 1 above sent the insert statements to a different database than the tables were created in.
+None of these five scripts create or alter tables — steps 2–5 are all `INSERT`s into the 52 tables created in step 1. Do not run any insert step before table creation, and don't run steps 4–5 against a fresh/empty database — they reference existing `ModuleID`/`RoomID` values, so they need steps 1–3 done first. If SQL Server says `Invalid object name`, it normally means table creation did not run successfully, the query ran against the wrong database, or the `USE` statement mismatch described in Section 1 above sent the insert statements to a different database than the tables were created in.
 
 ---
 
@@ -151,7 +153,19 @@ Inserted through `seed_constants.sql` — treat as reference/lookup data:
 | `Pathways` | 7 pathways: 1 Foundation (`IsFoundation = 1`) + 6 specialisations. |
 | `Certifications` | 6 certifications, one per non-foundation pathway. |
 
-`Modules`, `SubTopics`, `Badges`, `BossFightRooms`, and `Bosses` are instructor/admin-authored content seeded via `seed_dummy_data.sql` for demo purposes — in production these grow as instructors/admins publish new content, so treat them as **managed content**, not fixed constants.
+`Modules`, `SubTopics`, `LearningMaterials`, `Questions`/`AnswerOptions`, `PracticeQuestions`, `ExamQuestions`, `Badges`, `BossFightRooms`, and `Bosses`/`BossFightQuestions` are instructor/admin-authored content, seeded via `seed_dummy_data.sql` and topped up via `cloudphoria_additional_content.sql` and `cloudphoria_exams_and_bossfights.sql` — in production these grow as instructors/admins publish new content, so treat them as **managed content**, not fixed constants.
+
+Current state after all 5 scripts:
+
+| Table | Rows | Notes |
+|---|---:|---|
+| `Modules` | 53 | Spans all 7 `Pathways`, 4–8 modules each. |
+| `SubTopics` | 3+ per module | Every module has at least 3. |
+| `PracticeQuestions` / `ExamQuestions` | 10 per module | |
+| `BossFightRooms` | 12 | |
+| `Bosses` | 12 | Every room now has exactly one boss (1:1). |
+
+**Note:** `seed_dummy_data.sql` has been re-run more than once without an idempotency guard, which is why `Modules`/`BossFightRooms` counts include duplicate copies, and why rooms 5–12 were briefly missing a `Boss` row (fixed by `cloudphoria_exams_and_bossfights.sql`). This is a data/process issue, not a schema issue — no table or constraint needs to change for it — and it isn't being fixed as part of this update.
 
 ---
 
@@ -1069,10 +1083,30 @@ Check for the `USE` statement mismatch noted in Section 1 before running seed sc
 SELECT name FROM sys.databases WHERE name IN ('CloudPhoria', 'CloudPhoriaDB');
 ```
 
+Check for the duplicate-reseed issue noted in Section 6 — flags modules/rooms that look like repeated copies by name/title:
+
+```sql
+-- Duplicate Modules by name (expect 1 per name if no repeated reseed occurred)
+SELECT ModuleName, COUNT(*) AS Copies
+FROM Modules
+GROUP BY ModuleName
+HAVING COUNT(*) > 1
+ORDER BY Copies DESC;
+
+-- BossFightRooms with no Boss row yet (should return 0 rows after cloudphoria_exams_and_bossfights.sql)
+SELECT r.RoomID, r.Title
+FROM BossFightRooms r
+LEFT JOIN Bosses b ON b.RoomID = r.RoomID
+WHERE b.BossID IS NULL;
+```
+
 ---
 
 # Final Reminder
 
-This guide documents the structure, relationships, and development rules of the **CloudPhoria** database, generated directly from `cloudphoria_setup.sql` (Group 14 | CT050-3-2-WAPP). It intentionally does not restate every sample data row — for exact seed/sample records, refer back to that file's `seed_constants.sql` and `seed_dummy_data.sql` sections.
+This guide documents the structure, relationships, and development rules of the **CloudPhoria** database (Group 14 | CT050-3-2-WAPP), including the content added by `cloudphoria_additional_content.sql` and `cloudphoria_exams_and_bossfights.sql`. It intentionally does not restate every sample data row — for exact seed/sample records, refer back to the SQL files directly.
 
-**Action item before first run:** resolve the `USE CloudPhoria;` vs `USE CloudPhoriaDB;` inconsistency described in Section 1 so all three script sections target the same database.
+**Action items before your next fresh run:**
+1. Resolve the `USE CloudPhoria;` vs `USE CloudPhoriaDB;` inconsistency described in Section 1 so all script sections target the same database.
+2. Run all five scripts in the order in Section 2: `create_tables.sql` → `seed_constants.sql` → `seed_dummy_data.sql` → `cloudphoria_additional_content.sql` → `cloudphoria_exams_and_bossfights.sql`.
+3. Before re-running the full sequence again on a shared/existing database, note the duplicate-reseed issue in Section 6 — without a guard, re-running `seed_dummy_data.sql` will keep duplicating `Modules` and `BossFightRooms`.

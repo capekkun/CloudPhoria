@@ -97,14 +97,14 @@ namespace CloudPhoria.Student
 
             DataTable dtOpts = new DataTable();
             using (SqlCommand cmd = new SqlCommand(
-                @"SELECT OptionID, OptionText FROM PracticeQuestionOptions
-                  WHERE PracticeQuestionID=@QID ORDER BY OptionID", conn))
+                @"SELECT TOP 4 MIN(OptionID) AS OptionID, OptionText FROM PracticeQuestionOptions
+                  WHERE PracticeQuestionID=@QID GROUP BY OptionText ORDER BY MIN(OptionID)", conn))
             {
                 cmd.Parameters.Add("@QID", SqlDbType.Int).Value = questionID;
                 using (SqlDataAdapter da = new SqlDataAdapter(cmd)) da.Fill(dtOpts);
             }
 
-            // Render as HTML links
+            // Render as HTML links using __doPostBack
             var sb = new System.Text.StringBuilder();
             for (int i = 0; i < dtOpts.Rows.Count; i++)
             {
@@ -112,8 +112,14 @@ namespace CloudPhoria.Student
                 string otext = HttpUtility.HtmlEncode(dtOpts.Rows[i]["OptionText"].ToString());
                 sb.AppendFormat(
                     "<a href='#' class='pq-opt' onclick=\"document.getElementById('{0}').value='{1}';" +
-                    "document.getElementById('{2}').click();return false;\">{3}</a>",
-                    hdnPQAnswer.ClientID, oid, btnPQSubmit.ClientID, otext);
+                    "__doPostBack('{2}','');return false;\">{3}</a>",
+                    hdnPQAnswer.ClientID, oid, btnPQSubmit.UniqueID, otext);
+            }
+            if (dtOpts.Rows.Count == 0)
+            {
+                sb.Append("<div style='padding:16px;color:#DC2626;font-size:13px;background:rgba(239,68,68,0.08);border-radius:8px;'>" +
+                    "&#x26A0; No answer options found for PracticeQuestionID=" + questionID +
+                    ". Please add options to the PracticeQuestionOptions table.</div>");
             }
             litPQOpts.Text = sb.ToString();
 

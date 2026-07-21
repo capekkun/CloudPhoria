@@ -59,18 +59,15 @@
     </div>
 </asp:Panel>
 
-<%-- Mark complete button --%>
-<asp:Panel ID="pnlComplete" runat="server" Visible="false">
-    <div class="cp-card" style="text-align:center;">
-        <p style="font-size:14px;color:#64748B;margin:0 0 16px;">
-            Answer all questions correctly to complete this subtopic and earn XP.
-        </p>
-    </div>
-</asp:Panel>
-
 <%-- Questions section --%>
 <asp:Panel ID="pnlQuestions" runat="server" Visible="false">
-    <h3 style="font-size:16px;font-weight:700;margin:24px 0 16px;">&#x2753; Questions</h3>
+    <div style="margin:32px 0 16px;padding:16px 20px;background:linear-gradient(90deg,#EEF2FF,#E0E7FF);
+        border-radius:10px;border-left:4px solid #6366F1;">
+        <p style="font-size:14px;font-weight:600;color:#312E81;margin:0 0 4px;">&#x1F4DD; Test Your Knowledge</p>
+        <p style="font-size:13px;color:#4338CA;margin:0;">
+            Make sure you've read the lesson above before answering. Select the correct option for each question.
+        </p>
+    </div>
     <asp:Repeater ID="rptQuestions" runat="server">
         <ItemTemplate>
             <div class="cp-card" style="border-left:3px solid var(--cp-indigo);margin-bottom:16px;">
@@ -90,10 +87,49 @@
     </asp:Repeater>
 </asp:Panel>
 
+<%-- Mark complete button (after questions) --%>
+<asp:Panel ID="pnlComplete" runat="server" Visible="false">
+    <div class="cp-card" style="text-align:center;margin-top:20px;">
+        <p style="font-size:14px;color:#64748B;margin:0 0 16px;">
+            &#x2705; Done reviewing? Mark this subtopic as complete to earn XP.
+        </p>
+        <asp:Button ID="btnComplete" runat="server" Text="&#x2713; Mark as Complete"
+            CssClass="cp-btn cp-btn-primary"
+            OnClick="btnComplete_Click"
+            OnClientClick="return confirm('Mark this subtopic as complete?');" />
+    </div>
+</asp:Panel>
+
 <asp:Panel ID="pnlAlreadyDone" runat="server" Visible="false">
     <div class="cp-alert cp-alert-success">
         &#x2713; You have completed this subtopic!
     </div>
 </asp:Panel>
+
+<script>
+function selectAnswer(el, result) {
+    // Disable all options in the same question card
+    var card = el.closest('.cp-card');
+    var opts = card.querySelectorAll('.st-opt');
+    for (var i = 0; i < opts.length; i++) {
+        opts[i].style.pointerEvents = 'none';
+        opts[i].style.opacity = '0.6';
+    }
+    // Highlight selected
+    if (result === 'correct') {
+        el.style.background = 'rgba(34,197,94,0.15)';
+        el.style.borderColor = '#22C55E';
+        el.style.color = '#16A34A';
+        el.innerHTML = '&#x2713; ' + el.textContent.substring(2);
+    } else {
+        el.style.background = 'rgba(239,68,68,0.15)';
+        el.style.borderColor = '#EF4444';
+        el.style.color = '#DC2626';
+        el.innerHTML = '&#x2717; ' + el.textContent.substring(2);
+    }
+    el.style.opacity = '1';
+    el.style.fontWeight = '600';
+}
+</script>
 
 </asp:Content>

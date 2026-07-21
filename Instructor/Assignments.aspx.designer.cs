@@ -29,6 +29,17 @@ namespace CloudPhoria.Instructor
         protected global::System.Web.UI.WebControls.TextBox txtTitle;
         protected global::System.Web.UI.WebControls.TextBox txtADesc;
         protected global::System.Web.UI.WebControls.TextBox txtDueDate;
+        protected global::System.Web.UI.WebControls.TextBox txtAQ1;
+        protected global::System.Web.UI.WebControls.TextBox txtAQ1O1;
+        protected global::System.Web.UI.WebControls.TextBox txtAQ1O2;
+        protected global::System.Web.UI.WebControls.TextBox txtAQ1O3;
+        protected global::System.Web.UI.WebControls.TextBox txtAQ1O4;
+        protected global::System.Web.UI.WebControls.TextBox txtAQ2;
+        protected global::System.Web.UI.WebControls.TextBox txtAQ2O1;
+        protected global::System.Web.UI.WebControls.TextBox txtAQ2O2;
+        protected global::System.Web.UI.WebControls.TextBox txtAQ2O3;
+        protected global::System.Web.UI.WebControls.TextBox txtAQ2O4;
+        protected global::System.Web.UI.WebControls.TextBox txtAQ3;
         protected global::System.Web.UI.WebControls.Button btnCreate;
     }
 }

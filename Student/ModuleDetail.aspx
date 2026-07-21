@@ -96,21 +96,5 @@
     </asp:Panel>
 </div>
 
-<%-- Exam section --%>
-<asp:Panel ID="pnlExam" runat="server" Visible="false">
-    <div class="cp-card" style="margin-top:20px;border-left:3px solid var(--cp-indigo);">
-        <h3 style="margin:0 0 8px;font-size:15px;font-weight:700;">&#x1F4CB; Module Exam</h3>
-        <p style="font-size:13px;color:#64748B;margin:0 0 12px;">
-            Complete all subtopics, then take the timed exam to earn your XP and badge.
-        </p>
-        <div style="font-size:13px;color:#64748B;margin-bottom:12px;">
-            Duration: <asp:Literal ID="litExamDuration" runat="server" /> min &bull;
-            Pass mark: <asp:Literal ID="litExamPass" runat="server" />%
-        </div>
-        <a href="ExamStart.aspx?moduleID=<%= Request.QueryString["moduleID"] %>" class="cp-btn cp-btn-primary">
-            Start Exam
-        </a>
-    </div>
-</asp:Panel>
 
 </asp:Content>

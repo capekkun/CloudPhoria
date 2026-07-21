@@ -23,11 +23,11 @@ namespace CloudPhoria
 
             CheckAuthentication();
             LoadCurrentUser();
+            ConfigureNavigation();
+            LoadNotificationCount();
 
             if (!IsPostBack)
             {
-                ConfigureNavigation();
-                LoadNotificationCount();
                 LoadXP();
             }
         }
@@ -157,6 +157,19 @@ namespace CloudPhoria
                         cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
                         object r = cmd.ExecuteScalar();
                         litTopXP.Text = (r != null && r != DBNull.Value) ? r.ToString() : "0";
+                    }
+
+                    // Check if on free plan to show "Go Pro" button
+                    using (SqlCommand cmd = new SqlCommand(
+                        @"SELECT TOP 1 sp.CanAccessFoundationOnly FROM UserSubscriptions us
+                          INNER JOIN SubscriptionPlans sp ON sp.PlanID=us.PlanID
+                          WHERE us.StudentID=@SID AND us.IsActive=1 ORDER BY us.StartDate DESC", conn))
+                    {
+                        cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
+                        object r = cmd.ExecuteScalar();
+                        bool isFoundationOnly = (r == null || r == DBNull.Value) ? true : Convert.ToBoolean(r);
+                        if (isFoundationOnly)
+                            pnlGoPro.Visible = true;
                     }
                 }
             }

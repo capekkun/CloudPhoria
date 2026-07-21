@@ -17,6 +17,9 @@
         protected global::System.Web.UI.WebControls.Panel pnlXPCounter;
         protected global::System.Web.UI.WebControls.Literal litTopXP;
 
+        // Go Pro button
+        protected global::System.Web.UI.WebControls.Panel pnlGoPro;
+
         // Notifications
         protected global::System.Web.UI.WebControls.Panel pnlNotifications;
         protected global::System.Web.UI.HtmlControls.HtmlAnchor lnkNotifications;

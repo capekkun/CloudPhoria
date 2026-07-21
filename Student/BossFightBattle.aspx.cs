@@ -197,15 +197,22 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
+                    // Get a random question NOT already answered in this session
+                    int sessionID = (int)ViewState["SessionID"];
                     string sql = @"SELECT TOP 1 bfq.BossFightQuestionID, bfq.QuestionText,
                                           bfq.DamageValue, bfq.TimeLimitSeconds
                                    FROM BossFightQuestions bfq
                                    WHERE bfq.RoomID = @RoomID
+                                   AND bfq.BossFightQuestionID NOT IN (
+                                       SELECT bsa.BossFightQuestionID FROM BattleSessionAnswers bsa
+                                       WHERE bsa.SessionID = @SessionID
+                                   )
                                    ORDER BY NEWID()";
 
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
                         cmd.Parameters.Add("@RoomID", SqlDbType.Int).Value = roomID;
+                        cmd.Parameters.Add("@SessionID", SqlDbType.Int).Value = sessionID;
                         using (SqlDataReader rdr = cmd.ExecuteReader())
                         {
                             if (rdr.Read())
@@ -232,10 +239,11 @@ namespace CloudPhoria.Student
                                 // Load options into the 4 static buttons
                                 DataTable dtOpts = new DataTable();
                                 using (SqlCommand optCmd = new SqlCommand(
-                                    @"SELECT OptionID, OptionText
+                                    @"SELECT TOP 4 MIN(OptionID) AS OptionID, OptionText
                                       FROM BossFightQuestionOptions
                                       WHERE BossFightQuestionID = @QID
-                                      ORDER BY NEWID()", conn))
+                                      GROUP BY OptionText
+                                      ORDER BY MIN(OptionID)", conn))
                                 {
                                     optCmd.Parameters.Add("@QID", SqlDbType.Int).Value = qID;
                                     using (SqlDataAdapter da = new SqlDataAdapter(optCmd))
@@ -250,8 +258,8 @@ namespace CloudPhoria.Student
                                     string otext = HttpUtility.HtmlEncode(dtOpts.Rows[i]["OptionText"].ToString());
                                     sb.AppendFormat(
                                         "<a href='#' class='bf-opt-btn' onclick=\"document.getElementById('{0}').value='{1}';" +
-                                        "document.getElementById('{2}').click();return false;\">{3}</a>",
-                                        hdnAnswer.ClientID, oid, btnProcessAnswer.ClientID, otext);
+                                        "__doPostBack('{2}','');return false;\">{3}</a>",
+                                        hdnAnswer.ClientID, oid, btnProcessAnswer.UniqueID, otext);
                                 }
                                 litBFOpts.Text = sb.ToString();
 
@@ -281,7 +289,8 @@ namespace CloudPhoria.Student
         protected void btnProcessAnswer_Click(object sender, EventArgs e)
         {
             int selectedOptionID;
-            if (!int.TryParse(hdnAnswer.Value, out selectedOptionID)) return;
+            if (!int.TryParse(hdnAnswer.Value, out selectedOptionID))
+                selectedOptionID = 0; // timeout or invalid
 
             int qID       = (int)ViewState["CurrentQID"];
             int damage    = (int)ViewState["CurrentDamage"];
@@ -298,12 +307,16 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    using (SqlCommand cmd = new SqlCommand(
-                        "SELECT IsCorrect FROM BossFightQuestionOptions WHERE OptionID = @OID", conn))
+                    // Check if selected option is correct (0 = timeout)
+                    if (selectedOptionID > 0)
                     {
-                        cmd.Parameters.Add("@OID", SqlDbType.Int).Value = selectedOptionID;
-                        object r = cmd.ExecuteScalar();
-                        isCorrect = (r != null && Convert.ToBoolean(r));
+                        using (SqlCommand cmd = new SqlCommand(
+                            "SELECT IsCorrect FROM BossFightQuestionOptions WHERE OptionID = @OID", conn))
+                        {
+                            cmd.Parameters.Add("@OID", SqlDbType.Int).Value = selectedOptionID;
+                            object r = cmd.ExecuteScalar();
+                            isCorrect = (r != null && Convert.ToBoolean(r));
+                        }
                     }
 
                     int dmgToBoss   = isCorrect ? damage : 0;
@@ -430,6 +443,32 @@ namespace CloudPhoria.Student
                                 cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
                                 cmd.ExecuteNonQuery();
                             }
+
+                            // Create notification for the victory
+                            using (SqlCommand cmd = new SqlCommand(
+                                @"INSERT INTO Notifications (UserID, Message, NotificationType, IsRead, CreatedAt)
+                                  VALUES (@UID, @Msg, 'BossFightWon', 0, GETDATE())", conn, tran))
+                            {
+                                cmd.Parameters.Add("@UID", SqlDbType.Int).Value = studentID;
+                                cmd.Parameters.Add("@Msg", SqlDbType.NVarChar, 500).Value =
+                                    "Victory! You defeated the boss. +" + xpReward + " XP earned.";
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+
+                        // Insert notification for boss fight result
+                        string notifMsg = won
+                            ? "Victory! You defeated the boss. +" + xpReward + " XP earned."
+                            : "You were defeated by the boss. Want to try again?";
+                        string notifType = won ? "BossFightWon" : "BossFightLost";
+                        using (SqlCommand cmd = new SqlCommand(
+                            @"INSERT INTO Notifications (UserID, Message, NotificationType, IsRead, CreatedAt)
+                              VALUES (@UID, @Msg, @Type, 0, GETDATE())", conn, tran))
+                        {
+                            cmd.Parameters.Add("@UID",  SqlDbType.Int).Value = studentID;
+                            cmd.Parameters.Add("@Msg",  SqlDbType.NVarChar, 500).Value = notifMsg;
+                            cmd.Parameters.Add("@Type", SqlDbType.NVarChar, 30).Value = notifType;
+                            cmd.ExecuteNonQuery();
                         }
 
                         tran.Commit();
