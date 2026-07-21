@@ -1348,6 +1348,22 @@ No new tables. `Admin/Dashboard.aspx` now reads/writes these existing tables tha
 
 Script: `Database/admin_setup.sql` (read-only verification query; the bulk-approve statement is commented out on purpose).
 
+### Content Authority Changed — Admin-Only Modules/SubTopics/Questions
+
+Previously Instructors created their own `Modules`/`SubTopics`/`Questions` directly. The user changed this: **only Admin creates/edits/publishes/deletes this content tree now.** No schema change — `CreatedByInstructorID` on all three tables was already nullable and already the mechanism for ownership; this change is purely about which role's application code is allowed to INSERT/UPDATE/DELETE against these tables.
+
+`Admin/Courses.aspx` now has:
+- A "Create a New Module" form at the top level (INSERTs into `Modules` with `CreatedByInstructorID=NULL`).
+- `Courses.aspx?moduleID=X` drill-down — "Add a Subtopic" form (INSERTs into `SubTopics`, also `CreatedByInstructorID=NULL` initially), plus publish/unpublish/delete for existing subtopics.
+- `Courses.aspx?subTopicID=X` drill-down — "Add a Question" form (INSERTs into `Questions` + `AnswerOptions` for MCQ), plus delete for existing questions.
+
+`Instructor/Modules.aspx`, `SubTopics.aspx`, `Questions.aspx` are now **read-only list views**:
+- `Instructor/Modules.aspx` filters `Modules WHERE CreatedByInstructorID=@ID` (unchanged filter, but the instructor can no longer INSERT/UPDATE/DELETE against this table — only Admin's page can).
+- `Instructor/SubTopics.aspx` now filters via `SubTopics st INNER JOIN Modules m ... WHERE m.CreatedByInstructorID=@ID` — joined through the parent module rather than the subtopic's own `CreatedByInstructorID`, since Admin (not the instructor) is the one who sets that column when creating a subtopic. The value still ends up correct once a module is assigned (see cascade below), but the *reason* the instructor sees it is "my module was assigned to me," not "I created this subtopic."
+- `Instructor/Questions.aspx` uses the same join-through-module pattern.
+
+Instructors keep full CRUD over `LearningMaterials` (`Instructor/Materials.aspx`) and everything classroom-related (`Classrooms`, `ClassroomMaterials`, `ClassroomAssignments`, instructor-created `Challenges`) — this authority change is scoped specifically to the Modules/SubTopics/Questions tree, not the whole Instructor role.
+
 ### Module Reassignment Cascade (Fixed)
 
 There is no single "owner" column for a module's full content tree — `Modules`, `SubTopics`, `Questions`, `LearningMaterials`, `PracticeQuestions`, and `ExamQuestions` each have their own independent instructor-ownership column (`CreatedByInstructorID` or `InstructorID`), and instructor-facing pages filter strictly by their own table's column, never by the parent module's owner. Originally, `Admin/Courses.aspx`'s "Assign Instructor" dropdown only updated `Modules.CreatedByInstructorID`, so reassigning a module didn't actually transfer edit access to anything inside it — the previous instructor silently kept full control of the subtopics/questions/materials.

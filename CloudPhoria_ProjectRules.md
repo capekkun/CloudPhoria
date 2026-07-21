@@ -28,6 +28,8 @@ This document grew over many development sessions and contains historical notes 
 
 **Admin scope — intentionally simpler than the original assignment brief** (explicit user decision): Admin manages Users (full CRUD), Instructor Approvals, Courses (assign + publish), Global Challenges, Reports (moderation), Audit Logs. Admin does **NOT** manage subscription pricing (fixed in `Student/Upgrade.aspx` code), does NOT review Fun Rooms (deleted feature), and has NO gamification/XP-formula settings page.
 
+**Content authority — Admin-only Modules/SubTopics/Questions (Changed).** Instructors no longer create/edit/publish/delete Modules, SubTopics, or Questions — only Admin can, via `Admin/Courses.aspx` (top-level module creation + `?moduleID=`/`?subTopicID=` drill-down for subtopics/questions). Instructors only see this content read-only on their own pages, once an Admin assigns a module to them via the existing "Assign Instructor" cascade. See Section 12b for full detail. Instructors keep full control of Classrooms, classroom Materials/Assignments/Challenges, and `LearningMaterials` uploads (Section 21/29) — this change only affects the module/subtopic/question content tree.
+
 **Recently fixed gaps (see Section 39 subsections for detail):**
 - Report submission — `Student/Profile.aspx` and `Instructor/Profile.aspx` now have a working "Report an Issue" form that inserts into `Reports` (previously `Admin/Reports.aspx` could only read/update, nothing ever created a report).
 - Classroom material upload — `Instructor/Classrooms.aspx` now has upload/list/delete for `ClassroomMaterials` (previously `Student/ClassroomDetail.aspx`'s Files tab could only display materials, nothing ever wrote them).
@@ -466,6 +468,32 @@ An instructor with `Pending` or `Rejected` status must not be allowed to:
 The exact restricted experience should follow the existing project requirement.
 
 Do not invent new license status values.
+
+## 12b. Content Authority — Admin-Only Module/SubTopic/Question Creation (Changed)
+
+**This is a significant authority change from earlier in the project — read carefully before touching Modules, SubTopics, or Questions.**
+
+Previously, Instructors created their own Modules/SubTopics/Questions directly (via `Instructor/Modules.aspx`, `SubTopics.aspx`, `Questions.aspx`), and `CreatedByInstructorID` was set to whoever created the row. The user explicitly changed this: **only Admin may create, edit, publish, or delete Modules, SubTopics, and Questions.** Instructors no longer have create/edit/publish/delete rights over this content tree — they only view whatever has been assigned to them.
+
+**New flow:**
+1. Admin creates a Module via `Admin/Courses.aspx` (top-level "Create a New Module" form) — `CreatedByInstructorID` starts as `NULL` (unassigned).
+2. Admin drills into that module (`Courses.aspx?moduleID=X`) to create SubTopics — also `CreatedByInstructorID=NULL` initially.
+3. Admin drills into a subtopic (`Courses.aspx?subTopicID=X`) to create Questions (MCQ/Regex/StringMatch, same option-entry pattern as the old Instructor page) — also unassigned initially.
+4. Admin uses the existing "Assign Instructor" dropdown (Section 43's cascade) to assign the module to an Approved instructor. This cascades `CreatedByInstructorID`/`InstructorID` across `Modules`, `SubTopics`, `Questions`, `LearningMaterials`, `PracticeQuestions`, `ExamQuestions` in one transaction — exactly the mechanism already built for this purpose (Section 43).
+5. Only after assignment does the instructor see that content on their (now read-only) `Instructor/Modules.aspx`/`SubTopics.aspx`/`Questions.aspx` pages.
+
+**What Instructor pages became read-only:**
+- `Instructor/Modules.aspx` — list only. No "New Module" button, no publish/unpublish, no delete. Links through to `SubTopics.aspx?moduleID=`.
+- `Instructor/SubTopics.aspx` — list only, filtered to subtopics whose parent module is assigned to the current instructor (`INNER JOIN Modules m ... WHERE m.CreatedByInstructorID=@ID`, no longer filtered by the subtopic's own `CreatedByInstructorID` since Admin — not the instructor — sets that value). No create/publish/delete. Links through to `Questions.aspx?subTopicID=`.
+- `Instructor/Questions.aspx` — list only, same join-through-module filtering pattern. No create/delete.
+
+**What did NOT change (still Instructor-owned, per the user's own wording "and so on" was interpreted as the module/topic/question content tree specifically, not the whole Instructor role):**
+- `Instructor/Materials.aspx` — instructors can still upload `LearningMaterials` files to subtopics assigned to them. Ownership check still works because the Assign cascade (step 4 above) sets `SubTopics.CreatedByInstructorID`, which `Materials.aspx`'s ownership check reads.
+- `Instructor/Classrooms.aspx`, `Assignments.aspx`, `Challenges.aspx` — classroom-level features (chat, classroom materials, classroom assignments, instructor-created challenges) are unrelated to the Modules/SubTopics/Questions content tree and remain fully instructor-owned, unchanged.
+
+**No schema changes.** `Modules.CreatedByInstructorID`, `SubTopics.CreatedByInstructorID`, `Questions.CreatedByInstructorID` were already nullable/instructor-assignable columns — this change is purely about which role's UI is allowed to write to them, enforced in application code (page-level checks + which pages even expose create/edit/delete controls), not a database constraint.
+
+**Page count impact: none.** No new pages were created. `Admin/Courses.aspx` was extended with the module-creation form plus two query-string drill-down views (`?moduleID=` for subtopics, `?subTopicID=` for questions) — same page, same pattern already used everywhere else in this project (Exams, Challenges, BossFights, Classrooms). The three Instructor pages kept their existing `.aspx` files, just with reduced markup/code (list only). Still 38 pages total.
 
 ## 13. Main Learning Structure
 
@@ -2257,11 +2285,15 @@ This is the fix for "why did all my instructor's modules/subtopics/questions/cha
 - Below that, a read-only table of every instructor and their current status for reference.
 - **Important:** the instructor's `Session["LicenseStatus"]` is set once at login time (see `LogIn.aspx.cs`). If an Admin approves an instructor while they're still logged in, that instructor must log out and back in for their session to pick up the new `Approved` status and regain access to Modules/SubTopics/Questions/Classrooms/Materials/Assignments/Challenges.
 
-### Admin/Courses.aspx — Manage & Assign Courses
+### Admin/Courses.aspx — Manage & Assign Courses (Now includes full Module/SubTopic/Question CRUD, see Section 12b)
 - Read-only grid of all `Pathways` with module counts.
+- "Create a New Module" form — Admin is now the only role that can create modules (name, description, difficulty, XP, exam duration/pass mark). New modules start unassigned (`CreatedByInstructorID=NULL`).
 - Table of all `Modules` across every pathway with:
+  - "Subtopics" link → drills into `Courses.aspx?moduleID=X`, a view with a "Add a Subtopic" form (name, content body, order, XP) and a list of existing subtopics with Publish/Unpublish/Delete, plus a "Questions" link per subtopic drilling one level deeper.
+  - "Questions" link (from the subtopic drill-down) → `Courses.aspx?subTopicID=X`, a view with an "Add a Question" form (text, type MCQ/Regex/StringMatch, XP, order, correct answer, and up to 4 MCQ options with a checkbox for the correct one) and a list of existing questions with Delete.
   - A per-row dropdown (populated from `Instructors WHERE LicenseStatus='Approved'`) to reassign a module — this is the "choose the reliable instructor to manage" course-assignment requirement. **Assigning is a full ownership transfer, not just a label** — see the cascade behaviour below.
   - Publish/Unpublish toggle (`Modules.IsPublished`) — this is the admin-level content moderation/staging control, reusing the existing publish flag instead of a separate review queue.
+  - Delete — removes the module outright (fails with a friendly error if subtopics/content still reference it, same FK-safety pattern as Section 36).
 
 **Assign = cascade to all child content (Fixed — was previously a shallow, misleading update).** The schema does not have one "owner" column per module; `SubTopics`, `Questions`, `LearningMaterials`, and `PracticeQuestions`/`ExamQuestions` each carry their own independent instructor-ownership column, and every `Instructor/*.aspx` page filters strictly by its own column rather than by the parent module's owner. Earlier, "Assign" only updated `Modules.CreatedByInstructorID`, which meant the new instructor got the label but not actual edit access to the subtopics/questions/materials inside — the original instructor silently kept full edit rights. That was confusing and not what "assign a module to an instructor" should mean.
 
