@@ -2128,3 +2128,68 @@ CloudPhoria should remain:
 - Logout button always visible next to avatar (red styling)
 - Dropdown menus for Learn and Compete sections
 - Logout redirects to `Default.aspx` (landing page)
+
+
+## 40. Guest Read-Only Access (Added)
+
+Guests (not logged in) can now browse a subset of student pages in **read-only mode**:
+
+**Guest-accessible pages:**
+- `Student/Pathways.aspx` — browse all pathways (shows "Guest" notice instead of Free plan notice)
+- `Student/PathwayDetail.aspx` — view pathway info, modules, exam info (Enroll button replaced with "Register / Upgrade to Enroll")
+- `Student/ModuleDetail.aspx` — view module + subtopics list (no enrollment check for guests)
+- `Student/SubTopicView.aspx` — read full lesson content, but questions are replaced with a "Register for Free" prompt (`pnlGuestPrompt`)
+- `Student/BossFights.aspx` — browse boss fight rooms (Enter Battle replaced with "Register to Battle")
+- `Student/Challenges.aspx` — browse challenges (Join replaced with "Register to Join")
+- `Student/Upgrade.aspx` — view pricing (buttons redirect to Register instead of processing payment)
+
+**How guest detection works in code-behind:**
+```csharp
+bool isGuest = (Session["UserID"] == null || Session["Role"] == null ||
+    Session["Role"].ToString() != "Student");
+```
+Use `studentID = Session["UserID"] != null ? Convert.ToInt32(Session["UserID"]) : 0;` and guard any student-specific SQL (subscription checks, enrollment checks, progress writes) with `if (!isGuest) { ... }`.
+
+**Guest navigation:**
+- `Site.Master.cs` `CheckAuthentication()` no longer redirects to login when there's no session — instead it sets `pnlGuestNav.Visible = true` and `pnlGuestActions.Visible = true`, then returns early (skips `LoadCurrentUser`, `ConfigureNavigation`, `LoadNotificationCount`, `LoadXP`).
+- Guest nav bar shows: Browse Pathways, Boss Fights, Challenges, Pricing + "Log In" / "Join for Free" buttons.
+- `Default.aspx` (landing page) does NOT use `Site.Master` — it has its own nav with the same links plus a "Browse Pathways" preview section (pathway + module list, read-only, populated by `Default.aspx.cs LoadGuestPathways()`).
+
+**Pages that still require login (no guest access):** Dashboard, Exams, Classrooms, ClassroomDetail, AssignmentDetail, Achievements, Notifications, Profile, MyLearning — these still use the original redirect-to-login pattern.
+
+**Tier comparison:**
+| | Guest | Free Plan | Pro Plan |
+|---|---|---|---|
+| Browse pathways/modules/lessons | ✓ read-only | ✓ | ✓ |
+| Answer questions / earn XP | ✗ | ✓ (Foundation only) | ✓ (all) |
+| Enroll in pathways | ✗ | ✓ (Foundation) | ✓ (all) |
+| Take exams / boss fights / challenges | ✗ | ✓ (Foundation) | ✓ |
+| Classrooms / Assignments | ✗ (requires login) | ✓ | ✓ |
+
+## 41. Drag-and-Drop Boss Fights (Added)
+
+The boss battle mechanic was rebuilt as **drag-and-drop** instead of click-to-answer, and merged directly into `Student/BossFights.aspx` (no separate `BossFightBattle.aspx` page — keeps page count at 30).
+
+**No schema changes** — reuses the existing `BossFightRooms`, `Bosses`, `BossFightQuestions`, `BossFightQuestionOptions`, `BattleSessions`, `BattleSessionAnswers` tables exactly as documented in Section 23.
+
+**How it works:**
+- `BossFights.aspx?roomID=X` (only for logged-in students) shows the battle arena inline instead of the room list.
+- 4 answer options render as `.drag-opt` draggable `<div>` elements; one `.drop-zone` div is the target.
+- Student drags (or taps, for touch/accessibility fallback) an option into the drop zone → JS sets a hidden field and auto-clicks a hidden `asp:Button` to postback.
+- Server (`btnSubmitAnswer_Click`) validates the selected `OptionID` against `BossFightQuestionOptions.IsCorrect` — correctness, damage, and HP are ALL calculated server-side per the existing rule in Section 23 ("Do not trust client-side HP values...").
+- Countdown timer per question (`BossFightQuestions.TimeLimitSeconds`) auto-submits option `0` (counts as wrong) on timeout.
+- Battle continues until `BossCurrentHP <= 0` (win) or `PlayerCurrentHP <= 0` (loss); `EndBattle()` awards XP via `XPTransactions` + `Students.TotalXP` update in one transaction, same as before.
+
+**New boss fight rooms added via `Database/add_more_bossfights.sql`:**
+1. The Load Balancer Leviathan (Easy) — networking/load balancing
+2. The Ransomware Wraith (Medium) — security basics
+3. The Kubernetes Kraken (Hard) — container orchestration
+4. The Data Breach Devourer (Legendary) — advanced security, has `EnrageThresholdPct`
+
+Run this script AFTER the original 5 setup scripts and after `bossfight_difficulty_questions.sql`.
+
+## 42. Updated Page List (Student — 20 pages, verify against actual folder)
+
+`Dashboard, Pathways, PathwayDetail, ModuleDetail, SubTopicView, MyLearning, Exams, Challenges, BossFights, Classrooms, ClassroomDetail, AssignmentDetail, Achievements, Notifications, Profile, Upgrade`
+
+Note: `Exams.aspx` (exam taking), `Challenges.aspx` (live challenge), and `BossFights.aspx` (drag-and-drop battle) are each **merged pages** — the listing view and the interactive/detail view live in the same `.aspx`/`.aspx.cs`, switched via query string (`?moduleID=`, `?challengeID=`, `?roomID=`) or ViewState panel visibility. Do not recreate `ExamStart.aspx`, `ExamTake.aspx`, `ChallengeDetail.aspx`, or `BossFightBattle.aspx` — they were intentionally deleted and merged to stay at the 30-page budget.

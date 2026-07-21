@@ -1242,3 +1242,54 @@ Run these AFTER the original 5 scripts:
 | 9 | `Database/fix_funrooms.sql` | Creates FunRoom question tables + seeds data |
 | 10 | `Database/fix_challenges.sql` | Creates Challenge question tables + seeds data |
 | 11 | `Database/add_subtopic_content.sql` | Adds detailed learning content to subtopics |
+
+
+---
+
+## 11. Guest Read-Only Access (Added)
+
+No new tables were created for guest access — guests are simply **unauthenticated requests** (`Session["UserID"] == null`). The existing `GuestModuleAccess` table exists in the schema but is still NOT used; guest browsing is handled entirely by `isGuest` checks in code-behind, not by inserting tracking rows.
+
+Pages updated to support `isGuest` (see ProjectRules Section 40 for the full list and pattern): `Pathways.aspx.cs`, `PathwayDetail.aspx.cs`, `ModuleDetail.aspx.cs`, `SubTopicView.aspx.cs`, `BossFights.aspx.cs`, `Challenges.aspx.cs`, `Upgrade.aspx.cs`, `Site.Master.cs`.
+
+## 12. Additional Boss Fight Rooms (Added via `Database/add_more_bossfights.sql`)
+
+No schema changes. This script only INSERTs into existing tables:
+
+| Table | New rows added |
+|---|---|
+| `BossFightRooms` | 4 new rooms (Easy/Medium/Hard/Legendary) |
+| `Bosses` | 4 new bosses, one per new room (1:1, same as existing rule) |
+| `BossFightQuestions` | 16 new questions (4 per room) |
+| `BossFightQuestionOptions` | 64 new options (4 per question) |
+
+Run this script AFTER `create_tables.sql`, `seed_dummy_data.sql`, `cloudphoria_exams_and_bossfights.sql`, and `bossfight_difficulty_questions.sql` (it needs at least one `Admins` row to exist for `CreatedByAdminID`).
+
+The **drag-and-drop battle UI** built on top of these rows does not change how answers are stored — `BattleSessionAnswers.SelectedOptionID` still references `BossFightQuestionOptions.OptionID` exactly as before. Only the front-end interaction method changed (drag/tap instead of click-a-button).
+
+## 13. Full SQL Script Run Order (Current, Consolidated)
+
+Run in this exact order on a fresh database:
+
+| # | Script | Location |
+|---:|---|---|
+| 1 | `create_tables.sql` | project root scripts |
+| 2 | `seed_constants.sql` | project root scripts |
+| 3 | `seed_dummy_data.sql` | project root scripts |
+| 4 | `cloudphoria_additional_content.sql` | project root scripts |
+| 5 | `cloudphoria_exams_and_bossfights.sql` | project root scripts |
+| 6 | `Database/rebuild_learning_content.sql` | Database/ |
+| 7 | `Database/fix_duplicate_questions.sql` | Database/ |
+| 8 | `Database/fix_duplicate_options.sql` | Database/ |
+| 9 | `Database/bossfight_difficulty_questions.sql` | Database/ |
+| 10 | `Database/add_subtopic_questions.sql` | Database/ |
+| 11 | `Database/fix_all_database.sql` | Database/ |
+| 12 | `Database/add_classroom_chat.sql` | Database/ |
+| 13 | `Database/fix_subscription_plans.sql` | Database/ |
+| 14 | `Database/fix_enrollment.sql` | Database/ |
+| 15 | `Database/fix_funrooms.sql` | Database/ |
+| 16 | `Database/fix_challenges.sql` | Database/ |
+| 17 | `Database/add_subtopic_content.sql` | Database/ |
+| 18 | `Database/add_more_bossfights.sql` | Database/ |
+
+`Database/check_data.sql` is read-only (SELECT statements) and safe to run at any point for verification — it is not part of the setup sequence.
