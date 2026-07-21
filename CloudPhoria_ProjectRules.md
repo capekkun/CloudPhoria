@@ -616,6 +616,8 @@ Do not award normal student XP to a guest unless the database and user requireme
 
 ## 17. Module Exam Rules
 
+**Fixed — the exam-taking flow was previously a stub.** `Student/Exams.aspx.cs` used to have a literal `// TODO: Full exam logic to be re-integrated here` comment where the `?moduleID=X` handling should have been — clicking "Start Exam" just reloaded the same listing page and did nothing. This is now implemented, following the exact same pattern used for Challenges (Section 39) and Boss Fights (Section 41): intro screen (locked/already-passed/no-questions checks) → `btnStartExam_Click` inserts an `ExamAttempts` row and locks in the ordered question list into ViewState → one question at a time with shuffled options and a live countdown → `btnSubmitExamAnswer_Click` validates the answer server-side and inserts into `ExamAnswers` → on the last question (or on timeout), `FinishExam()` computes `ScorePercent`, compares against `Modules.ExamPassMarkPercent`, and awards XP via `XPTransactions`/`Students.TotalXP` in one transaction if passed for the first time. No new page was created — same `.aspx` file, same page count.
+
 Module exams use:
 
     ExamQuestions
@@ -650,7 +652,7 @@ Do not trust only JavaScript to enforce examination duration.
 
 Do not send correct-answer information to the browser before submission.
 
-## 18. XP Rules
+**How the implementation satisfies these rules:** `ExamAttempts.StartedAt` is set server-side (`GETDATE()`) when the attempt is created, not from any client-supplied time. `GetRemainingSeconds()` recomputes `(Modules.ExamDurationMinutes * 60) - DateTime.Now.Subtract(StartedAt).TotalSeconds` on every question load AND every answer submission — the JS countdown (`startExamTimer()`) is purely cosmetic; even if a student's browser clock is wrong, paused, or the JS never runs, the server independently ends the exam once `GetRemainingSeconds() <= 0`. Options are validated with `WHERE OptionID=@OID AND ExamQuestionID=@QID` so a submitted option must actually belong to the current question (prevents cross-question option injection). Correct-answer flags (`IsCorrect`) are never rendered to the option list HTML — only `OptionID`/`OptionText`. Duplicate XP is prevented by checking for a prior passing `ExamAttempts` row (excluding the current one) before awarding — passing the same exam twice only pays XP once.
 
 `XPTransactions` is the XP ledger and the primary record of XP-earning events.
 
@@ -2218,6 +2220,12 @@ The boss battle mechanic was rebuilt as **drag-and-drop** instead of click-to-an
 4. The Data Breach Devourer (Legendary) — advanced security, has `EnrageThresholdPct`
 
 Run this script AFTER the original 5 setup scripts and after `bossfight_difficulty_questions.sql`.
+
+**Known bug, FIXED — duplicate boss fight rooms.** `Database/add_more_bossfights.sql` originally had no duplicate check before its `INSERT INTO BossFightRooms` statements. If a teammate ran the script more than once against an already-seeded database (e.g. re-running "all setup scripts" without tracking what had already been applied), each run silently created 4 more copies of the same 4 rooms (plus duplicate Bosses, BossFightQuestions, and BossFightQuestionOptions for each). This is exactly why "boss fight still duplicate" showed up for a teammate — the script itself was never idempotent.
+
+Both parts of this are now fixed:
+- `Database/add_more_bossfights.sql` now wraps each room's insert in `IF NOT EXISTS (SELECT 1 FROM BossFightRooms WHERE Title = '...') BEGIN ... END` — it is now safe to run multiple times; re-running it on an already-seeded database is now a no-op instead of creating more duplicates.
+- `Database/fix_duplicate_bossfights.sql` (new) — a one-time cleanup script for any database that already has duplicates from before this fix. It identifies duplicate `BossFightRooms.Title` groups, keeps the lowest `RoomID` per title, and cascades the delete through `BattleSessionAnswers` → `BattleSessions` → `BossFightQuestionOptions` → `BossFightQuestions` → `Bosses` → `BossFightRooms` in FK-safe order. Safe to re-run (a no-op once duplicates are gone). Have your friend run this once against their database to clean up the existing duplicates.
 
 ## 42. Updated Page List (Student — 16 pages, verify against actual folder)
 

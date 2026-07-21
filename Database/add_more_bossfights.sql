@@ -16,7 +16,11 @@ DECLARE @QID INT;
 
 -- ============================================================
 -- ROOM 1: The Load Balancer Leviathan (Easy)
+-- Guarded — this script is now safe to re-run. If a room with
+-- this exact title already exists, skip creating it again.
 -- ============================================================
+IF NOT EXISTS (SELECT 1 FROM BossFightRooms WHERE Title = 'The Load Balancer Leviathan')
+BEGIN
 INSERT INTO BossFightRooms (Title, DifficultyLevel, XPReward, IsPublished, CreatedByAdminID)
 VALUES ('The Load Balancer Leviathan', 'Easy', 40, 1, @AdminID);
 SET @RoomID = SCOPE_IDENTITY();
@@ -48,16 +52,20 @@ INSERT INTO BossFightQuestions (RoomID, QuestionText, DamageValue, TimeLimitSeco
 SET @QID = SCOPE_IDENTITY();
 INSERT INTO BossFightQuestionOptions (BossFightQuestionID, OptionText, IsCorrect) VALUES
 (@QID, 'Health Check', 1), (@QID, 'Credit Check', 0), (@QID, 'Type Check', 0), (@QID, 'Spell Check', 0);
+END
 GO
 
 -- ============================================================
 -- ROOM 2: The Ransomware Wraith (Medium)
+-- Guarded — safe to re-run.
 -- ============================================================
 DECLARE @AdminID2 INT = (SELECT TOP 1 AdminID FROM Admins ORDER BY AdminID);
 DECLARE @RoomID2 INT;
 DECLARE @BossID2 INT;
 DECLARE @QID2 INT;
 
+IF NOT EXISTS (SELECT 1 FROM BossFightRooms WHERE Title = 'The Ransomware Wraith')
+BEGIN
 INSERT INTO BossFightRooms (Title, DifficultyLevel, XPReward, IsPublished, CreatedByAdminID)
 VALUES ('The Ransomware Wraith', 'Medium', 65, 1, @AdminID2);
 SET @RoomID2 = SCOPE_IDENTITY();
@@ -89,16 +97,20 @@ INSERT INTO BossFightQuestions (RoomID, QuestionText, DamageValue, TimeLimitSeco
 SET @QID2 = SCOPE_IDENTITY();
 INSERT INTO BossFightQuestionOptions (BossFightQuestionID, OptionText, IsCorrect) VALUES
 (@QID2, 'Phishing', 1), (@QID2, 'Newsletter', 0), (@QID2, 'Auto-reply', 0), (@QID2, 'CC/BCC', 0);
+END
 GO
 
 -- ============================================================
 -- ROOM 3: The Kubernetes Kraken (Hard)
+-- Guarded — safe to re-run.
 -- ============================================================
 DECLARE @AdminID3 INT = (SELECT TOP 1 AdminID FROM Admins ORDER BY AdminID);
 DECLARE @RoomID3 INT;
 DECLARE @BossID3 INT;
 DECLARE @QID3 INT;
 
+IF NOT EXISTS (SELECT 1 FROM BossFightRooms WHERE Title = 'The Kubernetes Kraken')
+BEGIN
 INSERT INTO BossFightRooms (Title, DifficultyLevel, XPReward, IsPublished, CreatedByAdminID)
 VALUES ('The Kubernetes Kraken', 'Hard', 90, 1, @AdminID3);
 SET @RoomID3 = SCOPE_IDENTITY();
@@ -130,16 +142,20 @@ INSERT INTO BossFightQuestions (RoomID, QuestionText, DamageValue, TimeLimitSeco
 SET @QID3 = SCOPE_IDENTITY();
 INSERT INTO BossFightQuestionOptions (BossFightQuestionID, OptionText, IsCorrect) VALUES
 (@QID3, 'Service', 1), (@QID3, 'Deployment', 0), (@QID3, 'DaemonSet', 0), (@QID3, 'Job', 0);
+END
 GO
 
 -- ============================================================
 -- ROOM 4: The Data Breach Devourer (Legendary)
+-- Guarded — safe to re-run.
 -- ============================================================
 DECLARE @AdminID4 INT = (SELECT TOP 1 AdminID FROM Admins ORDER BY AdminID);
 DECLARE @RoomID4 INT;
 DECLARE @BossID4 INT;
 DECLARE @QID4 INT;
 
+IF NOT EXISTS (SELECT 1 FROM BossFightRooms WHERE Title = 'The Data Breach Devourer')
+BEGIN
 INSERT INTO BossFightRooms (Title, DifficultyLevel, XPReward, IsPublished, CreatedByAdminID)
 VALUES ('The Data Breach Devourer', 'Legendary', 150, 1, @AdminID4);
 SET @RoomID4 = SCOPE_IDENTITY();
@@ -171,7 +187,8 @@ INSERT INTO BossFightQuestions (RoomID, QuestionText, DamageValue, TimeLimitSeco
 SET @QID4 = SCOPE_IDENTITY();
 INSERT INTO BossFightQuestionOptions (BossFightQuestionID, OptionText, IsCorrect) VALUES
 (@QID4, 'Encryption', 1), (@QID4, 'Compression', 0), (@QID4, 'Replication', 0), (@QID4, 'Virtualization', 0);
+END
 GO
 
-PRINT 'Added 4 new boss fight rooms with drag-and-drop questions!';
+PRINT 'Boss fight rooms are present (created now, or already existed from a previous run — this script is idempotent).';
 GO

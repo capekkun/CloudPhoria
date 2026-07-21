@@ -677,7 +677,7 @@ Base account for every person in the system.
 | `SelectedOptionID` | `INT` | No | FK → `PracticeQuestionOptions.OptionID` | |
 | `IsCorrect` | `BIT` | No | DEFAULT 0 | |
 
-### 24. `ExamQuestions` (module final exam, timed, once per day per Modules.ExamDurationMinutes rule enforced in app logic)
+### 24. `ExamQuestions` (module final exam, timed — see "Exam-taking flow fixed" note below)
 | Column | Type | Null? | Key | Notes |
 |---|---|---|---|---|
 | `ExamQuestionID` | `INT IDENTITY(1,1)` | No | PK | |
@@ -714,6 +714,8 @@ Base account for every person in the system.
 | `ExamQuestionID` | `INT` | No | FK → `ExamQuestions.ExamQuestionID` | |
 | `SelectedOptionID` | `INT` | No | FK → `ExamQuestionOptions.OptionID` | |
 | `IsCorrect` | `BIT` | No | DEFAULT 0 | |
+
+**Exam-taking flow fixed (previously a stub).** `Student/Exams.aspx.cs` used to have `// TODO: Full exam logic to be re-integrated here` in place of the `?moduleID=X` handler — the exam list rendered correctly and `ExamAttempts`/`ExamAnswers` were fully defined, but nothing ever inserted into either table because "Start Exam" just reloaded the listing page. This is now implemented (same pattern as the Challenges fix): intro screen with locked/already-passed/no-questions checks → `ExamAttempts` row created on start with server-side `StartedAt` → one question at a time from `ExamQuestions`/`ExamQuestionOptions` with shuffled options and a live countdown (server-side authoritative, recomputed from `StartedAt` + `Modules.ExamDurationMinutes` on every request, not trusted from the client) → each answer inserted into `ExamAnswers` → on completion, `ExamAttempts.ScorePercent`/`IsPassed`/`XPAwarded` are updated and XP is awarded via `XPTransactions`(`SourceType='ModuleExam'`)/`Students.TotalXP` only on a student's first pass of that module. No schema changes, no new page — same `.aspx` file as before.
 
 ---
 
@@ -1320,6 +1322,7 @@ Run in this exact order on a fresh database:
 | 16 | `Database/fix_challenges.sql` | Database/ |
 | 17 | `Database/add_subtopic_content.sql` | Database/ |
 | 18 | `Database/add_more_bossfights.sql` | Database/ |
+| 19 | `Database/fix_duplicate_bossfights.sql` | Database/ — run ONLY if you see duplicate boss fight room titles; safe to run anytime, no-op if there are no duplicates |
 
 `Database/check_data.sql` is read-only (SELECT statements) and safe to run at any point for verification — it is not part of the setup sequence.
 
