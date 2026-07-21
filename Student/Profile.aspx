@@ -104,4 +104,46 @@
 
     </div>
 
+    <%-- Report an Issue --%>
+    <div class="cp-card cp-mb-md" style="margin-top:16px;">
+        <h3 class="cp-card-title">&#x26A0; Report an Issue</h3>
+        <p style="font-size:13px;color:var(--cp-text-muted);margin:0 0 16px;">
+            Report inappropriate content, a bug, or a policy violation. Admin will review it.
+        </p>
+
+        <asp:Panel ID="pnlReportSuccess" runat="server" Visible="false">
+            <div class="cp-alert cp-alert-success"><span>&#x2714;</span>
+                <asp:Literal ID="litReportSuccess" runat="server" /></div>
+        </asp:Panel>
+        <asp:Panel ID="pnlReportError" runat="server" Visible="false">
+            <div class="cp-alert cp-alert-danger"><span>&#x26A0;</span>
+                <asp:Literal ID="litReportError" runat="server" /></div>
+        </asp:Panel>
+
+        <div class="cp-form-group">
+            <label class="cp-label" for="<%= ddlReportType.ClientID %>">What are you reporting?</label>
+            <asp:DropDownList ID="ddlReportType" runat="server" CssClass="cp-select">
+                <asp:ListItem Text="A user (harassment, cheating, etc.)" Value="User" />
+                <asp:ListItem Text="Classroom content" Value="Classroom" />
+                <asp:ListItem Text="A challenge or boss fight" Value="Challenge" />
+                <asp:ListItem Text="Something else / a bug" Value="Other" />
+            </asp:DropDownList>
+        </div>
+
+        <div class="cp-form-group">
+            <label class="cp-label" for="<%= txtReportReason.ClientID %>">Details <span class="required">*</span></label>
+            <asp:TextBox ID="txtReportReason" runat="server" CssClass="cp-textarea"
+                         TextMode="MultiLine" Rows="4" MaxLength="1000"
+                         placeholder="Describe what happened..." />
+            <asp:RequiredFieldValidator runat="server" ControlToValidate="txtReportReason"
+                Display="Dynamic" CssClass="cp-form-error"
+                ValidationGroup="Report" ErrorMessage="Please describe the issue before submitting." />
+        </div>
+
+        <asp:Button ID="btnSubmitReport" runat="server" Text="Submit Report"
+                    CssClass="cp-btn cp-btn-danger"
+                    ValidationGroup="Report"
+                    OnClick="btnSubmitReport_Click" />
+    </div>
+
 </asp:Content>

@@ -211,6 +211,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Admin\Dashboard.aspx" />
+    <Content Include="Admin\Users.aspx" />
+    <Content Include="Admin\InstructorApprovals.aspx" />
+    <Content Include="Admin\Courses.aspx" />
+    <Content Include="Admin\Challenges.aspx" />
+    <Content Include="Admin\Reports.aspx" />
+    <Content Include="Admin\AuditLogs.aspx" />
+    <Content Include="Admin\Notifications.aspx" />
+    <Content Include="Admin\Profile.aspx" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -244,7 +252,6 @@
     <Content Include="Instructor\Profile.aspx" />
     <Content Include="LogIn.aspx" />
     <Content Include="Register.aspx" />
-    <Content Include="LogoCloudphoria.png" />
     <Content Include="Scripts\cloudphoria.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
@@ -334,6 +341,62 @@
     </Compile>
     <Compile Include="Admin\Dashboard.aspx.designer.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\Users.aspx.cs">
+      <DependentUpon>Users.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\Users.aspx.designer.cs">
+      <DependentUpon>Users.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\InstructorApprovals.aspx.cs">
+      <DependentUpon>InstructorApprovals.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\InstructorApprovals.aspx.designer.cs">
+      <DependentUpon>InstructorApprovals.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\Courses.aspx.cs">
+      <DependentUpon>Courses.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\Courses.aspx.designer.cs">
+      <DependentUpon>Courses.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\Challenges.aspx.cs">
+      <DependentUpon>Challenges.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\Challenges.aspx.designer.cs">
+      <DependentUpon>Challenges.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\Reports.aspx.cs">
+      <DependentUpon>Reports.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\Reports.aspx.designer.cs">
+      <DependentUpon>Reports.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\AuditLogs.aspx.cs">
+      <DependentUpon>AuditLogs.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\AuditLogs.aspx.designer.cs">
+      <DependentUpon>AuditLogs.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\Notifications.aspx.cs">
+      <DependentUpon>Notifications.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\Notifications.aspx.designer.cs">
+      <DependentUpon>Notifications.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\Profile.aspx.cs">
+      <DependentUpon>Profile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\Profile.aspx.designer.cs">
+      <DependentUpon>Profile.aspx</DependentUpon>
     </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />

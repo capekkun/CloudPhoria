@@ -7,31 +7,32 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Data.SqlClient;
 
-namespace CloudPhoria.Instructor
+namespace CloudPhoria.Admin
 {
     public partial class Challenges : System.Web.UI.Page
     {
-        // Repeater item count for MCQ options when adding a challenge question.
         private const int OPTION_COUNT = 4;
+
+        private string ConnStr
+        {
+            get { return ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString; }
+        }
+
+        private int AdminID
+        {
+            get { return Convert.ToInt32(Session["UserID"]); }
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["UserID"] == null || Session["Role"] == null ||
-                Session["Role"].ToString() != "Instructor")
+                Session["Role"].ToString() != "Admin")
             {
                 Response.Redirect("~/LogIn.aspx", true);
                 return;
             }
 
-            string licenseStatus = Session["LicenseStatus"] != null
-                                   ? Session["LicenseStatus"].ToString() : "Pending";
-            if (licenseStatus != "Approved")
-            {
-                Response.Redirect("~/Instructor/Dashboard.aspx", true);
-                return;
-            }
-
-            ((SiteMaster)Master).PageHeading = "Challenges";
+            ((SiteMaster)Master).PageHeading = "Global Challenges";
 
             if (!IsPostBack)
             {
@@ -39,14 +40,14 @@ namespace CloudPhoria.Instructor
                 if (int.TryParse(Request.QueryString["manageQuestions"], out manageID) && manageID > 0)
                 {
                     ViewState["ManageChallengeID"] = manageID;
-                    pnlChallenges.Visible = false;
-                    pnlEmpty.Visible = false;
+                    pnlGlobalChallenges.Visible = false;
+                    pnlNoGlobalChallenges.Visible = false;
                     BindOptionRows();
                     LoadManageQuestions(manageID);
                     return;
                 }
 
-                LoadChallenges();
+                LoadGlobalChallenges();
             }
             else
             {
@@ -58,38 +59,34 @@ namespace CloudPhoria.Instructor
         {
             int[] rows = new int[OPTION_COUNT];
             for (int i = 0; i < OPTION_COUNT; i++) rows[i] = i + 1;
-            rptChOptions.DataSource = rows;
-            rptChOptions.DataBind();
+            rptGCOptions.DataSource = rows;
+            rptGCOptions.DataBind();
         }
 
         private void LoadManageQuestions(int challengeID)
         {
-            int instructorID = Convert.ToInt32(Session["UserID"]);
-            string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
-
             try
             {
-                using (SqlConnection conn = new SqlConnection(cs))
+                using (SqlConnection conn = new SqlConnection(ConnStr))
                 {
                     conn.Open();
 
                     string title = null;
                     using (SqlCommand cmd = new SqlCommand(
-                        "SELECT Title FROM Challenges WHERE ChallengeID=@CID AND CreatedByInstructorID=@IID", conn))
+                        "SELECT Title FROM Challenges WHERE ChallengeID=@CID AND IsGlobalAdminChallenge=1", conn))
                     {
                         cmd.Parameters.Add("@CID", SqlDbType.Int).Value = challengeID;
-                        cmd.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
                         object r = cmd.ExecuteScalar();
                         if (r == null || r == DBNull.Value)
                         {
-                            ShowError("You do not own this challenge.");
+                            ShowError("Global challenge not found.");
                             pnlManageQuestions.Visible = false;
                             return;
                         }
                         title = r.ToString();
                     }
 
-                    litManageChTitle.Text = HttpUtility.HtmlEncode(title);
+                    litManageGCTitle.Text = HttpUtility.HtmlEncode(title);
                     pnlManageQuestions.Visible = true;
 
                     DataTable dt = new DataTable();
@@ -106,15 +103,15 @@ namespace CloudPhoria.Instructor
 
                     if (dt.Rows.Count > 0)
                     {
-                        rptChQuestions.DataSource = dt;
-                        rptChQuestions.DataBind();
-                        pnlChQuestionsList.Visible = true;
-                        pnlNoChQuestions.Visible = false;
+                        rptGCQuestions.DataSource = dt;
+                        rptGCQuestions.DataBind();
+                        pnlGCQuestionsList.Visible = true;
+                        pnlNoGCQuestions.Visible = false;
                     }
                     else
                     {
-                        pnlChQuestionsList.Visible = false;
-                        pnlNoChQuestions.Visible = true;
+                        pnlGCQuestionsList.Visible = false;
+                        pnlNoGCQuestions.Visible = true;
                     }
                 }
             }
@@ -124,51 +121,43 @@ namespace CloudPhoria.Instructor
             }
         }
 
-        protected void btnAddChQuestion_Click(object sender, EventArgs e)
+        protected void btnAddGCQuestion_Click(object sender, EventArgs e)
         {
             if (!Page.IsValid) { return; }
 
             int challengeID = (int)ViewState["ManageChallengeID"];
-            int instructorID = Convert.ToInt32(Session["UserID"]);
-            string questionText = txtChQText.Text.Trim();
-            int points = 10; int.TryParse(txtChQPoints.Text.Trim(), out points);
-            int timeLimit = 30; int.TryParse(txtChQTime.Text.Trim(), out timeLimit);
-
-            string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
+            string questionText = txtGCQText.Text.Trim();
+            int points = 10; int.TryParse(txtGCQPoints.Text.Trim(), out points);
+            int timeLimit = 30; int.TryParse(txtGCQTime.Text.Trim(), out timeLimit);
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(cs))
+                using (SqlConnection conn = new SqlConnection(ConnStr))
                 {
                     conn.Open();
 
-                    // Verify ownership.
                     using (SqlCommand chk = new SqlCommand(
-                        "SELECT COUNT(*) FROM Challenges WHERE ChallengeID=@CID AND CreatedByInstructorID=@IID", conn))
+                        "SELECT COUNT(*) FROM Challenges WHERE ChallengeID=@CID AND IsGlobalAdminChallenge=1", conn))
                     {
                         chk.Parameters.Add("@CID", SqlDbType.Int).Value = challengeID;
-                        chk.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
                         if (Convert.ToInt32(chk.ExecuteScalar()) == 0)
                         {
-                            ShowError("You do not own this challenge.");
+                            ShowError("Global challenge not found.");
                             return;
                         }
                     }
 
-                    // Collect options first so we can validate before inserting anything.
                     List<string> optionTexts = new List<string>();
                     int correctIndex = -1;
-                    int i = 0;
-                    foreach (RepeaterItem item in rptChOptions.Items)
+                    foreach (RepeaterItem item in rptGCOptions.Items)
                     {
-                        TextBox txtOpt = (TextBox)item.FindControl("txtChOption");
-                        RadioButton rbCorrect = (RadioButton)item.FindControl("rbChCorrect");
+                        TextBox txtOpt = (TextBox)item.FindControl("txtGCOption");
+                        RadioButton rbCorrect = (RadioButton)item.FindControl("rbGCCorrect");
                         if (txtOpt != null && !string.IsNullOrWhiteSpace(txtOpt.Text))
                         {
                             optionTexts.Add(txtOpt.Text.Trim());
                             if (rbCorrect != null && rbCorrect.Checked) correctIndex = optionTexts.Count - 1;
                         }
-                        i++;
                     }
 
                     if (optionTexts.Count < 2)
@@ -218,9 +207,9 @@ namespace CloudPhoria.Instructor
                     }
                 }
 
-                txtChQText.Text = string.Empty;
-                txtChQPoints.Text = "10";
-                txtChQTime.Text = "30";
+                txtGCQText.Text = string.Empty;
+                txtGCQPoints.Text = "10";
+                txtGCQTime.Text = "30";
                 BindOptionRows();
 
                 ShowSuccess("Question added to challenge.");
@@ -232,31 +221,18 @@ namespace CloudPhoria.Instructor
             }
         }
 
-        protected void rptChQuestions_ItemCommand(object source, RepeaterCommandEventArgs e)
+        protected void rptGCQuestions_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
             if (e.CommandName != "DeleteQuestion") return;
 
             int questionID = Convert.ToInt32(e.CommandArgument);
             int challengeID = (int)ViewState["ManageChallengeID"];
-            int instructorID = Convert.ToInt32(Session["UserID"]);
-            string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(cs))
+                using (SqlConnection conn = new SqlConnection(ConnStr))
                 {
                     conn.Open();
-
-                    // Ownership check via the parent Challenge before deleting.
-                    using (SqlCommand chk = new SqlCommand(
-                        @"SELECT COUNT(*) FROM ChallengeQuestions cq
-                          INNER JOIN Challenges c ON c.ChallengeID = cq.ChallengeID
-                          WHERE cq.ChallengeQuestionID=@QID AND c.CreatedByInstructorID=@IID", conn))
-                    {
-                        chk.Parameters.Add("@QID", SqlDbType.Int).Value = questionID;
-                        chk.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
-                        if (Convert.ToInt32(chk.ExecuteScalar()) == 0) return;
-                    }
 
                     using (SqlCommand cmd = new SqlCommand(
                         "DELETE FROM ChallengeQuestionOptions WHERE ChallengeQuestionID=@QID", conn))
@@ -282,84 +258,51 @@ namespace CloudPhoria.Instructor
             }
         }
 
-        // Returns an HTML badge string for use inside the Repeater.
-        protected string GetChallengeStatus(object startObj, object endObj)
+        private void LoadGlobalChallenges()
         {
-            DateTime now   = DateTime.Now;
-            DateTime start = Convert.ToDateTime(startObj);
-            DateTime end   = Convert.ToDateTime(endObj);
-
-            if (now < start)
-                return "<span class='cp-badge cp-badge-grey'>Upcoming</span>";
-            if (now >= start && now <= end)
-                return "<span class='cp-badge cp-badge-green'>Active</span>";
-            return "<span class='cp-badge cp-badge-red'>Ended</span>";
-        }
-
-        private void LoadChallenges()
-        {
-            int instructorID = Convert.ToInt32(Session["UserID"]);
-            string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
-
-            string sql = @"
-                SELECT c.ChallengeID, c.Title, c.XPReward, c.StartDate, c.EndDate,
-                       COUNT(cp2.ParticipationID) AS ParticipantCount
-                FROM   Challenges c
-                LEFT JOIN ChallengeParticipation cp2 ON cp2.ChallengeID = c.ChallengeID
-                WHERE  c.CreatedByInstructorID = @IID
-                GROUP  BY c.ChallengeID, c.Title, c.XPReward, c.StartDate, c.EndDate
-                ORDER  BY c.StartDate DESC";
-
             try
             {
-                DataTable dt = new DataTable();
-                using (SqlConnection conn = new SqlConnection(cs))
+                using (SqlConnection conn = new SqlConnection(ConnStr))
                 {
                     conn.Open();
-                    using (SqlCommand cmd = new SqlCommand(sql, conn))
-                    {
-                        cmd.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
-                        using (SqlDataAdapter da = new SqlDataAdapter(cmd)) da.Fill(dt);
-                    }
-                }
+                    DataTable dt = new DataTable();
+                    using (SqlCommand cmd = new SqlCommand(
+                        @"SELECT c.ChallengeID, c.Title, c.XPReward, c.StartDate, c.EndDate,
+                          (SELECT COUNT(*) FROM ChallengeParticipation cp WHERE cp.ChallengeID=c.ChallengeID) AS ParticipantCount
+                          FROM Challenges c
+                          WHERE c.IsGlobalAdminChallenge = 1
+                          ORDER BY c.StartDate DESC", conn))
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd)) da.Fill(dt);
 
-                if (dt.Rows.Count > 0)
-                {
-                    rptChallenges.DataSource = dt;
-                    rptChallenges.DataBind();
-                    pnlChallenges.Visible = true;
-                    pnlEmpty.Visible      = false;
-                }
-                else
-                {
-                    pnlChallenges.Visible = false;
-                    pnlEmpty.Visible      = true;
+                    if (dt.Rows.Count > 0)
+                    {
+                        rptGlobalChallenges.DataSource = dt;
+                        rptGlobalChallenges.DataBind();
+                        pnlGlobalChallenges.Visible = true;
+                    }
+                    else { pnlNoGlobalChallenges.Visible = true; }
                 }
             }
-            catch (SqlException)
-            {
-                ShowError("Could not load challenges. Please try again.");
-            }
+            catch (SqlException) { }
         }
 
-        protected void btnCreateCh_Click(object sender, EventArgs e)
+        protected void btnCreateGlobalChallenge_Click(object sender, EventArgs e)
         {
-            if (!Page.IsValid) { return; }
-
-            int instructorID = Convert.ToInt32(Session["UserID"]);
-            string title = txtChTitle.Text.Trim();
-            string desc  = txtChDesc.Text.Trim();
-            int xp = 50; int.TryParse(txtChXP.Text.Trim(), out xp);
+            string title = txtGCTitle.Text.Trim();
+            string desc = txtGCDesc.Text.Trim();
+            int xp; int.TryParse(txtGCXP.Text.Trim(), out xp);
+            if (xp <= 0) xp = 100;
 
             DateTime startDate, endDate;
-            if (!DateTime.TryParse(txtChStart.Text.Trim(), out startDate))
+            if (string.IsNullOrEmpty(title))
             {
-                ShowError("Invalid start date.");
+                ShowError("Title is required.");
                 return;
             }
-            if (!DateTime.TryParse(txtChEnd.Text.Trim(), out endDate))
+            if (!DateTime.TryParse(txtGCStart.Text.Trim(), out startDate) ||
+                !DateTime.TryParse(txtGCEnd.Text.Trim(), out endDate))
             {
-                ShowError("Invalid end date.");
+                ShowError("Valid start and end dates are required.");
                 return;
             }
             if (endDate <= startDate)
@@ -368,78 +311,77 @@ namespace CloudPhoria.Instructor
                 return;
             }
 
-            string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
-
             try
             {
-                using (SqlConnection conn = new SqlConnection(cs))
+                using (SqlConnection conn = new SqlConnection(ConnStr))
                 {
                     conn.Open();
                     using (SqlCommand cmd = new SqlCommand(
-                        @"INSERT INTO Challenges
-                            (Title, Description, CreatedByInstructorID, XPReward,
-                             StartDate, EndDate, IsGlobalAdminChallenge)
-                          VALUES (@Title, @Desc, @IID, @XP, @Start, @End, 0)", conn))
+                        @"INSERT INTO Challenges (Title, Description, CreatedByAdminID, XPReward, StartDate, EndDate, IsGlobalAdminChallenge)
+                          VALUES (@Title, @Desc, @AID, @XP, @Start, @End, 1)", conn))
                     {
                         cmd.Parameters.Add("@Title", SqlDbType.NVarChar, 150).Value = title;
-                        cmd.Parameters.Add("@Desc",  SqlDbType.NVarChar, -1).Value  = string.IsNullOrEmpty(desc) ? (object)DBNull.Value : desc;
-                        cmd.Parameters.Add("@IID",   SqlDbType.Int).Value           = instructorID;
-                        cmd.Parameters.Add("@XP",    SqlDbType.Int).Value           = xp;
-                        cmd.Parameters.Add("@Start", SqlDbType.DateTime2).Value     = startDate;
-                        cmd.Parameters.Add("@End",   SqlDbType.DateTime2).Value     = endDate;
+                        cmd.Parameters.Add("@Desc", SqlDbType.NVarChar, -1).Value = string.IsNullOrEmpty(desc) ? (object)DBNull.Value : desc;
+                        cmd.Parameters.Add("@AID", SqlDbType.Int).Value = AdminID;
+                        cmd.Parameters.Add("@XP", SqlDbType.Int).Value = xp;
+                        cmd.Parameters.Add("@Start", SqlDbType.DateTime2).Value = startDate;
+                        cmd.Parameters.Add("@End", SqlDbType.DateTime2).Value = endDate;
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    using (SqlCommand cmd = new SqlCommand(
+                        @"INSERT INTO AuditLogs (PerformedByUserID, ActionType, TargetTable, Details, CreatedAt)
+                          VALUES (@UID, 'CREATE_GLOBAL_CHALLENGE', 'Challenges', @Details, GETDATE())", conn))
+                    {
+                        cmd.Parameters.Add("@UID", SqlDbType.Int).Value = AdminID;
+                        cmd.Parameters.Add("@Details", SqlDbType.NVarChar, -1).Value = title;
                         cmd.ExecuteNonQuery();
                     }
                 }
 
-                txtChTitle.Text = string.Empty;
-                txtChDesc.Text  = string.Empty;
-                txtChXP.Text    = "50";
-                txtChStart.Text = string.Empty;
-                txtChEnd.Text   = string.Empty;
-
-                ShowSuccess("Challenge created successfully.");
-                pnlChallenges.Visible = false;
-                pnlEmpty.Visible      = false;
-                LoadChallenges();
+                txtGCTitle.Text = ""; txtGCDesc.Text = ""; txtGCXP.Text = "100";
+                txtGCStart.Text = ""; txtGCEnd.Text = "";
+                ShowSuccess("Global challenge created.");
+                LoadGlobalChallenges();
             }
             catch (SqlException)
             {
-                ShowError("Could not create challenge. Please try again.");
+                ShowError("Could not create challenge.");
             }
         }
 
-        protected void rptChallenges_ItemCommand(object source, RepeaterCommandEventArgs e)
+        protected void rptGlobalChallenges_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
-            if (e.CommandName == "Delete")
-                DeleteChallenge(Convert.ToInt32(e.CommandArgument));
-        }
-
-        private void DeleteChallenge(int challengeID)
-        {
-            int instructorID = Convert.ToInt32(Session["UserID"]);
-            string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
+            if (e.CommandName != "Delete") return;
+            int challengeID = Convert.ToInt32(e.CommandArgument);
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(cs))
+                using (SqlConnection conn = new SqlConnection(ConnStr))
                 {
                     conn.Open();
                     using (SqlCommand cmd = new SqlCommand(
-                        "DELETE FROM Challenges WHERE ChallengeID=@CID AND CreatedByInstructorID=@IID", conn))
+                        "DELETE FROM Challenges WHERE ChallengeID=@CID AND IsGlobalAdminChallenge=1", conn))
                     {
                         cmd.Parameters.Add("@CID", SqlDbType.Int).Value = challengeID;
-                        cmd.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    using (SqlCommand cmd = new SqlCommand(
+                        @"INSERT INTO AuditLogs (PerformedByUserID, ActionType, TargetTable, TargetID, CreatedAt)
+                          VALUES (@UID, 'DELETE_GLOBAL_CHALLENGE', 'Challenges', @CID, GETDATE())", conn))
+                    {
+                        cmd.Parameters.Add("@UID", SqlDbType.Int).Value = AdminID;
+                        cmd.Parameters.Add("@CID", SqlDbType.Int).Value = challengeID;
                         cmd.ExecuteNonQuery();
                     }
                 }
                 ShowSuccess("Challenge deleted.");
-                pnlChallenges.Visible = false;
-                pnlEmpty.Visible      = false;
-                LoadChallenges();
+                LoadGlobalChallenges();
             }
             catch (SqlException)
             {
-                ShowError("Could not delete challenge. Please try again.");
+                ShowError("Could not delete challenge.");
             }
         }
 
@@ -447,13 +389,13 @@ namespace CloudPhoria.Instructor
         {
             litSuccess.Text = HttpUtility.HtmlEncode(msg);
             pnlSuccess.Visible = true;
-            pnlError.Visible   = false;
+            pnlError.Visible = false;
         }
 
         private void ShowError(string msg)
         {
             litError.Text = HttpUtility.HtmlEncode(msg);
-            pnlError.Visible   = true;
+            pnlError.Visible = true;
             pnlSuccess.Visible = false;
         }
     }

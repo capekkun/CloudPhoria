@@ -1,0 +1,21 @@
+namespace CloudPhoria.Admin
+{
+    public partial class Profile
+    {
+        protected global::System.Web.UI.WebControls.Panel pnlSuccess;
+        protected global::System.Web.UI.WebControls.Literal litSuccess;
+        protected global::System.Web.UI.WebControls.Panel pnlError;
+        protected global::System.Web.UI.WebControls.Literal litError;
+        protected global::System.Web.UI.WebControls.Literal litInitials;
+        protected global::System.Web.UI.WebControls.Literal litFullName;
+        protected global::System.Web.UI.WebControls.Literal litEmail;
+        protected global::System.Web.UI.WebControls.Literal litMemberSince;
+        protected global::System.Web.UI.WebControls.TextBox txtFullName;
+        protected global::System.Web.UI.WebControls.Literal litEmailReadonly;
+        protected global::System.Web.UI.WebControls.Button btnSaveProfile;
+        protected global::System.Web.UI.WebControls.TextBox txtCurrentPassword;
+        protected global::System.Web.UI.WebControls.TextBox txtNewPassword;
+        protected global::System.Web.UI.WebControls.TextBox txtConfirmPassword;
+        protected global::System.Web.UI.WebControls.Button btnChangePassword;
+    }
+}

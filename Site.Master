@@ -206,9 +206,7 @@
             <a class="cp-topnav-link" href="/Admin/Dashboard.aspx"><span class="cp-topnav-icon">&#x2302;</span> Dashboard</a>
             <a class="cp-topnav-link" href="/Admin/Users.aspx"><span class="cp-topnav-icon">&#x1F465;</span> Users</a>
             <a class="cp-topnav-link" href="/Admin/InstructorApprovals.aspx"><span class="cp-topnav-icon">&#x2714;</span> Approvals</a>
-            <a class="cp-topnav-link" href="/Admin/LearningContent.aspx"><span class="cp-topnav-icon">&#x1F4D6;</span> Content</a>
-            <a class="cp-topnav-link" href="/Admin/FunRoomReviews.aspx"><span class="cp-topnav-icon">&#x1F3AE;</span> Fun Rooms</a>
-            <a class="cp-topnav-link" href="/Admin/BossFights.aspx"><span class="cp-topnav-icon">&#x1F480;</span> Boss Fights</a>
+            <a class="cp-topnav-link" href="/Admin/Courses.aspx"><span class="cp-topnav-icon">&#x1F4D6;</span> Courses</a>
             <a class="cp-topnav-link" href="/Admin/Challenges.aspx"><span class="cp-topnav-icon">&#x26A1;</span> Challenges</a>
             <a class="cp-topnav-link" href="/Admin/Reports.aspx"><span class="cp-topnav-icon">&#x1F4CA;</span> Reports</a>
             <a class="cp-topnav-link" href="/Admin/AuditLogs.aspx"><span class="cp-topnav-icon">&#x1F4CB;</span> Audit Logs</a>
@@ -316,6 +314,7 @@
             <a href="/Admin/Dashboard.aspx">Dashboard</a>
             <a href="/Admin/Users.aspx">Users</a>
             <a href="/Admin/Reports.aspx">Reports</a>
+            <a href="/Admin/AuditLogs.aspx">Audit Logs</a>
         </asp:Panel>
     </div>
 </footer>

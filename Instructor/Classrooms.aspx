@@ -110,6 +110,100 @@
         </div>
     </asp:Panel>
 
+    <%-- Classroom Materials panel (when ?id= is provided) --%>
+    <asp:Panel ID="pnlClassroomMaterialsSection" runat="server" Visible="false">
+        <div class="cp-page-header-row" style="margin:24px 0 12px;">
+            <h3 style="font-size:15px;font-weight:600;color:var(--cp-text);margin:0;">
+                &#x1F4CE; Classroom Materials
+            </h3>
+            <button type="button" class="cp-btn cp-btn-primary cp-btn-sm" onclick="showModal('uploadMaterialModal')">
+                &#x2B06; Upload Material
+            </button>
+        </div>
+
+        <asp:Panel ID="pnlClassroomMaterials" runat="server" Visible="false">
+            <div class="cp-table-wrap">
+                <table class="cp-table" role="grid" aria-label="Classroom materials">
+                    <thead>
+                        <tr>
+                            <th scope="col">File Name</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Uploaded</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <asp:Repeater ID="rptClassroomMaterials" runat="server"
+                                      OnItemCommand="rptClassroomMaterials_ItemCommand">
+                            <ItemTemplate>
+                                <tr>
+                                    <td style="font-weight:600;">
+                                        <span style="font-size:16px;margin-right:6px;">&#x1F4C4;</span>
+                                        <%# HttpUtility.HtmlEncode(Eval("FileName").ToString()) %>
+                                    </td>
+                                    <td style="color:var(--cp-text-muted);font-size:12px;">
+                                        <%# Eval("Description") == DBNull.Value ? "&mdash;" : HttpUtility.HtmlEncode(Eval("Description").ToString()) %>
+                                    </td>
+                                    <td style="color:var(--cp-text-muted);">
+                                        <%# Convert.ToDateTime(Eval("UploadedAt")).ToString("dd MMM yyyy") %>
+                                    </td>
+                                    <td>
+                                        <asp:LinkButton runat="server"
+                                            CommandName="DeleteMaterial"
+                                            CommandArgument='<%# Eval("ClassroomMaterialID") %>'
+                                            CssClass="cp-btn cp-btn-danger cp-btn-sm"
+                                            OnClientClick="return confirm('Remove this material?');">
+                                            Remove
+                                        </asp:LinkButton>
+                                    </td>
+                                </tr>
+                            </ItemTemplate>
+                        </asp:Repeater>
+                    </tbody>
+                </table>
+            </div>
+        </asp:Panel>
+
+        <asp:Panel ID="pnlNoMaterials" runat="server" Visible="false">
+            <div class="cp-empty-state">
+                <span class="cp-empty-state-icon" aria-hidden="true">&#x1F4CE;</span>
+                <h3>No materials shared yet</h3>
+                <p>Upload files for students in this classroom to see under Files & Attachments.</p>
+            </div>
+        </asp:Panel>
+    </asp:Panel>
+
+    <%-- Upload Classroom Material Modal --%>
+    <div id="uploadMaterialModal" class="cp-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="uploadMaterialTitle">
+        <div class="cp-modal">
+            <button class="cp-modal-close" type="button" onclick="hideModal('uploadMaterialModal')" aria-label="Close">&#x2715;</button>
+            <h2 class="cp-modal-title" id="uploadMaterialTitle">Upload Classroom Material</h2>
+
+            <div class="cp-alert cp-alert-info" style="margin-bottom:16px;">
+                <span>&#x2139;</span>
+                <span>Allowed file types: PDF, DOCX, PPTX, TXT, PNG, JPG. Max 10 MB. Students will see this under Files & Attachments in the classroom.</span>
+            </div>
+
+            <div class="cp-form-group">
+                <label class="cp-label" for="<%= fuClassroomMaterial.ClientID %>">File <span class="required">*</span></label>
+                <asp:FileUpload ID="fuClassroomMaterial" runat="server" CssClass="cp-input" />
+            </div>
+
+            <div class="cp-form-group">
+                <label class="cp-label" for="<%= txtMaterialDescription.ClientID %>">Description (optional)</label>
+                <asp:TextBox ID="txtMaterialDescription" runat="server" CssClass="cp-input"
+                             MaxLength="500" placeholder="Brief note about this file..." />
+            </div>
+
+            <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;">
+                <button type="button" class="cp-btn cp-btn-ghost" onclick="hideModal('uploadMaterialModal')">Cancel</button>
+                <asp:Button ID="btnUploadMaterial" runat="server" Text="Upload"
+                            CssClass="cp-btn cp-btn-primary"
+                            OnClick="btnUploadMaterial_Click" />
+            </div>
+        </div>
+    </div>
+
     <%-- Create Classroom Modal --%>
     <div id="createModal" class="cp-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="createCTitle">
         <div class="cp-modal">

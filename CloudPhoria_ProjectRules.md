@@ -4,6 +4,37 @@
 > **Module:** CT050-3-2-WAPP  
 > **Purpose:** This document is the main development rulebook for the CloudPhoria ASP.NET Web Forms project.
 
+## 0. CURRENT STATE SNAPSHOT (Read This First)
+
+This document grew over many development sessions and contains historical notes describing earlier versions of the project (30-page budget, single-tab Admin dashboard, restricted guest access, etc.) that are explicitly marked as superseded where they still exist. If you are a Kiro instance picking up this project for the first time, read this section first — it tells you what is actually true right now, verified directly against the code on disk, not just what the numbered rule sections say.
+
+**Page count: 38 total** (`.aspx` pages, verified by directory listing).
+- Root/Shared: 3 — `Default.aspx` (guest landing page), `LogIn.aspx`, `Register.aspx`
+- `Admin/`: 9 — `Dashboard.aspx`, `Users.aspx`, `InstructorApprovals.aspx`, `Courses.aspx`, `Challenges.aspx`, `Reports.aspx`, `AuditLogs.aspx`, `Notifications.aspx`, `Profile.aspx`
+- `Instructor/`: 10 — `Dashboard.aspx`, `Modules.aspx`, `SubTopics.aspx`, `Questions.aspx`, `Classrooms.aspx`, `Materials.aspx`, `Assignments.aspx`, `Challenges.aspx`, `Notifications.aspx`, `Profile.aspx`
+- `Student/`: 16 — `Dashboard.aspx`, `Pathways.aspx`, `PathwayDetail.aspx`, `ModuleDetail.aspx`, `SubTopicView.aspx`, `MyLearning.aspx`, `Exams.aspx`, `Challenges.aspx`, `BossFights.aspx`, `Classrooms.aspx`, `ClassroomDetail.aspx`, `AssignmentDetail.aspx`, `Achievements.aspx`, `Notifications.aspx`, `Profile.aspx`, `Upgrade.aspx`
+- Budget is 40 (raised from an original 30 to balance workload: Admin=1 person, Instructor=1 person, Student=2 people). Project currently sits 2 under budget because Consultations (2 pages) was built, then permanently removed again — see Section 44.
+
+**Features permanently REMOVED — do not rebuild without explicit new instruction:**
+- Fun Rooms (`FunRooms`, `FunRoomQuestions`, `FunRoomQuestionOptions` — tables exist, unused, no pages)
+- Practice Quizzes / practice-taking UI (`PracticeQuestionOptions`, `PracticeAttempts`, `PracticeAnswers` — orphaned; note `PracticeQuestions` itself is NOT fully orphaned, see below)
+- Discussions/Forum (`DiscussionThreads`, `DiscussionReplies` — orphaned)
+- Consultations (`ConsultationSlots`, `ConsultationBookings` — orphaned; built, deleted, rebuilt, deleted again — see Section 44 for the full history)
+- Guest/Learn page, About.aspx, Contact.aspx
+
+**Challenges quiz/leaderboard mechanic — FIXED, now fully functional.** Previously `ChallengeQuestions`/`ChallengeQuestionOptions` existed with seed data but no code used them, and "Join Challenge" went nowhere. Both sides are now built: Instructor/Admin can add MCQ questions to a challenge (`Challenges.aspx?manageQuestions=X`), and students can actually take a challenge (`Student/Challenges.aspx?challengeID=X` — intro screen, timed quiz, server-side scoring, XP award, top-10 leaderboard). See Section 39 "Challenges" subsection for full detail.
+
+**Guest access (current, correct model — Section 40 is authoritative, Section 39's "Guest Access" bullet list is a stale historical note):** Guests (no session) get a nav bar and can browse `Pathways.aspx`, `PathwayDetail.aspx`, `ModuleDetail.aspx`, `SubTopicView.aspx`, `BossFights.aspx`, `Challenges.aspx`, `Upgrade.aspx` read-only — they cannot enrol, answer questions, join battles, or earn XP. Detection pattern used consistently: `bool isGuest = (Session["UserID"] == null || Session["Role"] == null || Session["Role"].ToString() != "Student");` at the top of `Page_Load`.
+
+**Admin scope — intentionally simpler than the original assignment brief** (explicit user decision): Admin manages Users (full CRUD), Instructor Approvals, Courses (assign + publish), Global Challenges, Reports (moderation), Audit Logs. Admin does **NOT** manage subscription pricing (fixed in `Student/Upgrade.aspx` code), does NOT review Fun Rooms (deleted feature), and has NO gamification/XP-formula settings page.
+
+**Recently fixed gaps (see Section 39 subsections for detail):**
+- Report submission — `Student/Profile.aspx` and `Instructor/Profile.aspx` now have a working "Report an Issue" form that inserts into `Reports` (previously `Admin/Reports.aspx` could only read/update, nothing ever created a report).
+- Classroom material upload — `Instructor/Classrooms.aspx` now has upload/list/delete for `ClassroomMaterials` (previously `Student/ClassroomDetail.aspx`'s Files tab could only display materials, nothing ever wrote them).
+- Module reassignment cascade — `Admin/Courses.aspx`'s "Assign Instructor" dropdown now cascades ownership to `SubTopics`, `Questions`, `LearningMaterials`, `PracticeQuestions`, `ExamQuestions` in one transaction, instead of only updating `Modules.CreatedByInstructorID` as a cosmetic label.
+
+**When in doubt about whether something is currently true, trust the code over this document, and trust the highest-numbered section discussing a topic over an earlier one** — sections are appended chronologically as the project evolved, and later sections correct earlier ones rather than editing them in place (to preserve the history of *why* decisions were made). This document is intentionally long and cumulative — use Ctrl+F / grep for the feature name you care about rather than reading top to bottom.
+
 ## 1. Rule Priority and Source of Truth
 
 Before modifying the project, always read:
@@ -55,7 +86,6 @@ The platform allows students to:
 - Complete classroom assignments
 - Participate in challenges
 - Join community discussions
-- Book instructor consultations
 - Create and explore community Fun Rooms
 - Participate in official Boss Fight quiz rooms
 
@@ -748,6 +778,8 @@ Do not treat classroom assignments as module exams.
 
 Do not insert more than one submission for the same student and assignment question unless the schema is officially changed to support resubmission history.
 
+**Classroom material uploads (Added):** Instructors upload files for a specific classroom directly from `Instructor/Classrooms.aspx` (visible once a classroom is selected via `?id=`), not from `Instructor/Materials.aspx` — that page is for subtopic-level `LearningMaterials`, a separate table/feature. Classroom material upload writes to `ClassroomMaterials` with `FilePath` under `/uploads/classroom/{ClassroomID}/`, matching the storage convention already documented in Section 29. `Student/ClassroomDetail.aspx`'s Files & Attachments tab reads from the same `ClassroomMaterials` table, so anything an instructor uploads here shows up there immediately — no separate publish step. Same upload validation as `Instructor/Materials.aspx`: extension allowlist (PDF/DOCX/DOC/PPTX/PPT/TXT/PNG/JPG/JPEG), 10 MB max, safe stored filename, ownership check against `Classrooms.InstructorID` before saving.
+
 ## 22. Community Fun Room Rules
 
 Community-created rooms use:
@@ -885,26 +917,11 @@ Display user-generated content safely.
 
 Encode plain text before displaying it unless the field is intentionally designed and sanitised to store HTML.
 
-## 26. Consultation Rules
+## 26. Consultation Rules (Feature Removed — Do Not Rebuild)
 
-Consultations use:
+Consultations (Student + Instructor booking) is **permanently removed** from this project. It was deleted during the 30-page squeeze, briefly rebuilt as 2 dedicated pages when the budget was raised to 40, then the user explicitly said "i dont want consultation anymore" — so it was deleted again and should stay deleted.
 
-    ConsultationSlots
-    ConsultationBookings
-
-Supported booking statuses are:
-
-    Pending
-    Confirmed
-    Cancelled
-
-Students may only book available slots.
-
-Booking logic should prevent two students from successfully booking the same slot.
-
-Where booking and slot availability are updated together, use a database transaction.
-
-An Instructor may only manage their own consultation slots unless the current user is an authorised Admin.
+No `.aspx` pages, code-behind, nav links, or `csproj` entries for Consultations exist anymore. The `ConsultationSlots` and `ConsultationBookings` tables remain in the database schema for completeness only — they are not read or written by any current page. Do not create Consultation pages, nav links, or code unless the user explicitly asks again.
 
 ## 27. Reports, Moderation, and Audit Rules
 
@@ -951,6 +968,8 @@ Important actions that may require audit logging include:
 - Administrative content changes
 - Report resolution
 - Security-sensitive actions
+
+**Report submission (Added):** Students and Instructors submit reports from a "Report an Issue" form on their own `Profile.aspx` (`Student/Profile.aspx` and `Instructor/Profile.aspx`) — there is no separate dedicated Report page for submission, to avoid adding another page under the budget. The form inserts into `Reports` with `Status='Open'`, `ReportedByUserID` = current session user, and `ReportedContentType` chosen from a fixed dropdown (`User`/`Classroom`/`Challenge`/`Other`). `ReportedUserID` and `ReportedContentID` are left `NULL` on this simple submission form — the reporter just describes the issue in free text (`Reason`), and an Admin follows up manually via `Admin/Reports.aspx`. This is intentionally simple, matching the descoped/simplified admin scope decided earlier in the project (see Section 39 user corrections).
 
 Follow the existing audit implementation when available.
 
@@ -1086,7 +1105,6 @@ Examples include:
 - XP ledger and TotalXP update
 - Exam completion and XP award
 - Boss Fight completion and XP award
-- Booking a consultation slot
 - Deleting an item with related child records
 
 ## 31. Database Connection Rules
@@ -1289,7 +1307,6 @@ Examples:
 - Discussion thread belongs to current user
 - Discussion reply belongs to current user
 - Fun Room belongs to current creator
-- Consultation slot belongs to current Instructor
 - Notification belongs to current user
 - Battle session belongs to current Student
 - Exam attempt belongs to current Student
@@ -1800,7 +1817,6 @@ Use server-side date validation for:
 
 - Challenge periods
 - Assignment due dates
-- Consultation slots
 - Subscription periods
 - Exam attempts
 
@@ -2036,26 +2052,28 @@ CloudPhoria should remain:
 
 ## 39. Additional Features (Added During Development)
 
-### Page Count Summary (30 pages total)
+### Page Count Summary (38 pages total)
+
+The page budget was raised from 30 to 40 by the lecturer specifically so Admin (1 person) and Instructor (1 person) each get a fairer page count relative to Student (2 people). The project currently sits at 38 (2 under budget) — Consultations was briefly restored then removed again per the user's final decision, so the total is 40 minus the 2 Consultations pages.
 
 **Shared (3 pages):** Default.aspx (landing), LogIn.aspx, Register.aspx
 
-**Admin (1 page):** Dashboard.aspx
+**Admin (9 pages):** Dashboard (overview stats only), Users (full CRUD), InstructorApprovals, Courses (assign instructor + publish/unpublish), Challenges (global admin challenges), Reports (moderation), AuditLogs (searchable log viewer), Notifications, Profile
 
 **Instructor (10 pages):** Dashboard, Modules, SubTopics, Questions, Classrooms, Materials, Assignments, Challenges, Notifications, Profile
 
 **Student (16 pages):** Dashboard, Pathways, PathwayDetail, ModuleDetail, SubTopicView, MyLearning, Exams, Challenges, BossFights, Classrooms, ClassroomDetail, AssignmentDetail, Achievements, Notifications, Profile, Upgrade
 
-### Guest Access
-- Guests can ONLY see `Default.aspx` (the landing page)
-- The landing page includes a "Browse Pathways" section showing all pathways with descriptions, module counts, and Free/Pro badges
-- Guests can read pathway names and descriptions to preview what's available
-- No navigation bar for guests — only "Browse Pathways", "Log In" and "Join for Free" buttons
-- Guests CANNOT click into modules, subtopics, or any interactive content
-- All protected pages check `Session["UserID"]` and redirect to `LogIn.aspx` if missing
-- The `Guest/` folder is empty and unused
-- The `GuestModuleAccess` table exists in the schema but is NOT used in the current implementation
-- This satisfies the "non-registered user can browse" requirement without needing extra pages
+The single-page tabbed Admin dashboard (6 tabs on one `.aspx`) described in earlier revisions of this document has been **replaced** by 9 dedicated Admin pages — see Section 43 below for the current breakdown. Consultations is permanently removed — see Section 26 and Section 44.
+
+### Guest Access (STALE NOTE, SUPERSEDED — see Section 40 for the current, correct behaviour)
+This bullet list describes an EARLIER, more restrictive guest model ("guests can ONLY see Default.aspx, no navigation bar, cannot click into anything") that was true for a short period but is **no longer accurate**. It is kept here only so the history is visible. The current behaviour, confirmed against `Site.Master.cs` and every guest-aware page's code-behind, is:
+- Guests DO have a navigation bar (`pnlGuestNav` in `Site.Master`, shown by `CheckAuthentication()` when there's no session).
+- Guests CAN click into `Student/Pathways.aspx`, `PathwayDetail.aspx`, `ModuleDetail.aspx`, `SubTopicView.aspx`, `BossFights.aspx`, `Challenges.aspx`, and `Upgrade.aspx` in read-only mode — they just can't enrol, answer questions, or earn XP.
+- `Site.Master.cs` `CheckAuthentication()` does NOT redirect guests to login — it shows the guest nav/actions panels and returns early.
+- The `Guest/` folder being empty is still true (no pages live there; guest support is handled via `isGuest` flags inside the Student pages themselves, not a separate folder).
+- The `GuestModuleAccess` table is still unused — that part of this note remains accurate.
+- See Section 40 ("Guest Read-Only Access") for the complete, current, accurate description of exactly which pages support guests and how the detection pattern works. If this note and Section 40 ever seem to disagree again, trust Section 40 and check the actual code — this note is deliberately left as a historical marker of "this used to be true, then it changed."
 
 ### Registration (Register.aspx)
 - Students: fill name, email, password, optional TP number → instant account creation + auto-login + Free subscription assigned
@@ -2067,13 +2085,15 @@ CloudPhoria should remain:
 - `Challenges.aspx` handles both challenge listing AND live challenge (via `?challengeID=` parameter)
 - `BossFights.aspx` handles both boss listing AND battle (via `?roomID=` parameter)
 
-### Deleted Features (to reduce page count)
-- Fun Rooms (FunRooms, FunRoomDetail, FunRoomCreate) — REMOVED
-- Practice Quizzes (Practice, PracticeQuiz) — REMOVED
-- Consultations (Student + Instructor) — REMOVED
-- Discussions/Forum (Discussions, DiscussionThread, DiscussionCreate) — REMOVED
+### Deleted Features (to reduce page count from original ~44 down to 30)
+- Fun Rooms (FunRooms, FunRoomDetail, FunRoomCreate) — REMOVED, permanently. Do not rebuild even with the 40-page budget; the user explicitly said "forget about the fun rooms."
+- Practice Quizzes (Practice, PracticeQuiz) — REMOVED, still removed under the 40-page budget
+- Discussions/Forum (Discussions, DiscussionThread, DiscussionCreate) — REMOVED, still removed under the 40-page budget
 - Guest/Learn page — REMOVED
 - About.aspx, Contact.aspx — REMOVED
+
+### Consultations — Permanently Removed
+See Section 26 and Section 44 for the full history and current status. Short version: deleted, rebuilt, deleted again — stays deleted.
 
 ### Classroom Chat
 - Uses `ClassroomMessages` table for Teams-style messaging
@@ -2082,13 +2102,24 @@ CloudPhoria should remain:
 - Instructor messages highlighted with special badge
 - Page: `Student/ClassroomDetail.aspx` (Teams-style layout with sidebar tabs)
 
-### Live Challenges
-- Uses `ChallengeQuestions` and `ChallengeQuestionOptions` tables
-- Admin-created only (`CreatedByAdminID`)
-- Per-question countdown timer (configurable via `TimeLimitSeconds`)
-- Live leaderboard showing top 10 participants by score
-- One attempt per student per challenge (UNIQUE constraint)
-- Handled within `Student/Challenges.aspx`
+### Challenges (Fixed — the "enter and take a challenge" flow was built)
+This feature previously had a real gap: instructors/admins could create challenges, but there was no way for a student to actually take one, and no way to add quiz questions to a challenge at all. Both sides are now implemented.
+
+**Creating challenge questions (Instructor/Admin):**
+- `Instructor/Challenges.aspx?manageQuestions=X` and `Admin/Challenges.aspx?manageQuestions=X` — new "Questions" link per challenge row opens a question-management view on the same page (query-string switched, same pattern as everywhere else in this project).
+- Add a question: text, points, time limit (seconds), and 2+ answer options with one marked correct via radio buttons — same MCQ-creation pattern as `Instructor/Questions.aspx`. Inserts into `ChallengeQuestions` + `ChallengeQuestionOptions`.
+- List + delete existing questions per challenge. Instructor side checks ownership (`Challenges.CreatedByInstructorID`); Admin side checks `IsGlobalAdminChallenge=1`.
+- A challenge with 0 questions shows "No questions yet" instead of "Join Challenge" on the student list — students cannot enter an empty challenge.
+
+**Taking a challenge (Student):**
+- `Student/Challenges.aspx?challengeID=X` — clicking "Join Challenge" now leads to an intro screen (title, description, question count, XP reward, one-attempt warning) with a "Start Challenge" button.
+- Starting locks in the ordered list of `ChallengeQuestionID`s into ViewState, then walks through them one at a time: question text, shuffled options (`ORDER BY NEWID()`), a per-question countdown timer (JS-driven display, same visual pattern as the Boss Fight battle timer), and a Submit button. Timeout auto-submits `0` (counts as wrong), same convention as `BossFights.aspx`.
+- Correctness is checked **server-side** by looking up `ChallengeQuestionOptions.IsCorrect` for the submitted `OptionID` — the client never receives which option is correct beforehand, consistent with Section 15/17's "do not expose correct answers before submission" rule.
+- Score accumulates in ViewState across questions. On the last question, `EndChallenge()` INSERTs one row into `ChallengeParticipation` (guarded against double-submission by checking for an existing row first, since `(ChallengeID, StudentID)` has a UNIQUE constraint) and, in the same transaction, awards `XPTransactions` (`SourceType='Challenge'`) + updates `Students.TotalXP` — exactly the same transactional pattern used for Boss Fight XP awards.
+- Final screen shows the student's score + XP earned, followed by a **top-10 leaderboard** (`ORDER BY Score DESC, CompletedAt ASC`, tie-break by whoever finished first).
+- `Student/Challenges.aspx?leaderboard=X` — a standalone leaderboard view (no need to take the challenge again) is linked from both the active-challenge list and the past-participation table.
+
+**What's still intentionally simple / not built:** no live/synchronous multiplayer aspect (each student takes the quiz independently whenever they click Join, not at the same literal moment as other students — "live" here just means "time-boxed by `StartDate`/`EndDate`", consistent with how the feature was originally named). No question shuffling across challenge attempts (there's only one attempt per student per challenge anyway, enforced by the UNIQUE constraint). No partial-credit or negative scoring — a question is either fully correct (`Points` added) or not (`0` added).
 
 ### Subscription / Upgrade
 - Simplified to 2 plans: Free ($0) and Pro ($9.99/month)
@@ -2188,8 +2219,119 @@ The boss battle mechanic was rebuilt as **drag-and-drop** instead of click-to-an
 
 Run this script AFTER the original 5 setup scripts and after `bossfight_difficulty_questions.sql`.
 
-## 42. Updated Page List (Student — 20 pages, verify against actual folder)
+## 42. Updated Page List (Student — 16 pages, verify against actual folder)
 
 `Dashboard, Pathways, PathwayDetail, ModuleDetail, SubTopicView, MyLearning, Exams, Challenges, BossFights, Classrooms, ClassroomDetail, AssignmentDetail, Achievements, Notifications, Profile, Upgrade`
 
-Note: `Exams.aspx` (exam taking), `Challenges.aspx` (live challenge), and `BossFights.aspx` (drag-and-drop battle) are each **merged pages** — the listing view and the interactive/detail view live in the same `.aspx`/`.aspx.cs`, switched via query string (`?moduleID=`, `?challengeID=`, `?roomID=`) or ViewState panel visibility. Do not recreate `ExamStart.aspx`, `ExamTake.aspx`, `ChallengeDetail.aspx`, or `BossFightBattle.aspx` — they were intentionally deleted and merged to stay at the 30-page budget.
+Note: `Exams.aspx` (exam taking), `Challenges.aspx` (live challenge), and `BossFights.aspx` (drag-and-drop battle) are each **merged pages** — the listing view and the interactive/detail view live in the same `.aspx`/`.aspx.cs`, switched via query string (`?moduleID=`, `?challengeID=`, `?roomID=`) or ViewState panel visibility. Do not recreate `ExamStart.aspx`, `ExamTake.aspx`, `ChallengeDetail.aspx`, or `BossFightBattle.aspx` — they were intentionally deleted and merged, and stay merged even under the 40-page budget (merging where sensible is still preferred; the extra budget went to fairness across roles, not to un-merging pages).
+
+`Student/Discussions.aspx`, `Student/Practice.aspx`, `Instructor/ExamQuestions.aspx`, and `Instructor/PracticeQuestions.aspx` were stale orphaned files left on disk after the Task 6 deletion pass (never referenced in `CloudPhoria.csproj`, `Site.Master` nav, or any other page). They have been deleted for good — do not recreate them.
+
+
+## 43. Admin Dashboard — 9 Dedicated Pages (Replaces old single-tab-page design)
+
+Earlier revisions of this project (30-page budget) implemented Admin as a **single tabbed `Admin/Dashboard.aspx`** with 6 tabs. Once the lecturer raised the budget to 40 pages specifically to balance workload (Admin = 1 person, Instructor = 1 person, Student = 2 people), Admin was split into **9 dedicated pages**, each with its own `.aspx`/`.aspx.cs`/`.aspx.designer.cs`. **No FunRoom review, no subscription plan editing, and no gamification/XP-formula settings** — those remain explicitly descoped per the user's decision. Pricing stays fixed as coded in `Student/Upgrade.aspx` ($0 Free / $9.99 Pro).
+
+### Admin/Dashboard.aspx — Overview
+Read-only stats only now: total students, total instructors, pending approvals count, published module count, and the last 10 rows from `AuditLogs`. (Previously this page also hosted the other 5 tabs — that content has moved to its own dedicated pages below.)
+
+### Admin/Users.aspx — Users (full CRUD)
+- **Create**: modal form — pick Role (Student/Instructor/Admin), enter name/email/temp password. Creates the `Users` row plus the matching `Students`/`Instructors`/`Admins` role row in one transaction (shared-PK pattern per Section 9). New instructors created this way are auto-`Approved` (an admin creating an instructor account directly implies approval).
+- **Ban / Unban**: toggles `Users.IsBanned`.
+- **Deactivate / Activate**: toggles `Users.IsActive`.
+- **Delete**: hard-deletes the `Users` row. Will fail with a friendly error if the user has related records (FKs) — this is expected and intentional; the admin should reassign/clean up content first rather than force-deleting through app code.
+- Every action is written to `AuditLogs` via a shared `LogAction()` helper.
+
+### Admin/InstructorApprovals.aspx — Instructor Approvals
+This is the fix for "why did all my instructor's modules/subtopics/questions/challenges disappear" — those pages hard-redirect back to `Instructor/Dashboard.aspx` whenever `Session["LicenseStatus"] != "Approved"` (by design, Section 12). This page is the missing piece that lets an Admin actually change that status:
+- Lists all `Instructors` where `LicenseStatus = 'Pending'` with Approve/Reject buttons.
+- Approve/Reject updates `Instructors.LicenseStatus`, `ApprovedBy` (= current AdminID), `ApprovedAt`, sends the instructor a `Notifications` row, and logs to `AuditLogs` (`APPROVE_INSTRUCTOR` / `REJECT_INSTRUCTOR`).
+- Below that, a read-only table of every instructor and their current status for reference.
+- **Important:** the instructor's `Session["LicenseStatus"]` is set once at login time (see `LogIn.aspx.cs`). If an Admin approves an instructor while they're still logged in, that instructor must log out and back in for their session to pick up the new `Approved` status and regain access to Modules/SubTopics/Questions/Classrooms/Materials/Assignments/Challenges.
+
+### Admin/Courses.aspx — Manage & Assign Courses
+- Read-only grid of all `Pathways` with module counts.
+- Table of all `Modules` across every pathway with:
+  - A per-row dropdown (populated from `Instructors WHERE LicenseStatus='Approved'`) to reassign a module — this is the "choose the reliable instructor to manage" course-assignment requirement. **Assigning is a full ownership transfer, not just a label** — see the cascade behaviour below.
+  - Publish/Unpublish toggle (`Modules.IsPublished`) — this is the admin-level content moderation/staging control, reusing the existing publish flag instead of a separate review queue.
+
+**Assign = cascade to all child content (Fixed — was previously a shallow, misleading update).** The schema does not have one "owner" column per module; `SubTopics`, `Questions`, `LearningMaterials`, and `PracticeQuestions`/`ExamQuestions` each carry their own independent instructor-ownership column, and every `Instructor/*.aspx` page filters strictly by its own column rather than by the parent module's owner. Earlier, "Assign" only updated `Modules.CreatedByInstructorID`, which meant the new instructor got the label but not actual edit access to the subtopics/questions/materials inside — the original instructor silently kept full edit rights. That was confusing and not what "assign a module to an instructor" should mean.
+
+Assigning a module to an instructor (value > 0) now updates, in one transaction:
+- `Modules.CreatedByInstructorID`
+- `SubTopics.CreatedByInstructorID` (all rows where `ModuleID` matches)
+- `Questions.CreatedByInstructorID` (joined through `SubTopics.ModuleID`)
+- `LearningMaterials.InstructorID` (joined through `SubTopics.ModuleID`)
+- `PracticeQuestions.CreatedByInstructorID` (where `ModuleID` matches)
+- `ExamQuestions.CreatedByInstructorID` (where `ModuleID` matches)
+
+After this, the new instructor sees and can edit everything in that module across `Instructor/SubTopics.aspx`, `Questions.aspx`, and `Materials.aspx` — the previous instructor loses access, since those pages' ownership checks now match the new instructor.
+
+**Unassigning ("-- Unassigned --", value 0) does NOT cascade.** `Modules.CreatedByInstructorID` is nullable, but `Questions`, `LearningMaterials`, `PracticeQuestions`, and `ExamQuestions` all have `CreatedByInstructorID`/`InstructorID` as `NOT NULL` — there's no valid "unowned" state for those rows. Unassigning only clears the module-level label; the existing subtopics/questions/materials keep whatever instructor currently owns them. This is intentional, not a bug — do not attempt to force those columns to `NULL`.
+
+### Admin/Challenges.aspx — Global Challenges
+- Create form: title, description, XP reward, start/end date → inserts into `Challenges` with `CreatedByAdminID = current admin` and `IsGlobalAdminChallenge = 1` (per Section 24, exactly one creator field is set).
+- List of existing global challenges with participant counts and Delete.
+- These appear alongside instructor-created challenges on `Student/Challenges.aspx` (that page does not filter by creator — no student-facing change needed).
+
+### Admin/Reports.aspx — Review & Moderate Content
+- Lists `Reports` rows filtered/sorted by status (`Open`, `Reviewed`, `ActionTaken`, `Dismissed`).
+- Admin can change a report's status and add resolution notes; status transitions are logged to `AuditLogs`.
+- `ReportedContentType`/`ReportedContentID` are polymorphic (Section 27) — validate `ReportedContentType` against a known allowlist before using it to look up content, never build dynamic SQL from it.
+
+### Admin/AuditLogs.aspx — Searchable Activity Log
+- Full searchable/filterable view of `AuditLogs` (by action type, target table, date range, admin).
+- Replaces the old Overview tab's "last 10 rows" preview with the complete, filterable log.
+
+### Admin/Notifications.aspx and Admin/Profile.aspx
+Standard notification inbox and profile/account settings pages, consistent with the equivalent Student/Instructor pages.
+
+### What Admin still CANNOT do (explicitly out of scope per user decision)
+- Cannot edit `SubscriptionPlans` pricing/features — fixed in code on `Student/Upgrade.aspx`.
+- Cannot review/approve FunRooms — feature was already deleted from this project.
+- Cannot configure XP formulas, badge algorithms, or leaderboard structures — no gamification settings page exists or is planned.
+- Still cannot manage `BossFightRooms`/`Bosses` or `ConsultationSlots`/`ConsultationBookings` through a dedicated Admin UI — those remain Student/Instructor-facing only.
+
+### Setup note
+Run `Database/admin_setup.sql` once to confirm you have at least one `Admins` row and to see the current `LicenseStatus` of every seeded instructor. It is read-only by default (the bulk-approve UPDATE is commented out) — approve instructors through `Admin/InstructorApprovals.aspx` instead.
+
+
+## 44. Consultations Feature — Full History (Permanently Removed)
+
+Consultations (Student + Instructor) went through a full cycle:
+1. Built originally (Task 4) as `Instructor/Consultations.aspx` + `Student/Consultations.aspx`, using `ConsultationSlots`/`ConsultationBookings`.
+2. Deleted during the 30-page squeeze (Task 6) to hit the lecturer's original page limit.
+3. Rebuilt as 2 dedicated pages when the budget was raised to 40 (Task 7), to help balance Instructor's page count.
+4. **Permanently removed again** — the user explicitly said "i dont want consultation anymore." Both pages, their `.aspx.cs`/`.aspx.designer.cs` files, `csproj` entries, and `Site.Master` nav links (Instructor and Student panels) were deleted.
+
+**Current state:** no Consultation pages exist. Do not rebuild `Instructor/Consultations.aspx`, `Student/Consultations.aspx`, or their nav links unless the user explicitly asks again. The `ConsultationSlots`/`ConsultationBookings` tables remain in the schema (never dropped) but are unused — same status as `FunRooms` and `PracticeQuestions`.
+
+**Current page count impact:** removing these 2 pages brings the total from 40 down to **38** (Instructor 10, Student 16). See Section 39 for the full current breakdown.
+
+
+## 45. Demo/Test Data Scripts (Added)
+
+`Database/demo_instructor_approval.sql` — creates one demo instructor account (`jane.demo@cloudphoria.test` / `Demo@123`) with `LicenseStatus = 'Pending'`, specifically so the `Admin/InstructorApprovals.aspx` Approve/Reject flow can be demoed without needing a real registration. Idempotent — safe to re-run, it resets the demo account back to `Pending` instead of erroring on duplicate email. Not part of the main setup sequence (Section 13 of DataSchema); run it on demand whenever you want to demo the approval flow.
+
+
+## 46. Report an Issue — Student/Instructor Submission Path (Added)
+
+Previously there was no way for a Student or Instructor to actually create a `Reports` row — `Admin/Reports.aspx` only read/updated existing reports, with no submission form anywhere. This is now fixed:
+
+- **`Student/Profile.aspx`** and **`Instructor/Profile.aspx`** each got a new "Report an Issue" card at the bottom of the page (below the existing account/stats cards).
+- Form fields: a `ReportedContentType` dropdown (`User` / `Classroom` / `Challenge` / `Other`) and a required free-text `Reason` textarea.
+- Submitting inserts into `Reports` with `Status = 'Open'` and `ReportedByUserID` = the current session user. `ReportedUserID` and `ReportedContentID` are left `NULL` — this is a simple "describe the issue" form, not a structured "report this specific row" button. If a more granular report-this-item flow is wanted later, it can be added per-feature (e.g. a report link inside `ClassroomDetail.aspx` chat), but that was not requested.
+- No new page was created — added to the existing Profile pages to avoid growing the page count.
+- Reports submitted this way immediately appear in `Admin/Reports.aspx` under the `Open` filter, using the exact same table both pages already shared.
+
+
+## 47. Instructor Classroom Material Upload (Added)
+
+Previously `ClassroomMaterials` was a fully defined table with a working reader (`Student/ClassroomDetail.aspx` Files & Attachments tab), but **no writer existed anywhere** — instructors had no way to actually upload a file into a specific classroom. `Instructor/Materials.aspx` only handles `LearningMaterials` (subtopic-level lesson attachments), a different table entirely. This is now fixed:
+
+- **`Instructor/Classrooms.aspx`** — when an instructor clicks "View Students" on a classroom (`?id=` in the query string), a new "Classroom Materials" section now appears below the enrolled-students table, alongside an "Upload Material" button opening a modal.
+- Upload validation matches `Instructor/Materials.aspx` exactly: extension allowlist (PDF, DOCX, DOC, PPTX, PPT, TXT, PNG, JPG, JPEG), 10 MB max, safe stored filename (timestamp + sanitised original name), ownership check (`Classrooms.InstructorID` must match session user) before saving.
+- Files are physically saved to `/uploads/classroom/{ClassroomID}/`, matching the path convention already documented in Section 29 and in the DataSchema doc's naming-convention table — this was previously just a documented convention with no code actually using it.
+- Materials list on this page also supports Delete (removes DB row + physical file, ownership-checked).
+- No schema changes, no new page — reuses the existing `ClassroomMaterials` table and adds the missing CRUD to the existing `Instructor/Classrooms.aspx` page.
+- Students immediately see uploaded materials in `Student/ClassroomDetail.aspx`'s Files & Attachments tab — no separate publish step, since both pages read/write the same table.

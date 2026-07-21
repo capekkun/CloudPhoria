@@ -28,5 +28,12 @@ namespace CloudPhoria.Instructor
         protected global::System.Web.UI.WebControls.TextBox txtNewPassword;
         protected global::System.Web.UI.WebControls.TextBox txtConfirmPassword;
         protected global::System.Web.UI.WebControls.Button btnChangePassword;
+        protected global::System.Web.UI.WebControls.Panel pnlReportSuccess;
+        protected global::System.Web.UI.WebControls.Literal litReportSuccess;
+        protected global::System.Web.UI.WebControls.Panel pnlReportError;
+        protected global::System.Web.UI.WebControls.Literal litReportError;
+        protected global::System.Web.UI.WebControls.DropDownList ddlReportType;
+        protected global::System.Web.UI.WebControls.TextBox txtReportReason;
+        protected global::System.Web.UI.WebControls.Button btnSubmitReport;
     }
 }

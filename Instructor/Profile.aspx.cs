@@ -221,6 +221,44 @@ namespace CloudPhoria.Instructor
             }
         }
 
+        protected void btnSubmitReport_Click(object sender, EventArgs e)
+        {
+            if (!Page.IsValid) { return; }
+
+            int userID = Convert.ToInt32(Session["UserID"]);
+            string contentType = ddlReportType.SelectedValue;
+            string reason = txtReportReason.Text.Trim();
+            string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(cs))
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand(
+                        @"INSERT INTO Reports (ReportedByUserID, ReportedContentType, Reason, Status, CreatedAt)
+                          VALUES (@UID, @Type, @Reason, 'Open', GETDATE())", conn))
+                    {
+                        cmd.Parameters.Add("@UID", SqlDbType.Int).Value = userID;
+                        cmd.Parameters.Add("@Type", SqlDbType.NVarChar, 30).Value = contentType;
+                        cmd.Parameters.Add("@Reason", SqlDbType.NVarChar, -1).Value = reason;
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                txtReportReason.Text = string.Empty;
+                litReportSuccess.Text = "Report submitted. An admin will review it shortly.";
+                pnlReportSuccess.Visible = true;
+                pnlReportError.Visible = false;
+            }
+            catch (SqlException)
+            {
+                litReportError.Text = "Could not submit report. Please try again.";
+                pnlReportError.Visible = true;
+                pnlReportSuccess.Visible = false;
+            }
+        }
+
         private void ShowSuccess(string msg)
         {
             litSuccess.Text = HttpUtility.HtmlEncode(msg);

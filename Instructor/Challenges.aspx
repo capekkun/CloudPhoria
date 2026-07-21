@@ -55,7 +55,8 @@
                                 <td>
                                     <%# GetChallengeStatus(Eval("StartDate"), Eval("EndDate")) %>
                                 </td>
-                                <td>
+                                <td style="display:flex;gap:6px;">
+                                    <a href='Challenges.aspx?manageQuestions=<%# Eval("ChallengeID") %>' class="cp-btn cp-btn-outline cp-btn-sm">Questions</a>
                                     <asp:LinkButton runat="server"
                                         CommandName="Delete"
                                         CommandArgument='<%# Eval("ChallengeID") %>'
@@ -81,6 +82,88 @@
                 + New Challenge
             </button>
         </div>
+    </asp:Panel>
+
+    <%-- Manage Questions view (?manageQuestions=) --%>
+    <asp:Panel ID="pnlManageQuestions" runat="server" Visible="false">
+        <div class="cp-page-header-row" style="margin-bottom:16px;">
+            <div>
+                <h2>&#x2753; Questions &mdash; <asp:Literal ID="litManageChTitle" runat="server" /></h2>
+                <p>Add multiple-choice questions students will answer when they join this challenge.</p>
+            </div>
+            <a href="Challenges.aspx" class="cp-btn cp-btn-ghost">&#x2190; Back to Challenges</a>
+        </div>
+
+        <div class="cp-card cp-mb-md">
+            <h3 style="font-size:14px;font-weight:600;margin:0 0 12px;">Add a Question</h3>
+
+            <div class="cp-form-group">
+                <label class="cp-label" for="<%= txtChQText.ClientID %>">Question Text <span class="required">*</span></label>
+                <asp:TextBox ID="txtChQText" runat="server" CssClass="cp-textarea" TextMode="MultiLine" Rows="2"
+                             placeholder="Enter the question..." />
+                <asp:RequiredFieldValidator runat="server" ControlToValidate="txtChQText"
+                    Display="Dynamic" CssClass="cp-form-error"
+                    ValidationGroup="AddChQ" ErrorMessage="Question text is required." />
+            </div>
+
+            <div class="cp-grid-2" style="gap:12px;">
+                <div class="cp-form-group">
+                    <label class="cp-label" for="<%= txtChQPoints.ClientID %>">Points for Correct Answer</label>
+                    <asp:TextBox ID="txtChQPoints" runat="server" CssClass="cp-input" TextMode="Number" Text="10" />
+                </div>
+                <div class="cp-form-group">
+                    <label class="cp-label" for="<%= txtChQTime.ClientID %>">Time Limit (seconds)</label>
+                    <asp:TextBox ID="txtChQTime" runat="server" CssClass="cp-input" TextMode="Number" Text="30" />
+                </div>
+            </div>
+
+            <label class="cp-label">Answer Options <span class="required">*</span> (at least 2, select the correct one)</label>
+            <asp:Repeater ID="rptChOptions" runat="server">
+                <ItemTemplate>
+                    <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+                        <asp:RadioButton ID="rbChCorrect" runat="server" GroupName="ChCorrectOption" />
+                        <asp:TextBox ID="txtChOption" runat="server" CssClass="cp-input"
+                                     MaxLength="300" placeholder='<%# "Option " + Container.DataItem %>' />
+                    </div>
+                </ItemTemplate>
+            </asp:Repeater>
+
+            <asp:Button ID="btnAddChQuestion" runat="server" Text="+ Add Question"
+                        CssClass="cp-btn cp-btn-primary" style="margin-top:8px;"
+                        ValidationGroup="AddChQ" OnClick="btnAddChQuestion_Click" />
+        </div>
+
+        <h3 style="font-size:14px;font-weight:600;margin:0 0 12px;">Existing Questions</h3>
+        <asp:Panel ID="pnlChQuestionsList" runat="server" Visible="false">
+            <asp:Repeater ID="rptChQuestions" runat="server" OnItemCommand="rptChQuestions_ItemCommand">
+                <ItemTemplate>
+                    <div class="cp-card" style="margin-bottom:10px;">
+                        <div class="cp-flex-between" style="flex-wrap:wrap;gap:10px;">
+                            <div>
+                                <div style="font-size:13px;font-weight:600;color:var(--cp-text);">
+                                    <%# HttpUtility.HtmlEncode(Eval("QuestionText").ToString()) %>
+                                </div>
+                                <div style="font-size:12px;color:var(--cp-text-muted);margin-top:4px;">
+                                    <%# Eval("Points") %> pts &bull; <%# Eval("TimeLimitSeconds") %>s &bull;
+                                    <%# Eval("OptionCount") %> option(s)
+                                </div>
+                            </div>
+                            <asp:LinkButton runat="server" CommandName="DeleteQuestion"
+                                CommandArgument='<%# Eval("ChallengeQuestionID") %>'
+                                CssClass="cp-btn cp-btn-danger cp-btn-sm"
+                                OnClientClick="return confirm('Remove this question?');">
+                                Remove
+                            </asp:LinkButton>
+                        </div>
+                    </div>
+                </ItemTemplate>
+            </asp:Repeater>
+        </asp:Panel>
+        <asp:Panel ID="pnlNoChQuestions" runat="server" Visible="false">
+            <div class="cp-card" style="text-align:center;padding:20px;color:var(--cp-text-muted);font-size:13px;">
+                No questions yet. Add at least one so students can join this challenge.
+            </div>
+        </asp:Panel>
     </asp:Panel>
 
     <%-- Create Challenge Modal --%>

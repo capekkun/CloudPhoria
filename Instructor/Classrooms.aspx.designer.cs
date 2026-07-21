@@ -18,6 +18,13 @@ namespace CloudPhoria.Instructor
         protected global::System.Web.UI.WebControls.Panel pnlStudents;
         protected global::System.Web.UI.WebControls.Literal litSelectedClassroom;
         protected global::System.Web.UI.WebControls.Repeater rptStudents;
+        protected global::System.Web.UI.WebControls.Panel pnlClassroomMaterialsSection;
+        protected global::System.Web.UI.WebControls.Panel pnlClassroomMaterials;
+        protected global::System.Web.UI.WebControls.Repeater rptClassroomMaterials;
+        protected global::System.Web.UI.WebControls.Panel pnlNoMaterials;
+        protected global::System.Web.UI.WebControls.FileUpload fuClassroomMaterial;
+        protected global::System.Web.UI.WebControls.TextBox txtMaterialDescription;
+        protected global::System.Web.UI.WebControls.Button btnUploadMaterial;
         protected global::System.Web.UI.WebControls.TextBox txtClassName;
         protected global::System.Web.UI.WebControls.TextBox txtInviteCode;
         protected global::System.Web.UI.WebControls.Button btnCreate;
