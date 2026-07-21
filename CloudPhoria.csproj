@@ -332,6 +332,7 @@
     <Content Include="Student\FunRoomCreate.aspx" />
     <Content Include="Student\Upgrade.aspx" />
     <Content Include="Student\ChallengeDetail.aspx" />
+    <Content Include="Student\AssignmentDetail.aspx" />
     <Content Include="Student\DiscussionThread.aspx" />
     <Content Include="Student\DiscussionCreate.aspx" />
     <Content Include="Student\ModuleDetail.aspx" />
@@ -642,6 +643,13 @@
     </Compile>
     <Compile Include="Student\ChallengeDetail.aspx.designer.cs">
       <DependentUpon>ChallengeDetail.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Student\AssignmentDetail.aspx.cs">
+      <DependentUpon>AssignmentDetail.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Student\AssignmentDetail.aspx.designer.cs">
+      <DependentUpon>AssignmentDetail.aspx</DependentUpon>
     </Compile>
     <Compile Include="Student\DiscussionThread.aspx.cs">
       <DependentUpon>DiscussionThread.aspx</DependentUpon>

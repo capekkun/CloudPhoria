@@ -59,22 +59,15 @@
     </div>
 </asp:Panel>
 
-<%-- Mark complete button --%>
-<asp:Panel ID="pnlComplete" runat="server" Visible="false">
-    <div class="cp-card" style="text-align:center;">
-        <p style="font-size:14px;color:#64748B;margin:0 0 16px;">
-            Review the content and answer all questions, then mark this subtopic as complete to earn XP.
-        </p>
-        <asp:Button ID="btnComplete" runat="server" Text="&#x2713; Mark as Complete"
-            CssClass="cp-btn cp-btn-primary"
-            OnClick="btnComplete_Click"
-            OnClientClick="return confirm('Mark this subtopic as complete?');" />
-    </div>
-</asp:Panel>
-
 <%-- Questions section --%>
 <asp:Panel ID="pnlQuestions" runat="server" Visible="false">
-    <h3 style="font-size:16px;font-weight:700;margin:24px 0 16px;">&#x2753; Questions</h3>
+    <div style="margin:32px 0 16px;padding:16px 20px;background:linear-gradient(90deg,#EEF2FF,#E0E7FF);
+        border-radius:10px;border-left:4px solid #6366F1;">
+        <p style="font-size:14px;font-weight:600;color:#312E81;margin:0 0 4px;">&#x1F4DD; Test Your Knowledge</p>
+        <p style="font-size:13px;color:#4338CA;margin:0;">
+            Make sure you've read the lesson above before answering. Select the correct option for each question.
+        </p>
+    </div>
     <asp:Repeater ID="rptQuestions" runat="server">
         <ItemTemplate>
             <div class="cp-card" style="border-left:3px solid var(--cp-indigo);margin-bottom:16px;">
@@ -92,6 +85,19 @@
             </div>
         </ItemTemplate>
     </asp:Repeater>
+</asp:Panel>
+
+<%-- Mark complete button (after questions) --%>
+<asp:Panel ID="pnlComplete" runat="server" Visible="false">
+    <div class="cp-card" style="text-align:center;margin-top:20px;">
+        <p style="font-size:14px;color:#64748B;margin:0 0 16px;">
+            &#x2705; Done reviewing? Mark this subtopic as complete to earn XP.
+        </p>
+        <asp:Button ID="btnComplete" runat="server" Text="&#x2713; Mark as Complete"
+            CssClass="cp-btn cp-btn-primary"
+            OnClick="btnComplete_Click"
+            OnClientClick="return confirm('Mark this subtopic as complete?');" />
+    </div>
 </asp:Panel>
 
 <asp:Panel ID="pnlAlreadyDone" runat="server" Visible="false">

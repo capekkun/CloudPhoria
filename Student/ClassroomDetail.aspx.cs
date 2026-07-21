@@ -303,13 +303,14 @@ namespace CloudPhoria.Student
                 }
 
                 sb.AppendFormat(
-                    "<div class='teams-asgn-card'>" +
+                    "<a href='AssignmentDetail.aspx?assignmentID={3}&classroomID={4}' class='teams-asgn-card' style='text-decoration:none;color:inherit;display:block;'>" +
                     "<div class='teams-asgn-title'>{0}</div>" +
                     "<div class='teams-asgn-meta'>" +
                     "<span>Posted: {1}</span>" +
                     "{2}" +
-                    "</div></div>",
-                    title, created, dueHtml);
+                    "</div></a>",
+                    title, created, dueHtml,
+                    row["AssignmentID"].ToString(), classroomID);
             }
 
             sb.Append("</div>");

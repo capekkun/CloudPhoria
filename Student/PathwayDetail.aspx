@@ -89,6 +89,11 @@
             &#x2713; You are enrolled in this pathway
         </span>
     </asp:Panel>
+    <asp:Panel ID="pnlUpgradeNeeded" runat="server" Visible="false">
+        <a href="Upgrade.aspx" class="pw-enroll-btn" style="background:linear-gradient(90deg,#F59E0B,#EF4444);text-decoration:none;">
+            &#x1F512; Upgrade to Pro to Enroll
+        </a>
+    </asp:Panel>
 </div>
 
 <asp:Panel ID="pnlError" runat="server" Visible="false">

@@ -194,6 +194,7 @@
                     <a href="/Student/Achievements.aspx">&#x1F3C5; Achievements</a>
                 </div>
             </div>
+            <a class="cp-topnav-link" href="/Student/Upgrade.aspx" style="color:#F59E0B;"><span class="cp-topnav-icon">&#x1F680;</span> Go Pro</a>
         </asp:Panel>
         <asp:Panel ID="pnlInstructorNav" runat="server" Visible="false">
             <a class="cp-topnav-link" href="/Instructor/Dashboard.aspx"><span class="cp-topnav-icon">&#x2302;</span> Dashboard</a>

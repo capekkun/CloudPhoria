@@ -11,6 +11,7 @@ namespace CloudPhoria.Student
         protected global::System.Web.UI.WebControls.Panel pnlEnroll;
         protected global::System.Web.UI.WebControls.Button btnEnroll;
         protected global::System.Web.UI.WebControls.Panel pnlAlreadyEnrolled;
+        protected global::System.Web.UI.WebControls.Panel pnlUpgradeNeeded;
         protected global::System.Web.UI.WebControls.Panel pnlError;
         protected global::System.Web.UI.WebControls.Literal litError;
         protected global::System.Web.UI.WebControls.Panel pnlProgress;

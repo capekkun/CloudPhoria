@@ -199,6 +199,36 @@
                 <label class="cp-label" for="<%= txtDueDate.ClientID %>">Due Date (optional)</label>
                 <asp:TextBox ID="txtDueDate" runat="server" CssClass="cp-input" TextMode="DateTime" />
             </div>
+
+            <h4 style="margin:20px 0 10px;font-size:14px;font-weight:600;">Assignment Questions</h4>
+            <p style="font-size:12px;color:var(--cp-text-muted);margin:0 0 12px;">Add questions for students to answer. For Objective questions, provide 4 options (first = correct).</p>
+
+            <div class="cp-form-group" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:14px;margin-bottom:10px;">
+                <label class="cp-label">Question 1 (Objective)</label>
+                <asp:TextBox ID="txtAQ1" runat="server" CssClass="cp-input" placeholder="Question text" MaxLength="500" />
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;">
+                    <asp:TextBox ID="txtAQ1O1" runat="server" CssClass="cp-input" placeholder="Option A (correct)" MaxLength="300" />
+                    <asp:TextBox ID="txtAQ1O2" runat="server" CssClass="cp-input" placeholder="Option B" MaxLength="300" />
+                    <asp:TextBox ID="txtAQ1O3" runat="server" CssClass="cp-input" placeholder="Option C" MaxLength="300" />
+                    <asp:TextBox ID="txtAQ1O4" runat="server" CssClass="cp-input" placeholder="Option D" MaxLength="300" />
+                </div>
+            </div>
+
+            <div class="cp-form-group" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:14px;margin-bottom:10px;">
+                <label class="cp-label">Question 2 (Objective - optional)</label>
+                <asp:TextBox ID="txtAQ2" runat="server" CssClass="cp-input" placeholder="Question text" MaxLength="500" />
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;">
+                    <asp:TextBox ID="txtAQ2O1" runat="server" CssClass="cp-input" placeholder="Option A (correct)" MaxLength="300" />
+                    <asp:TextBox ID="txtAQ2O2" runat="server" CssClass="cp-input" placeholder="Option B" MaxLength="300" />
+                    <asp:TextBox ID="txtAQ2O3" runat="server" CssClass="cp-input" placeholder="Option C" MaxLength="300" />
+                    <asp:TextBox ID="txtAQ2O4" runat="server" CssClass="cp-input" placeholder="Option D" MaxLength="300" />
+                </div>
+            </div>
+
+            <div class="cp-form-group" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:14px;">
+                <label class="cp-label">Question 3 (Subjective - optional)</label>
+                <asp:TextBox ID="txtAQ3" runat="server" CssClass="cp-input" placeholder="Open-ended question (students type their answer)" MaxLength="500" />
+            </div>
             <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;">
                 <button type="button" class="cp-btn cp-btn-ghost" onclick="hideModal('createModal')">Cancel</button>
                 <asp:Button ID="btnCreate" runat="server" Text="Create Assignment"

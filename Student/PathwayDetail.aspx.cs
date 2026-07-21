@@ -63,6 +63,7 @@ namespace CloudPhoria.Student
                     }
 
                     // Subscription check — Free tier can only access Foundation pathway
+                    bool isFreeTier = false;
                     if (!isFoundation)
                     {
                         bool isFoundationOnly = true;
@@ -78,9 +79,7 @@ namespace CloudPhoria.Student
 
                         if (isFoundationOnly)
                         {
-                            litError.Text = "This pathway requires a Pro or Student subscription. Please upgrade your plan to access specialisation pathways.";
-                            pnlError.Visible = true;
-                            return;
+                            isFreeTier = true; // Don't return — let them see the page but block enrollment
                         }
                     }
 
@@ -255,6 +254,11 @@ namespace CloudPhoria.Student
                         pwProgressBar.Style["width"] = pct + "%";
                         litProgressDetail.Text = completedModules + " of " + totalModules + " modules completed";
                         pnlProgress.Visible = true;
+                    }
+                    else if (isFreeTier)
+                    {
+                        // Show upgrade prompt instead of enroll
+                        pnlUpgradeNeeded.Visible = true;
                     }
                     else
                     {
