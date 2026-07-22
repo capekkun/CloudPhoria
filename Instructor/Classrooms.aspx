@@ -82,10 +82,18 @@
 
     <%-- Student list panel (when ?id= is provided) --%>
     <asp:Panel ID="pnlStudents" runat="server" Visible="false">
-        <h3 style="font-size:15px;font-weight:600;color:var(--cp-text);margin:24px 0 12px;">
-            Enrolled Students &mdash;
-            <asp:Literal ID="litSelectedClassroom" runat="server" />
-        </h3>
+        <div style="margin:24px 0 12px;">
+            <div style="font-size:11px;font-weight:600;text-transform:uppercase;
+                        letter-spacing:0.08em;color:var(--cp-text-muted);margin-bottom:4px;">
+                Selected Classroom
+            </div>
+            <div style="font-size:17px;font-weight:700;color:var(--cp-text);margin-bottom:2px;">
+                <asp:Literal ID="litSelectedClassroom" runat="server" />
+            </div>
+            <h3 style="font-size:14px;font-weight:600;color:var(--cp-text-muted);margin:4px 0 0;">
+                Enrolled Students
+            </h3>
+        </div>
         <div class="cp-table-wrap">
             <table class="cp-table" role="grid" aria-label="Enrolled students">
                 <thead>
@@ -148,6 +156,12 @@
                                         <%# Convert.ToDateTime(Eval("UploadedAt")).ToString("dd MMM yyyy") %>
                                     </td>
                                     <td>
+                                        <a href='<%# Eval("FilePath") %>' target="_blank"
+                                           rel="noopener noreferrer"
+                                           class="cp-btn cp-btn-outline cp-btn-sm"
+                                           title="Open file in new tab">
+                                            &#x1F441; View
+                                        </a>
                                         <asp:LinkButton runat="server"
                                             CommandName="DeleteMaterial"
                                             CommandArgument='<%# Eval("ClassroomMaterialID") %>'
