@@ -633,6 +633,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Database\" />
+    <Folder Include="Test\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
