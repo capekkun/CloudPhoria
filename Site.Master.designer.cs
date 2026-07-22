@@ -36,8 +36,6 @@
         protected global::System.Web.UI.WebControls.Literal litTopbarName;
         protected global::System.Web.UI.WebControls.Literal litTopbarRole;
         protected global::System.Web.UI.WebControls.HyperLink lnkProfile;
-        protected global::System.Web.UI.WebControls.Panel pnlDropAchievements;
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor lnkDropNotifications;
         protected global::System.Web.UI.WebControls.LinkButton btnLogout;
 
         // Footer

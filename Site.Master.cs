@@ -119,17 +119,6 @@ namespace CloudPhoria
                 lnkProfile.NavigateUrl = "~/Instructor/Profile.aspx";
             else if (role == "Admin")
                 lnkProfile.NavigateUrl = "~/Admin/Profile.aspx";
-
-            // Notifications link in user dropdown.
-            if (role == "Student")
-            {
-                lnkDropNotifications.HRef     = ResolveUrl("~/Student/Notifications.aspx");
-                pnlDropAchievements.Visible   = true;
-            }
-            else if (role == "Instructor")
-                lnkDropNotifications.HRef = ResolveUrl("~/Instructor/Notifications.aspx");
-            else if (role == "Admin")
-                lnkDropNotifications.HRef = ResolveUrl("~/Admin/Notifications.aspx");
         }
 
         private void ConfigureNavigation()
