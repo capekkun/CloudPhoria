@@ -246,6 +246,10 @@ namespace CloudPhoria.Instructor
                         InsertObjectiveQuestion(conn, assignmentID, txtAQ2, txtAQ2O1, txtAQ2O2, txtAQ2O3, txtAQ2O4, 2);
                         InsertSubjectiveQuestion(conn, assignmentID, txtAQ3, 3);
                     }
+
+                    Utils.SendNotification(conn, instructorID,
+                        "Assignment \"" + title + "\" created successfully.",
+                        "Assignment");
                 }
 
                 txtTitle.Text   = string.Empty;
@@ -279,6 +283,18 @@ namespace CloudPhoria.Instructor
                 using (SqlConnection conn = new SqlConnection(cs))
                 {
                     conn.Open();
+
+                    // Get assignment title before deleting for notification.
+                    string assignTitle = string.Empty;
+                    using (SqlCommand getTitle = new SqlCommand(
+                        "SELECT Title FROM ClassroomAssignments WHERE AssignmentID=@AID AND InstructorID=@IID", conn))
+                    {
+                        getTitle.Parameters.Add("@AID", SqlDbType.Int).Value = assignmentID;
+                        getTitle.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
+                        object r = getTitle.ExecuteScalar();
+                        assignTitle = (r != null && r != DBNull.Value) ? r.ToString() : "assignment";
+                    }
+
                     using (SqlCommand cmd = new SqlCommand(
                         "DELETE FROM ClassroomAssignments WHERE AssignmentID=@AID AND InstructorID=@IID", conn))
                     {
@@ -286,6 +302,10 @@ namespace CloudPhoria.Instructor
                         cmd.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
                         cmd.ExecuteNonQuery();
                     }
+
+                    Utils.SendNotification(conn, instructorID,
+                        "Assignment \"" + assignTitle + "\" was deleted.",
+                        "Assignment");
                 }
                 ShowSuccess("Assignment deleted.");
                 pnlAssignments.Visible = false;

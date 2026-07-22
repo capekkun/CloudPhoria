@@ -225,6 +225,10 @@ namespace CloudPhoria.Instructor
                         cmd.Parameters.Add("@FPath", SqlDbType.NVarChar, 500).Value = webPath;
                         cmd.ExecuteNonQuery();
                     }
+
+                    Utils.SendNotification(conn, instructorID,
+                        "Material \"" + originalName + "\" uploaded successfully.",
+                        "Material");
                 }
 
                 ShowSuccess("Material uploaded successfully.");
@@ -258,16 +262,20 @@ namespace CloudPhoria.Instructor
                 using (SqlConnection conn = new SqlConnection(cs))
                 {
                     conn.Open();
-                    // Retrieve file path first so we can delete the physical file.
+                    // Retrieve file name and path first so we can notify and delete the physical file.
                     string filePath = null;
+                    string fileName = null;
                     using (SqlCommand get = new SqlCommand(
-                        "SELECT FilePath FROM LearningMaterials WHERE MaterialID=@ID AND InstructorID=@IID", conn))
+                        "SELECT FilePath, FileName FROM LearningMaterials WHERE MaterialID=@ID AND InstructorID=@IID", conn))
                     {
                         get.Parameters.Add("@ID",  SqlDbType.Int).Value = materialID;
                         get.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
-                        object r = get.ExecuteScalar();
-                        if (r == null || r == DBNull.Value) return; // Not owned by this instructor.
-                        filePath = r.ToString();
+                        using (SqlDataReader rdr = get.ExecuteReader())
+                        {
+                            if (!rdr.Read()) return; // Not owned by this instructor.
+                            filePath = rdr["FilePath"].ToString();
+                            fileName = rdr["FileName"].ToString();
+                        }
                     }
 
                     using (SqlCommand del = new SqlCommand(
@@ -277,6 +285,10 @@ namespace CloudPhoria.Instructor
                         del.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
                         del.ExecuteNonQuery();
                     }
+
+                    Utils.SendNotification(conn, instructorID,
+                        "Material \"" + (fileName ?? "file") + "\" was removed.",
+                        "Material");
 
                     // Delete the physical file if it exists.
                     if (!string.IsNullOrEmpty(filePath))
