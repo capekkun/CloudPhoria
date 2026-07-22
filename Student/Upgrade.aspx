@@ -98,11 +98,10 @@
             </div>
             <ul class="up-features">
                 <li><span class="up-check">&#x2713;</span> Foundation pathway access</li>
-                <li><span class="up-check">&#x2713;</span> Practice quizzes</li>
-                <li><span class="up-check">&#x2713;</span> Community discussions</li>
-                <li><span class="up-check">&#x2713;</span> Fun rooms</li>
+                <li><span class="up-check">&#x2713;</span> Module exams (Foundation)</li>
+                <li><span class="up-check">&#x2713;</span> Boss fights &amp; challenges</li>
+                <li><span class="up-check">&#x2713;</span> Classrooms &amp; assignments</li>
                 <li><span class="up-cross">&#x2717;</span> Specialisation pathways</li>
-                <li><span class="up-cross">&#x2717;</span> Boss fights</li>
                 <li><span class="up-cross">&#x2717;</span> Certifications</li>
                 <li><span class="up-cross">&#x2717;</span> Priority support</li>
             </ul>
@@ -125,9 +124,7 @@
             <ul class="up-features">
                 <li><span class="up-check">&#x2713;</span> Everything in Free</li>
                 <li><span class="up-check">&#x2713;</span> All specialisation pathways</li>
-                <li><span class="up-check">&#x2713;</span> Module exams &amp; certifications</li>
-                <li><span class="up-check">&#x2713;</span> Boss fights &amp; challenges</li>
-                <li><span class="up-check">&#x2713;</span> Unlimited practice quizzes</li>
+                <li><span class="up-check">&#x2713;</span> Module exams on every pathway</li>
                 <li><span class="up-check">&#x2713;</span> Certificate of completion</li>
                 <li><span class="up-check">&#x2713;</span> Priority support</li>
                 <li><span class="up-check">&#x2713;</span> Full access to all content</li>
