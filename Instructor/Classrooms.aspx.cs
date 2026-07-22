@@ -170,7 +170,7 @@ namespace CloudPhoria.Instructor
                 {
                     conn.Open();
                     using (SqlCommand cmd = new SqlCommand(
-                        @"SELECT ClassroomMaterialID, FileName, Description, UploadedAt
+                        @"SELECT ClassroomMaterialID, FileName, FilePath, Description, UploadedAt
                           FROM ClassroomMaterials
                           WHERE ClassroomID=@CID AND InstructorID=@IID
                           ORDER BY UploadedAt DESC", conn))
