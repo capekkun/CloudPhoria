@@ -166,6 +166,12 @@
 
     <%-- Navigation links — role-specific --%>
     <div class="cp-topnav-links">
+        <asp:Panel ID="pnlGuestNav" runat="server" Visible="false">
+            <a class="cp-topnav-link" href="/Student/Pathways.aspx"><span class="cp-topnav-icon">&#x1F4DA;</span> Browse Pathways</a>
+            <a class="cp-topnav-link" href="/Student/BossFights.aspx"><span class="cp-topnav-icon">&#x1F480;</span> Boss Fights</a>
+            <a class="cp-topnav-link" href="/Student/Challenges.aspx"><span class="cp-topnav-icon">&#x26A1;</span> Challenges</a>
+            <a class="cp-topnav-link" href="/Student/Upgrade.aspx"><span class="cp-topnav-icon">&#x1F4B0;</span> Pricing</a>
+        </asp:Panel>
         <asp:Panel ID="pnlStudentNav" runat="server" Visible="false">
             <a class="cp-topnav-link" href="/Student/Dashboard.aspx"><span class="cp-topnav-icon">&#x2302;</span> Dashboard</a>
             <div class="cpdd" onclick="this.classList.toggle('open');event.stopPropagation();">
@@ -173,7 +179,6 @@
                 <div class="cpdd-menu" onclick="event.stopPropagation();">
                     <a href="/Student/Pathways.aspx">&#x25B6; Learning Pathways</a>
                     <a href="/Student/MyLearning.aspx">&#x1F4D6; My Learning</a>
-                    <a href="/Student/Practice.aspx">&#x270F; Practice</a>
                     <a href="/Student/Exams.aspx">&#x1F4CB; Module Exams</a>
                 </div>
             </div>
@@ -182,18 +187,10 @@
                 <div class="cpdd-menu" onclick="event.stopPropagation();">
                     <a href="/Student/Challenges.aspx">&#x26A1; Challenges</a>
                     <a href="/Student/BossFights.aspx">&#x1F480; Boss Fights</a>
-                    <a href="/Student/FunRooms.aspx">&#x1F3AE; Fun Rooms</a>
                 </div>
             </div>
             <a class="cp-topnav-link" href="/Student/Classrooms.aspx"><span class="cp-topnav-icon">&#x1F3EB;</span> Classrooms</a>
-            <div class="cpdd" onclick="this.classList.toggle('open');event.stopPropagation();">
-                <span class="cp-topnav-link">&#x1F4AC; Community &#x25BE;</span>
-                <div class="cpdd-menu" onclick="event.stopPropagation();">
-                    <a href="/Student/Discussions.aspx">&#x1F4AC; Discussions</a>
-                    <a href="/Student/Consultations.aspx">&#x1F4C5; Consultations</a>
-                    <a href="/Student/Achievements.aspx">&#x1F3C5; Achievements</a>
-                </div>
-            </div>
+            <a class="cp-topnav-link" href="/Student/Upgrade.aspx" style="color:#F59E0B;"><span class="cp-topnav-icon">&#x1F680;</span> Go Pro</a>
         </asp:Panel>
         <asp:Panel ID="pnlInstructorNav" runat="server" Visible="false">
             <a class="cp-topnav-link" href="/Instructor/Dashboard.aspx"><span class="cp-topnav-icon">&#x2302;</span> Dashboard</a>
@@ -204,16 +201,12 @@
             <a class="cp-topnav-link" href="/Instructor/Materials.aspx"><span class="cp-topnav-icon">&#x1F4CE;</span> Materials</a>
             <a class="cp-topnav-link" href="/Instructor/Assignments.aspx"><span class="cp-topnav-icon">&#x1F4DD;</span> Assignments</a>
             <a class="cp-topnav-link" href="/Instructor/Challenges.aspx"><span class="cp-topnav-icon">&#x26A1;</span> Challenges</a>
-            <a class="cp-topnav-link" href="/Instructor/Consultations.aspx"><span class="cp-topnav-icon">&#x1F4C5;</span> Consultations</a>
-            <a class="cp-topnav-link" href="/Instructor/Discussions.aspx"><span class="cp-topnav-icon">&#x1F4AC;</span> Discussions</a>
         </asp:Panel>
         <asp:Panel ID="pnlAdminNav" runat="server" Visible="false">
             <a class="cp-topnav-link" href="/Admin/Dashboard.aspx"><span class="cp-topnav-icon">&#x2302;</span> Dashboard</a>
             <a class="cp-topnav-link" href="/Admin/Users.aspx"><span class="cp-topnav-icon">&#x1F465;</span> Users</a>
             <a class="cp-topnav-link" href="/Admin/InstructorApprovals.aspx"><span class="cp-topnav-icon">&#x2714;</span> Approvals</a>
-            <a class="cp-topnav-link" href="/Admin/LearningContent.aspx"><span class="cp-topnav-icon">&#x1F4D6;</span> Content</a>
-            <a class="cp-topnav-link" href="/Admin/FunRoomReviews.aspx"><span class="cp-topnav-icon">&#x1F3AE;</span> Fun Rooms</a>
-            <a class="cp-topnav-link" href="/Admin/BossFights.aspx"><span class="cp-topnav-icon">&#x1F480;</span> Boss Fights</a>
+            <a class="cp-topnav-link" href="/Admin/Courses.aspx"><span class="cp-topnav-icon">&#x1F4D6;</span> Courses</a>
             <a class="cp-topnav-link" href="/Admin/Challenges.aspx"><span class="cp-topnav-icon">&#x26A1;</span> Challenges</a>
             <a class="cp-topnav-link" href="/Admin/Reports.aspx"><span class="cp-topnav-icon">&#x1F4CA;</span> Reports</a>
             <a class="cp-topnav-link" href="/Admin/AuditLogs.aspx"><span class="cp-topnav-icon">&#x1F4CB;</span> Audit Logs</a>
@@ -223,11 +216,34 @@
     <%-- Right side: XP + Bell + Avatar --%>
     <div class="cp-topnav-right">
 
+        <%-- Guest buttons --%>
+        <asp:Panel ID="pnlGuestActions" runat="server" Visible="false">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <a href="/LogIn.aspx" style="padding:7px 16px;color:#fff;font-size:12px;
+                    font-weight:600;text-decoration:none;border:1px solid rgba(255,255,255,0.2);
+                    border-radius:7px;transition:background 0.15s;">Log In</a>
+                <a href="/Register.aspx" style="padding:7px 16px;
+                    background:linear-gradient(90deg,#0EA5E9,#6366F1);color:#fff;font-size:12px;
+                    font-weight:700;border-radius:7px;text-decoration:none;">Join for Free</a>
+            </div>
+        </asp:Panel>
+
         <%-- XP counter (Students only) --%>
         <asp:Panel ID="pnlXPCounter" runat="server" Visible="false">
             <div class="cp-topnav-xp">
                 &#x26A1; <asp:Literal ID="litTopXP" runat="server" Text="0" /> <span>XP</span>
             </div>
+        </asp:Panel>
+
+        <%-- Go Pro button (Students on free plan) --%>
+        <asp:Panel ID="pnlGoPro" runat="server" Visible="false">
+            <a href="/Student/Upgrade.aspx" style="display:inline-flex;align-items:center;gap:5px;
+                background:linear-gradient(90deg,#6366F1,#8B5CF6);color:#fff;padding:6px 14px;
+                border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;
+                transition:opacity 0.15s;box-shadow:0 2px 8px rgba(99,102,241,0.3);"
+                onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                &#x1F680; Go Pro
+            </a>
         </asp:Panel>
 
         <%-- Notifications bell --%>
@@ -243,22 +259,27 @@
 
         <%-- User avatar + dropdown --%>
         <asp:Panel ID="pnlUserMenu" runat="server" Visible="false">
-            <div class="cp-topnav-user">
-                <div class="cp-topnav-avatar" id="cpAvatarBtn" onclick="document.getElementById('cpUserDrop').classList.toggle('open');">
+            <div class="cp-topnav-user" style="display:flex;align-items:center;gap:10px;">
+                <div class="cp-topnav-avatar" id="cpAvatarBtn"
+                     onclick="document.getElementById('cpUserDrop').classList.toggle('open');event.stopPropagation();"
+                     role="button" tabindex="0" aria-haspopup="true" aria-expanded="false"
+                     aria-label="Open user menu">
                     <asp:Literal ID="litTopbarInitials" runat="server" />
                 </div>
-                <div class="cp-topnav-dropdown" id="cpUserDrop">
+                <div class="cp-topnav-dropdown" id="cpUserDrop" onclick="event.stopPropagation();">
                     <div class="cp-topnav-dropdown-header">
                         <div class="cp-topnav-dropdown-name"><asp:Literal ID="litTopbarName" runat="server" /></div>
                         <div class="cp-topnav-dropdown-role"><asp:Literal ID="litTopbarRole" runat="server" /></div>
                     </div>
                     <asp:HyperLink ID="lnkProfile" runat="server" NavigateUrl="/Student/Profile.aspx">&#x1F464; My Profile</asp:HyperLink>
-                    <a href="/Student/Achievements.aspx">&#x1F3C5; Achievements</a>
-                    <a href="/Student/Notifications.aspx">&#x1F514; Notifications</a>
+                    <asp:Panel ID="pnlDropAchievements" runat="server" Visible="false">
+                        <a href="/Student/Achievements.aspx">&#x1F3C5; Achievements</a>
+                    </asp:Panel>
+                    <a runat="server" id="lnkDropNotifications" href="/Student/Notifications.aspx">&#x1F514; Notifications</a>
+                    <div style="border-top:1px solid rgba(255,255,255,0.06);margin:4px 0;"></div>
                     <asp:LinkButton ID="btnLogout" runat="server" CssClass="danger"
-                        OnClick="btnLogout_Click"
-                        OnClientClick="return confirm('Log out?');">
-                        &#x2192; Log Out
+                        OnClick="btnLogout_Click">
+                        &#x1F6AA; Log Out
                     </asp:LinkButton>
                 </div>
             </div>
@@ -298,6 +319,7 @@
             <a href="/Admin/Dashboard.aspx">Dashboard</a>
             <a href="/Admin/Users.aspx">Users</a>
             <a href="/Admin/Reports.aspx">Reports</a>
+            <a href="/Admin/AuditLogs.aspx">Audit Logs</a>
         </asp:Panel>
     </div>
 </footer>

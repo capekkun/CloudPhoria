@@ -8,20 +8,10 @@ namespace CloudPhoria.Instructor
 {
     public partial class Modules
     {
-        protected global::System.Web.UI.WebControls.Panel pnlSuccess;
-        protected global::System.Web.UI.WebControls.Literal litSuccess;
         protected global::System.Web.UI.WebControls.Panel pnlError;
         protected global::System.Web.UI.WebControls.Literal litError;
         protected global::System.Web.UI.WebControls.Panel pnlModules;
         protected global::System.Web.UI.WebControls.Repeater rptModules;
         protected global::System.Web.UI.WebControls.Panel pnlEmpty;
-        protected global::System.Web.UI.WebControls.DropDownList ddlPathway;
-        protected global::System.Web.UI.WebControls.TextBox txtModuleName;
-        protected global::System.Web.UI.WebControls.TextBox txtDescription;
-        protected global::System.Web.UI.WebControls.DropDownList ddlDifficulty;
-        protected global::System.Web.UI.WebControls.TextBox txtXPReward;
-        protected global::System.Web.UI.WebControls.TextBox txtExamDuration;
-        protected global::System.Web.UI.WebControls.TextBox txtPassMark;
-        protected global::System.Web.UI.WebControls.Button btnCreate;
     }
 }

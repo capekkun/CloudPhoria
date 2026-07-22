@@ -5,13 +5,36 @@
 
 ---
 
+## 0. CURRENT STATE SNAPSHOT (Read This First)
+
+This document is long and cumulative — sections were appended as the project evolved rather than rewritten in place, so later sections correct or supersede earlier ones. If you are a Kiro instance new to this project, read this snapshot first instead of reading top to bottom; it is verified directly against the actual `.cs` files on disk, not just against what earlier sections claim.
+
+**Tables genuinely orphaned (created, possibly seeded, but zero `.cs` file anywhere reads or writes them):**
+- `FunRooms`, `FunRoomQuestions`, `FunRoomQuestionOptions` — feature permanently deleted, do not rebuild
+- `PracticeQuestionOptions`, `PracticeAttempts`, `PracticeAnswers` — no page lets anyone take a practice quiz
+- `DiscussionThreads`, `DiscussionReplies` — forum feature deleted
+- `ConsultationSlots`, `ConsultationBookings` — built, deleted, rebuilt, deleted again (final state: deleted, see Section 15)
+- `GuestModuleAccess` — guest browsing uses in-code `isGuest` flags instead, this table was never wired up
+
+**`ChallengeQuestions`/`ChallengeQuestionOptions` are NO LONGER orphaned** — a full quiz-taking + question-management UI was built (see "Challenges — Fixed" in Section 10 below), so they're intentionally NOT in the orphaned list above.
+
+**Table that LOOKS orphaned but isn't:** `PracticeQuestions` (no page uses it for its original practice-quiz purpose, but `Admin/Courses.aspx.cs`'s module-reassignment cascade still runs `UPDATE PracticeQuestions SET CreatedByInstructorID=...` against it — see Section 15b). Don't assume every "Practice*" table is dead code.
+
+**Current page count: 38** (Admin 9 / Instructor 10 / Student 16 / Shared 3). Full breakdown and history in `CloudPhoria_ProjectRules.md` Section 0 and Section 39.
+
+**IMPORTANT — the 5 "original" root-level scripts referenced throughout this document (`create_tables.sql`, `seed_constants.sql`, `seed_dummy_data.sql`, `cloudphoria_additional_content.sql`, `cloudphoria_exams_and_bossfights.sql`) DO NOT EXIST anywhere in this repository or in git history.** Confirmed by both a file search and `git log --all --diff-filter=D` (searching for deleted files too) — zero matches. Every actual `.sql` file in this project lives in the `Database/` folder (16 files, listed in Section 13's run order table below). This means one of two things: either a teammate has these 5 files locally and never committed/shared them, or they were planned/described in documentation but never actually created. **Do not assume these 5 scripts exist or can be run — verify with the user or your teammates before treating Section 2's or Section 13's run order as executable as written.** If you need to set up a fresh database and these files are genuinely missing, you likely need to either ask the user for them or reconstruct the base schema from what's referenced across all the `Database/*.sql` scripts and this document's table definitions (Sections A–J below).
+
+**If a rule/table description in a numbered section below seems to contradict this snapshot or contradicts `CloudPhoria_ProjectRules.md`, trust the code on disk.** Use `grep`/search for the actual table name across `.cs` files before assuming a documented feature works as described — this document has been wrong before (see the Challenges correction) and was fixed only after someone actually checked.
+
+---
+
 ## 1. Database Name
 
 ```sql
 CloudPhoria
 ```
 
-> ⚠️ **Naming inconsistency in the current script:** `create_tables.sql` runs `USE CloudPhoria;`, but `seed_constants.sql` and `seed_dummy_data.sql` both run `USE CloudPhoriaDB;`. Pick **one** database name and make all three sections consistent before running on a fresh SQL Server instance, otherwise the seed/insert scripts will fail with `Invalid object name` (because they'll be pointed at a different, empty database). This guide assumes the group standardises on **`CloudPhoria`**.
+> ⚠️ **Naming inconsistency in the current script — UNVERIFIABLE, see Section 0.** This note claims `create_tables.sql` runs `USE CloudPhoria;` while `seed_constants.sql`/`seed_dummy_data.sql` run `USE CloudPhoriaDB;`. **None of these three files exist in this repository or in git history** (verified — see Section 0's snapshot). This warning cannot currently be verified against real files. It's kept here as a historical note in case those files exist locally on a teammate's machine and get added later — if so, check this inconsistency before running them. Every `.sql` file that DOES exist in `Database/` consistently uses `USE CloudPhoria; GO` (confirmed by reading all 16 files), so if/when the missing scripts resurface, standardise them on `CloudPhoria` to match.
 
 Always run scripts using:
 
@@ -654,7 +677,7 @@ Base account for every person in the system.
 | `SelectedOptionID` | `INT` | No | FK → `PracticeQuestionOptions.OptionID` | |
 | `IsCorrect` | `BIT` | No | DEFAULT 0 | |
 
-### 24. `ExamQuestions` (module final exam, timed, once per day per Modules.ExamDurationMinutes rule enforced in app logic)
+### 24. `ExamQuestions` (module final exam, timed — see "Exam-taking flow fixed" note below)
 | Column | Type | Null? | Key | Notes |
 |---|---|---|---|---|
 | `ExamQuestionID` | `INT IDENTITY(1,1)` | No | PK | |
@@ -691,6 +714,8 @@ Base account for every person in the system.
 | `ExamQuestionID` | `INT` | No | FK → `ExamQuestions.ExamQuestionID` | |
 | `SelectedOptionID` | `INT` | No | FK → `ExamQuestionOptions.OptionID` | |
 | `IsCorrect` | `BIT` | No | DEFAULT 0 | |
+
+**Exam-taking flow fixed (previously a stub).** `Student/Exams.aspx.cs` used to have `// TODO: Full exam logic to be re-integrated here` in place of the `?moduleID=X` handler — the exam list rendered correctly and `ExamAttempts`/`ExamAnswers` were fully defined, but nothing ever inserted into either table because "Start Exam" just reloaded the listing page. This is now implemented (same pattern as the Challenges fix): intro screen with locked/already-passed/no-questions checks → `ExamAttempts` row created on start with server-side `StartedAt` → one question at a time from `ExamQuestions`/`ExamQuestionOptions` with shuffled options and a live countdown (server-side authoritative, recomputed from `StartedAt` + `Modules.ExamDurationMinutes` on every request, not trusted from the client) → each answer inserted into `ExamAnswers` → on completion, `ExamAttempts.ScorePercent`/`IsPassed`/`XPAwarded` are updated and XP is awarded via `XPTransactions`(`SourceType='ModuleExam'`)/`Students.TotalXP` only on a student's first pass of that module. No schema changes, no new page — same `.aspx` file as before.
 
 ---
 
@@ -1110,3 +1135,284 @@ This guide documents the structure, relationships, and development rules of the 
 1. Resolve the `USE CloudPhoria;` vs `USE CloudPhoriaDB;` inconsistency described in Section 1 so all script sections target the same database.
 2. Run all five scripts in the order in Section 2: `create_tables.sql` → `seed_constants.sql` → `seed_dummy_data.sql` → `cloudphoria_additional_content.sql` → `cloudphoria_exams_and_bossfights.sql`.
 3. Before re-running the full sequence again on a shared/existing database, note the duplicate-reseed issue in Section 6 — without a guard, re-running `seed_dummy_data.sql` will keep duplicating `Modules` and `BossFightRooms`.
+
+
+---
+
+## 9. Additional Tables (Added During Development)
+
+These tables were added via SQL scripts in the `Database/` folder to support new features. Run the corresponding scripts after the initial 5 scripts.
+
+### 53. `ClassroomMessages` (Classroom Chat)
+| Column | Type | Null? | Key | Notes |
+|---|---|---|---|---|
+| `MessageID` | `INT IDENTITY(1,1)` | No | PK | |
+| `ClassroomID` | `INT` | No | FK → `Classrooms.ClassroomID` | |
+| `SenderID` | `INT` | No | FK → `Users.UserID` | Any enrolled student or the classroom instructor. |
+| `MessageText` | `NVARCHAR(2000)` | No | - | |
+| `SentAt` | `DATETIME` | No | DEFAULT GETDATE() | |
+
+Index: `IX_ClassroomMessages_ClassroomID_SentAt` on `(ClassroomID, SentAt DESC)`.
+
+Script: `Database/add_classroom_chat.sql`
+
+---
+
+### 54. `FunRoomQuestions` (Fun Room Quiz Questions)
+| Column | Type | Null? | Key | Notes |
+|---|---|---|---|---|
+| `FunRoomQuestionID` | `INT IDENTITY(1,1)` | No | PK | |
+| `FunRoomID` | `INT` | No | FK → `FunRooms.FunRoomID` | |
+| `QuestionText` | `NVARCHAR(500)` | No | - | |
+| `XPReward` | `INT` | No | DEFAULT 5 | |
+| `OrderIndex` | `INT` | No | DEFAULT 0 | |
+
+### 55. `FunRoomQuestionOptions`
+| Column | Type | Null? | Key | Notes |
+|---|---|---|---|---|
+| `OptionID` | `INT IDENTITY(1,1)` | No | PK | |
+| `FunRoomQuestionID` | `INT` | No | FK → `FunRoomQuestions.FunRoomQuestionID` | |
+| `OptionText` | `NVARCHAR(300)` | No | - | |
+| `IsCorrect` | `BIT` | No | DEFAULT 0 | |
+
+Script: `Database/fix_funrooms.sql`
+
+---
+
+### 56. `ChallengeQuestions`
+| Column | Type | Null? | Key | Notes |
+|---|---|---|---|---|
+| `ChallengeQuestionID` | `INT IDENTITY(1,1)` | No | PK | |
+| `ChallengeID` | `INT` | No | FK → `Challenges.ChallengeID` | |
+| `QuestionText` | `NVARCHAR(500)` | No | - | |
+| `Points` | `INT` | No | DEFAULT 10 | Points for correct answer. |
+| `TimeLimitSeconds` | `INT` | No | DEFAULT 30 | Per-question countdown. |
+| `OrderIndex` | `INT` | No | DEFAULT 0 | |
+
+### 57. `ChallengeQuestionOptions`
+| Column | Type | Null? | Key | Notes |
+|---|---|---|---|---|
+| `OptionID` | `INT IDENTITY(1,1)` | No | PK | |
+| `ChallengeQuestionID` | `INT` | No | FK → `ChallengeQuestions.ChallengeQuestionID` | |
+| `OptionText` | `NVARCHAR(300)` | No | - | |
+| `IsCorrect` | `BIT` | No | DEFAULT 0 | |
+
+Script: `Database/fix_challenges.sql` seeds 3 sample challenges with real questions/options (Cloud Fundamentals Speed Run, Networking Blitz, Security Sprint). **Both tables are now actively read and written by the application** — `Instructor/Challenges.aspx.cs`/`Admin/Challenges.aspx.cs` (question management, `?manageQuestions=X`) and `Student/Challenges.aspx.cs` (quiz-taking flow, `?challengeID=X`). See "Challenges — Fixed" in Section 10 below for the full flow.
+
+---
+
+## 10. Updated Feature Notes
+
+### Subscription Plans (Simplified)
+- Only 2 plans: **Free** (PlanID 1) and **Pro** (PlanID 2)
+- Free: `CanAccessFoundationOnly = 1`, Price = $0
+- Pro: `CanAccessFoundationOnly = 0`, Price = $9.99/month
+- Script: `Database/fix_subscription_plans.sql`
+
+### Pathway Enrollment Flow
+- Students must explicitly enroll via PathwayDetail page (no auto-enrollment)
+- Enrollment inserts `ModuleProgress` rows for all modules in the pathway with status `InProgress`
+- Non-Foundation pathways require Pro subscription; Free users see "Upgrade to Pro to Enroll"
+- Script: `Database/fix_enrollment.sql`
+
+### Module Exams (Corrected — `ExamStart.aspx`/`ExamTake.aspx` do not exist)
+- Exams are locked until all subtopics in the module are completed
+- Student takes the exam via `Student/Exams.aspx?moduleID=X` — this ONE page handles both the listing view and the exam-taking view (switched by query string), NOT two separate `ExamStart.aspx`/`ExamTake.aspx` pages. Those two pages were merged into `Exams.aspx` during the Task 6 page-reduction pass and must not be recreated.
+- One question at a time with countdown timer (server-side authoritative, per Section 17 of ProjectRules)
+- Score calculated server-side, XP awarded on pass
+
+### Classroom Features
+- Teams-style layout with tabs: Chat, Files, Assignments, Members
+- Real-time-style chat using `ClassroomMessages` table
+- Both students and instructor can send messages
+- Assignments are clickable → opens `AssignmentDetail.aspx` for answering
+- Files & Attachments tab reads `ClassroomMaterials`; instructors now have a working upload UI for this table via `Instructor/Classrooms.aspx` (see Section 15b) — this used to be read-only with no writer.
+
+### Fun Rooms — PERMANENTLY DELETED, do not rebuild
+This feature (and this entire subsection describing it) is historical only. `FunRooms`, `FunRoomQuestions`, `FunRoomQuestionOptions` have no corresponding pages anywhere in the current codebase. The user explicitly said "forget about the fun rooms" — see ProjectRules Section 39 user corrections. If you are reading an older copy of this doc that describes Fun Rooms as a working feature with quiz questions and admin approval, that description is stale and describes a version of the project from before the 30-page squeeze (Task 6).
+
+### Challenges — Fixed (previously documented inaccurately, then genuinely broken, now genuinely working)
+Earlier versions of this document described Challenges as a fully working timed-quiz-with-leaderboard feature. That description was later found to be false (the quiz-taking side didn't exist), and this section was corrected to say so. **As of this update, the missing piece has actually been built**, so the feature now matches something close to the original description:
+
+- `Instructor/Challenges.aspx` and `Admin/Challenges.aspx` — create/list/delete `Challenges` rows, PLUS a new "Questions" link (`?manageQuestions=X`) that opens a question-management view on the same page: add an MCQ question (text, points, time limit, 2+ options with one marked correct) → inserts into `ChallengeQuestions`/`ChallengeQuestionOptions`; list + delete existing questions per challenge.
+- `Student/Challenges.aspx?challengeID=X` — clicking "Join Challenge" now leads to a real quiz flow: intro screen → one question at a time with shuffled options and a countdown timer → server-side correctness check against `ChallengeQuestionOptions.IsCorrect` → score accumulated across all questions → on completion, INSERTs into `ChallengeParticipation` (guarded against duplicate submission) and awards XP via `XPTransactions`/`Students.TotalXP` in the same transaction, same pattern as Boss Fight XP awards.
+- `Student/Challenges.aspx?leaderboard=X` — top-10 leaderboard (`ORDER BY Score DESC, CompletedAt ASC`), linked from both the active list and the past-participation table.
+- `ChallengeQuestions` and `ChallengeQuestionOptions` (Section 56/57 above) are no longer orphaned — both are now read and written by the pages above.
+- A challenge with zero questions shows "No questions yet" instead of a clickable "Join Challenge" link, so students can never enter an empty challenge and get stuck.
+
+### Deleted / Orphaned Tables — Full List (verified against every .cs file, see note on `PracticeQuestions` below)
+The following database tables exist but have NO corresponding web pages in the current implementation:
+- `FunRooms`, `FunRoomQuestions`, `FunRoomQuestionOptions` — Fun Room pages deleted permanently (user decision, do not rebuild even under the 40-page budget)
+- `PracticeQuestionOptions`, `PracticeAttempts`, `PracticeAnswers` — Practice-taking pages deleted (no page creates, lists, or lets a student attempt a practice quiz)
+- `DiscussionThreads`, `DiscussionReplies` — Discussion/Forum pages deleted
+- `ConsultationSlots`, `ConsultationBookings` — Consultation pages deleted permanently (restored once during the 40-page budget, then removed again per user decision, see Section 15)
+- `GuestModuleAccess` — Guest browse feature not implemented (guest read-only browsing is handled via `isGuest` checks in code-behind instead, see Section 11)
+- `ChallengeQuestions`, `ChallengeQuestionOptions` — created and seeded with real data, but never read/written by any page. See "Challenges — CORRECTION" above. This is different from the others in this list: those tables lost their *pages* but the *feature concept* (Fun Rooms, Practice, Discussions, Consultations) was cleanly removed. Challenges' quiz mechanic was never built in the first place — it's an unfinished feature, not a removed one.
+
+**Important nuance on `PracticeQuestions` (no trailing "s" issue — this is the table WITHOUT the Options/Attempts/Answers suffix):** unlike its child tables above, `PracticeQuestions` is NOT fully orphaned. `Admin/Courses.aspx.cs`'s module-reassignment cascade (Section 15b) still runs `UPDATE PracticeQuestions SET CreatedByInstructorID=@IID WHERE ModuleID=@MID` when an Admin reassigns a module to a different instructor. So `PracticeQuestions` rows can still have their ownership changed by code, even though no page lets anyone create, view, or answer a practice question. If you see `PracticeQuestions` referenced somewhere, check whether it's this cascade before assuming it's dead code.
+
+These tables remain in the database for schema completeness but are not actively used by their originally-intended website pages.
+
+### Current Page Count: 38 total
+The page budget was raised from 30 to 40 by the lecturer to give Admin (1 person) and Instructor (1 person) a fairer share relative to Student (2 people). The project sits at 38 (2 under the 40 budget) since Consultations (2 pages) was removed again.
+- Shared: Default.aspx, LogIn.aspx, Register.aspx (3)
+- Admin: 9 pages (Dashboard, Users, InstructorApprovals, Courses, Challenges, Reports, AuditLogs, Notifications, Profile)
+- Instructor: 10 pages
+- Student: 16 pages
+
+See `CloudPhoria_ProjectRules.md` Sections 39, 43, and 44 for the full page-by-page breakdown and rationale.
+
+### SQL Script Run Order (Additional)
+Run these AFTER the original 5 scripts:
+
+| Order | Script | Purpose |
+|---:|---|---|
+| 6 | `Database/add_classroom_chat.sql` | Creates ClassroomMessages table |
+| 7 | `Database/fix_subscription_plans.sql` | Simplifies to Free + Pro plans |
+| 8 | `Database/fix_enrollment.sql` | Cleans auto-enrollment data |
+| 9 | `Database/fix_funrooms.sql` | Creates FunRoom question tables + seeds data |
+| 10 | `Database/fix_challenges.sql` | Creates Challenge question tables + seeds data |
+| 11 | `Database/add_subtopic_content.sql` | Adds detailed learning content to subtopics |
+
+
+---
+
+## 11. Guest Read-Only Access (Added)
+
+No new tables were created for guest access — guests are simply **unauthenticated requests** (`Session["UserID"] == null`). The existing `GuestModuleAccess` table exists in the schema but is still NOT used; guest browsing is handled entirely by `isGuest` checks in code-behind, not by inserting tracking rows.
+
+Pages updated to support `isGuest` (see ProjectRules Section 40 for the full list and pattern): `Pathways.aspx.cs`, `PathwayDetail.aspx.cs`, `ModuleDetail.aspx.cs`, `SubTopicView.aspx.cs`, `BossFights.aspx.cs`, `Challenges.aspx.cs`, `Upgrade.aspx.cs`, `Site.Master.cs`.
+
+## 12. Additional Boss Fight Rooms (Added via `Database/add_more_bossfights.sql`)
+
+No schema changes. This script only INSERTs into existing tables:
+
+| Table | New rows added |
+|---|---|
+| `BossFightRooms` | 4 new rooms (Easy/Medium/Hard/Legendary) |
+| `Bosses` | 4 new bosses, one per new room (1:1, same as existing rule) |
+| `BossFightQuestions` | 16 new questions (4 per room) |
+| `BossFightQuestionOptions` | 64 new options (4 per question) |
+
+Run this script AFTER `create_tables.sql`, `seed_dummy_data.sql`, `cloudphoria_exams_and_bossfights.sql`, and `bossfight_difficulty_questions.sql` (it needs at least one `Admins` row to exist for `CreatedByAdminID`).
+
+The **drag-and-drop battle UI** built on top of these rows does not change how answers are stored — `BattleSessionAnswers.SelectedOptionID` still references `BossFightQuestionOptions.OptionID` exactly as before. Only the front-end interaction method changed (drag/tap instead of click-a-button).
+
+## 13. Full SQL Script Run Order (Current, Consolidated)
+
+Run in this exact order on a fresh database:
+
+| # | Script | Location |
+|---:|---|---|
+| 1 | `create_tables.sql` | project root scripts |
+| 2 | `seed_constants.sql` | project root scripts |
+| 3 | `seed_dummy_data.sql` | project root scripts |
+| 4 | `cloudphoria_additional_content.sql` | project root scripts |
+| 5 | `cloudphoria_exams_and_bossfights.sql` | project root scripts |
+| 6 | `Database/rebuild_learning_content.sql` | Database/ |
+| 7 | `Database/fix_duplicate_questions.sql` | Database/ |
+| 8 | `Database/fix_duplicate_options.sql` | Database/ |
+| 9 | `Database/bossfight_difficulty_questions.sql` | Database/ |
+| 10 | `Database/add_subtopic_questions.sql` | Database/ |
+| 11 | `Database/fix_all_database.sql` | Database/ |
+| 12 | `Database/add_classroom_chat.sql` | Database/ |
+| 13 | `Database/fix_subscription_plans.sql` | Database/ |
+| 14 | `Database/fix_enrollment.sql` | Database/ |
+| 15 | `Database/fix_funrooms.sql` | Database/ |
+| 16 | `Database/fix_challenges.sql` | Database/ |
+| 17 | `Database/add_subtopic_content.sql` | Database/ |
+| 18 | `Database/add_more_bossfights.sql` | Database/ |
+| 19 | `Database/fix_duplicate_bossfights.sql` | Database/ — run ONLY if you see duplicate boss fight room titles; safe to run anytime, no-op if there are no duplicates |
+
+`Database/check_data.sql` is read-only (SELECT statements) and safe to run at any point for verification — it is not part of the setup sequence.
+
+
+---
+
+## 14. Admin Dashboard Implementation (Added)
+
+No new tables. `Admin/Dashboard.aspx` now reads/writes these existing tables that previously had no admin-facing UI:
+
+| Table | New usage |
+|---|---|
+| `Users` | Admin can INSERT (create), UPDATE `IsActive`/`IsBanned`, DELETE |
+| `Students` / `Instructors` / `Admins` | INSERT alongside `Users` when Admin creates a new account (shared-PK pattern, `SET IDENTITY_INSERT ... ON/OFF`) |
+| `Instructors.LicenseStatus` / `ApprovedBy` / `ApprovedAt` | Now actually settable via Admin Approve/Reject buttons — previously only settable via direct SQL |
+| `Modules.CreatedByInstructorID` | Admin can reassign a module to a different Approved instructor. **This cascades** — see "Module Reassignment Cascade" below, not just a single-column update. |
+| `Modules.IsPublished` | Admin can publish/unpublish any module regardless of owner |
+| `Challenges` | Admin INSERT with `CreatedByAdminID` set and `IsGlobalAdminChallenge = 1` |
+| `AuditLogs` | Every admin action now writes a row here via a shared `LogAction()` helper — `ActionType` values used: `BAN_USER`, `UNBAN_USER`, `DEACTIVATE_USER`, `ACTIVATE_USER`, `DELETE_USER`, `CREATE_USER`, `APPROVE_INSTRUCTOR`, `REJECT_INSTRUCTOR`, `ASSIGN_MODULE_INSTRUCTOR`, `PUBLISH_MODULE`, `UNPUBLISH_MODULE`, `CREATE_GLOBAL_CHALLENGE`, `DELETE_GLOBAL_CHALLENGE` |
+| `Notifications` | Instructor gets a row here when Admin approves/rejects their licence |
+
+**Explicitly NOT touched by Admin UI (by user decision):** `SubscriptionPlans`, `FunRooms`, any gamification/XP-formula config (no such table exists in the schema anyway — XP values are hard-coded per-item on `Modules.XPReward`, `Challenges.XPReward`, etc., per table).
+
+Script: `Database/admin_setup.sql` (read-only verification query; the bulk-approve statement is commented out on purpose).
+
+### Content Authority Changed — Admin-Only Modules/SubTopics/Questions
+
+Previously Instructors created their own `Modules`/`SubTopics`/`Questions` directly. The user changed this: **only Admin creates/edits/publishes/deletes this content tree now.** No schema change — `CreatedByInstructorID` on all three tables was already nullable and already the mechanism for ownership; this change is purely about which role's application code is allowed to INSERT/UPDATE/DELETE against these tables.
+
+`Admin/Courses.aspx` now has:
+- A "Create a New Module" form at the top level (INSERTs into `Modules` with `CreatedByInstructorID=NULL`).
+- `Courses.aspx?moduleID=X` drill-down — "Add a Subtopic" form (INSERTs into `SubTopics`, also `CreatedByInstructorID=NULL` initially), plus publish/unpublish/delete for existing subtopics.
+- `Courses.aspx?subTopicID=X` drill-down — "Add a Question" form (INSERTs into `Questions` + `AnswerOptions` for MCQ), plus delete for existing questions.
+
+`Instructor/Modules.aspx`, `SubTopics.aspx`, `Questions.aspx` are now **read-only list views**:
+- `Instructor/Modules.aspx` filters `Modules WHERE CreatedByInstructorID=@ID` (unchanged filter, but the instructor can no longer INSERT/UPDATE/DELETE against this table — only Admin's page can).
+- `Instructor/SubTopics.aspx` now filters via `SubTopics st INNER JOIN Modules m ... WHERE m.CreatedByInstructorID=@ID` — joined through the parent module rather than the subtopic's own `CreatedByInstructorID`, since Admin (not the instructor) is the one who sets that column when creating a subtopic. The value still ends up correct once a module is assigned (see cascade below), but the *reason* the instructor sees it is "my module was assigned to me," not "I created this subtopic."
+- `Instructor/Questions.aspx` uses the same join-through-module pattern.
+
+Instructors keep full CRUD over `LearningMaterials` (`Instructor/Materials.aspx`) and everything classroom-related (`Classrooms`, `ClassroomMaterials`, `ClassroomAssignments`, instructor-created `Challenges`) — this authority change is scoped specifically to the Modules/SubTopics/Questions tree, not the whole Instructor role.
+
+### Module Reassignment Cascade (Fixed)
+
+There is no single "owner" column for a module's full content tree — `Modules`, `SubTopics`, `Questions`, `LearningMaterials`, `PracticeQuestions`, and `ExamQuestions` each have their own independent instructor-ownership column (`CreatedByInstructorID` or `InstructorID`), and instructor-facing pages filter strictly by their own table's column, never by the parent module's owner. Originally, `Admin/Courses.aspx`'s "Assign Instructor" dropdown only updated `Modules.CreatedByInstructorID`, so reassigning a module didn't actually transfer edit access to anything inside it — the previous instructor silently kept full control of the subtopics/questions/materials.
+
+This is now fixed: assigning a module to an instructor (any value other than "Unassigned") updates all of the following in a single transaction, keyed off `ModuleID` (joining through `SubTopics.ModuleID` for `Questions` and `LearningMaterials`, which don't have a direct `ModuleID` column):
+
+```sql
+UPDATE Modules SET CreatedByInstructorID=@IID WHERE ModuleID=@MID;
+UPDATE SubTopics SET CreatedByInstructorID=@IID WHERE ModuleID=@MID;
+UPDATE q SET q.CreatedByInstructorID=@IID FROM Questions q
+    INNER JOIN SubTopics st ON st.SubTopicID = q.SubTopicID WHERE st.ModuleID=@MID;
+UPDATE lm SET lm.InstructorID=@IID FROM LearningMaterials lm
+    INNER JOIN SubTopics st ON st.SubTopicID = lm.SubTopicID WHERE st.ModuleID=@MID;
+UPDATE PracticeQuestions SET CreatedByInstructorID=@IID WHERE ModuleID=@MID;
+UPDATE ExamQuestions SET CreatedByInstructorID=@IID WHERE ModuleID=@MID;
+```
+
+**Unassigning does not cascade.** `Modules.CreatedByInstructorID` is nullable (`Yes` in Section D/E tables above), but `Questions`, `LearningMaterials`, `PracticeQuestions`, and `ExamQuestions` all have their ownership column as `NOT NULL` — there is no valid "unowned" state to cascade to. Selecting "-- Unassigned --" only clears the `Modules` row; the underlying content keeps its current instructor.
+
+**Note:** the table above describes the tables/columns touched by the Admin feature set. As of the 40-page budget, this functionality is split across **9 dedicated Admin pages** (`Admin/Dashboard.aspx`, `Users.aspx`, `InstructorApprovals.aspx`, `Courses.aspx`, `Challenges.aspx`, `Reports.aspx`, `AuditLogs.aspx`, `Notifications.aspx`, `Profile.aspx`) instead of one single tabbed page — see `CloudPhoria_ProjectRules.md` Section 43 for the current page-by-page breakdown. `Reports.aspx` and `AuditLogs.aspx` are new dedicated pages that did not exist when this section was first written; they read/write the `Reports` and `AuditLogs` tables respectively, both already documented in Section 27 of the schema (Section H/I tables above).
+
+## 15. Consultations Feature (Permanently Removed)
+
+Consultations went through a full cycle: built, deleted during the 30-page squeeze, restored as 2 dedicated pages when the budget was raised to 40, then **permanently removed** per the user's final decision ("i dont want consultation anymore"). `Instructor/Consultations.aspx`, `Student/Consultations.aspx`, their code-behind/designer files, csproj entries, and `Site.Master` nav links have all been deleted. Do not rebuild this feature again unless explicitly requested.
+
+`ConsultationSlots` and `ConsultationBookings` remain in the schema (never dropped) but have no corresponding pages — same status as `FunRooms`, `PracticeQuestions`, and `DiscussionThreads` in the "Deleted Features" list above. See `CloudPhoria_ProjectRules.md` Sections 26 and 44 for the full history.
+
+## 15b. Report Submission and Classroom Material Upload — New Table Usage (Added)
+
+No schema changes for either of these — both close a gap where a table existed but had no writer (Reports) or no per-classroom writer (ClassroomMaterials).
+
+**`Reports` (Section J, table 50):** previously only read/updated by `Admin/Reports.aspx` — nothing ever INSERTed into it. Now `Student/Profile.aspx` and `Instructor/Profile.aspx` both have a "Report an Issue" form that does:
+```sql
+INSERT INTO Reports (ReportedByUserID, ReportedContentType, Reason, Status, CreatedAt)
+VALUES (@UID, @Type, @Reason, 'Open', GETDATE());
+```
+`ReportedUserID` and `ReportedContentID` are left `NULL` (simple free-text report, not tied to one specific row). `ReportedContentType` is restricted to a fixed dropdown (`User`/`Classroom`/`Challenge`/`Other`) rather than arbitrary user input, consistent with the "validate `ReportedContentType` against a known allowlist" rule in ProjectRules Section 27.
+
+**`ClassroomMaterials` (Section D, table 9):** previously only read by `Student/ClassroomDetail.aspx`'s Files & Attachments tab — no instructor-facing writer existed anywhere in the codebase. Now `Instructor/Classrooms.aspx` has an upload/list/delete UI (shown when a classroom is selected via `?id=`), using the exact same table:
+```sql
+INSERT INTO ClassroomMaterials (ClassroomID, InstructorID, FileName, FilePath, Description, UploadedAt)
+VALUES (@CID, @IID, @FName, @FPath, @Desc, GETDATE());
+```
+Files are saved to `/uploads/classroom/{ClassroomID}/` — the path convention documented in Section 3's naming table was already written up before any code actually used it; this is the first real writer for that path pattern. Same upload validation policy as `Instructor/Materials.aspx` (extension allowlist, 10 MB limit, ownership check against `Classrooms.InstructorID`).
+
+## 16. Demo/Test Data Script — Instructor Approval (Added)
+
+`Database/demo_instructor_approval.sql` creates one demo `Instructors` row with `LicenseStatus = 'Pending'` (email `jane.demo@cloudphoria.test`, password `Demo@123`, plaintext per current auth approach — see Section D below), purely to demo the `Admin/InstructorApprovals.aspx` Approve/Reject flow without needing a real registration.
+
+- Idempotent: checks for the email first; if it already exists, it just resets `LicenseStatus` back to `Pending` (and clears `ApprovedBy`/`ApprovedAt`) instead of failing on the `UNIQUE` constraint, so it can be re-run to re-demo the flow.
+- Not part of the main setup sequence in Section 13 — run it on demand, any time after `create_tables.sql` has run.
+- Ends with a verification `SELECT` that matches the exact query `Admin/InstructorApprovals.aspx` uses for its "Pending Approvals" list, so you can confirm the row is visible before opening the page.

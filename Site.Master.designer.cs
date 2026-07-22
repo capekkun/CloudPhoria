@@ -9,13 +9,20 @@
         protected global::System.Web.UI.WebControls.ContentPlaceHolder PageScripts;
 
         // Nav panels
+        protected global::System.Web.UI.WebControls.Panel pnlGuestNav;
         protected global::System.Web.UI.WebControls.Panel pnlStudentNav;
         protected global::System.Web.UI.WebControls.Panel pnlInstructorNav;
         protected global::System.Web.UI.WebControls.Panel pnlAdminNav;
 
+        // Guest actions
+        protected global::System.Web.UI.WebControls.Panel pnlGuestActions;
+
         // XP counter
         protected global::System.Web.UI.WebControls.Panel pnlXPCounter;
         protected global::System.Web.UI.WebControls.Literal litTopXP;
+
+        // Go Pro button
+        protected global::System.Web.UI.WebControls.Panel pnlGoPro;
 
         // Notifications
         protected global::System.Web.UI.WebControls.Panel pnlNotifications;
@@ -29,6 +36,8 @@
         protected global::System.Web.UI.WebControls.Literal litTopbarName;
         protected global::System.Web.UI.WebControls.Literal litTopbarRole;
         protected global::System.Web.UI.WebControls.HyperLink lnkProfile;
+        protected global::System.Web.UI.WebControls.Panel pnlDropAchievements;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor lnkDropNotifications;
         protected global::System.Web.UI.WebControls.LinkButton btnLogout;
 
         // Footer

@@ -13,8 +13,10 @@ namespace CloudPhoria.Student
         protected global::System.Web.UI.WebControls.Panel pnlMaterials;
         protected global::System.Web.UI.WebControls.Repeater rptMaterials;
         protected global::System.Web.UI.WebControls.Panel pnlComplete;
+        protected global::System.Web.UI.WebControls.Button btnComplete;
         protected global::System.Web.UI.WebControls.Panel pnlQuestions;
         protected global::System.Web.UI.WebControls.Repeater rptQuestions;
         protected global::System.Web.UI.WebControls.Panel pnlAlreadyDone;
+        protected global::System.Web.UI.WebControls.Panel pnlGuestPrompt;
     }
 }

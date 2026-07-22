@@ -231,15 +231,25 @@ namespace CloudPhoria.Instructor
                     using (SqlCommand cmd = new SqlCommand(
                         @"INSERT INTO ClassroomAssignments
                             (ClassroomID, InstructorID, Title, Description, DueDate, CreatedAt)
-                          VALUES (@CID, @IID, @Title, @Desc, @Due, GETDATE())", conn))
+                          VALUES (@CID, @IID, @Title, @Desc, @Due, GETDATE());
+                          SELECT SCOPE_IDENTITY();", conn))
                     {
                         cmd.Parameters.Add("@CID",   SqlDbType.Int).Value           = classroomID;
                         cmd.Parameters.Add("@IID",   SqlDbType.Int).Value           = instructorID;
                         cmd.Parameters.Add("@Title", SqlDbType.NVarChar, 150).Value = title;
                         cmd.Parameters.Add("@Desc",  SqlDbType.NVarChar, -1).Value  = string.IsNullOrEmpty(desc) ? (object)DBNull.Value : desc;
                         cmd.Parameters.Add("@Due",   SqlDbType.DateTime2).Value     = dueDate.HasValue ? (object)dueDate.Value : DBNull.Value;
-                        cmd.ExecuteNonQuery();
+                        int assignmentID = Convert.ToInt32(cmd.ExecuteScalar());
+
+                        // Insert questions
+                        InsertObjectiveQuestion(conn, assignmentID, txtAQ1, txtAQ1O1, txtAQ1O2, txtAQ1O3, txtAQ1O4, 1);
+                        InsertObjectiveQuestion(conn, assignmentID, txtAQ2, txtAQ2O1, txtAQ2O2, txtAQ2O3, txtAQ2O4, 2);
+                        InsertSubjectiveQuestion(conn, assignmentID, txtAQ3, 3);
                     }
+
+                    Utils.SendNotification(conn, instructorID,
+                        "Assignment \"" + title + "\" created successfully.",
+                        "Assignment");
                 }
 
                 txtTitle.Text   = string.Empty;
@@ -273,6 +283,18 @@ namespace CloudPhoria.Instructor
                 using (SqlConnection conn = new SqlConnection(cs))
                 {
                     conn.Open();
+
+                    // Get assignment title before deleting for notification.
+                    string assignTitle = string.Empty;
+                    using (SqlCommand getTitle = new SqlCommand(
+                        "SELECT Title FROM ClassroomAssignments WHERE AssignmentID=@AID AND InstructorID=@IID", conn))
+                    {
+                        getTitle.Parameters.Add("@AID", SqlDbType.Int).Value = assignmentID;
+                        getTitle.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
+                        object r = getTitle.ExecuteScalar();
+                        assignTitle = (r != null && r != DBNull.Value) ? r.ToString() : "assignment";
+                    }
+
                     using (SqlCommand cmd = new SqlCommand(
                         "DELETE FROM ClassroomAssignments WHERE AssignmentID=@AID AND InstructorID=@IID", conn))
                     {
@@ -280,6 +302,10 @@ namespace CloudPhoria.Instructor
                         cmd.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
                         cmd.ExecuteNonQuery();
                     }
+
+                    Utils.SendNotification(conn, instructorID,
+                        "Assignment \"" + assignTitle + "\" was deleted.",
+                        "Assignment");
                 }
                 ShowSuccess("Assignment deleted.");
                 pnlAssignments.Visible = false;
@@ -419,6 +445,54 @@ namespace CloudPhoria.Instructor
             litError.Text = HttpUtility.HtmlEncode(msg);
             pnlError.Visible   = true;
             pnlSuccess.Visible = false;
+        }
+
+        private void InsertObjectiveQuestion(SqlConnection conn, int assignmentID, TextBox txtQ, TextBox o1, TextBox o2, TextBox o3, TextBox o4, int order)
+        {
+            string qText = txtQ.Text.Trim();
+            string opt1 = o1.Text.Trim(), opt2 = o2.Text.Trim(), opt3 = o3.Text.Trim(), opt4 = o4.Text.Trim();
+            if (string.IsNullOrEmpty(qText) || string.IsNullOrEmpty(opt1) || string.IsNullOrEmpty(opt2) ||
+                string.IsNullOrEmpty(opt3) || string.IsNullOrEmpty(opt4)) return;
+
+            int qID;
+            using (SqlCommand cmd = new SqlCommand(
+                @"INSERT INTO AssignmentQuestions (AssignmentID, QuestionText, QuestionType, OrderIndex)
+                  VALUES (@AID, @QText, 'Objective', @Ord); SELECT SCOPE_IDENTITY();", conn))
+            {
+                cmd.Parameters.Add("@AID", SqlDbType.Int).Value = assignmentID;
+                cmd.Parameters.Add("@QText", SqlDbType.NVarChar, -1).Value = qText;
+                cmd.Parameters.Add("@Ord", SqlDbType.Int).Value = order;
+                qID = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+
+            string[] opts = { opt1, opt2, opt3, opt4 };
+            for (int i = 0; i < opts.Length; i++)
+            {
+                using (SqlCommand cmd = new SqlCommand(
+                    "INSERT INTO AssignmentQuestionOptions (AssignmentQuestionID, OptionText, IsCorrect) VALUES (@QID, @OText, @Correct)", conn))
+                {
+                    cmd.Parameters.Add("@QID", SqlDbType.Int).Value = qID;
+                    cmd.Parameters.Add("@OText", SqlDbType.NVarChar, -1).Value = opts[i];
+                    cmd.Parameters.Add("@Correct", SqlDbType.Bit).Value = (i == 0) ? 1 : 0;
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private void InsertSubjectiveQuestion(SqlConnection conn, int assignmentID, TextBox txtQ, int order)
+        {
+            string qText = txtQ.Text.Trim();
+            if (string.IsNullOrEmpty(qText)) return;
+
+            using (SqlCommand cmd = new SqlCommand(
+                @"INSERT INTO AssignmentQuestions (AssignmentID, QuestionText, QuestionType, OrderIndex)
+                  VALUES (@AID, @QText, 'Subjective', @Ord)", conn))
+            {
+                cmd.Parameters.Add("@AID", SqlDbType.Int).Value = assignmentID;
+                cmd.Parameters.Add("@QText", SqlDbType.NVarChar, -1).Value = qText;
+                cmd.Parameters.Add("@Ord", SqlDbType.Int).Value = order;
+                cmd.ExecuteNonQuery();
+            }
         }
     }
 }

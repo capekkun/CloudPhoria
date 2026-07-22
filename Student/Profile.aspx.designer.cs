@@ -14,5 +14,12 @@ namespace CloudPhoria.Student
         protected global::System.Web.UI.WebControls.Literal litModules;
         protected global::System.Web.UI.WebControls.Literal litBadges;
         protected global::System.Web.UI.WebControls.Literal litCerts;
+        protected global::System.Web.UI.WebControls.Panel pnlReportSuccess;
+        protected global::System.Web.UI.WebControls.Literal litReportSuccess;
+        protected global::System.Web.UI.WebControls.Panel pnlReportError;
+        protected global::System.Web.UI.WebControls.Literal litReportError;
+        protected global::System.Web.UI.WebControls.DropDownList ddlReportType;
+        protected global::System.Web.UI.WebControls.TextBox txtReportReason;
+        protected global::System.Web.UI.WebControls.Button btnSubmitReport;
     }
 }

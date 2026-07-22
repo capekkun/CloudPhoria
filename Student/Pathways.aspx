@@ -80,6 +80,14 @@
     <div class="cp-alert cp-alert-danger cp-mb-md"><asp:Literal ID="litError" runat="server" /></div>
 </asp:Panel>
 
+<%-- Guest notice --%>
+<asp:Panel ID="pnlGuestNotice" runat="server" Visible="false">
+    <div class="cp-alert cp-alert-info cp-mb-md" style="border-color:rgba(99,102,241,0.3);background:rgba(99,102,241,0.05);">
+        &#x1F440; You are browsing as a <strong>Guest</strong> — you can preview pathways and read lesson content, but cannot enroll, answer questions, or earn XP.
+        <a href="/Register.aspx" style="color:#6366F1;font-weight:600;margin-left:8px;">Create a free account to start learning &rarr;</a>
+    </div>
+</asp:Panel>
+
 <%-- Subscription notice --%>
 <asp:Panel ID="pnlFreeNotice" runat="server" Visible="false">
     <div class="cp-alert cp-alert-info cp-mb-md">
@@ -93,7 +101,7 @@
         <div class="pw-grid">
             <asp:Repeater ID="rptPathways" runat="server">
                 <ItemTemplate>
-                    <a class="pw-card" href="MyLearning.aspx?pathwayID=<%# Eval("PathwayID") %>">
+                    <a class="pw-card" href="PathwayDetail.aspx?pathwayID=<%# Eval("PathwayID") %>">
                         <div class="pw-card-top" style="background:<%# Eval("AccentColour") %>;"></div>
                         <div class="pw-card-body">
                             <span class="pw-card-icon"><%# Eval("Icon") %></span>

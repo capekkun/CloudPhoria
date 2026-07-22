@@ -6,6 +6,7 @@ namespace CloudPhoria.Student
         protected global::System.Web.UI.WebControls.Literal litModuleCount;
         protected global::System.Web.UI.WebControls.Panel pnlError;
         protected global::System.Web.UI.WebControls.Literal litError;
+        protected global::System.Web.UI.WebControls.Panel pnlGuestNotice;
         protected global::System.Web.UI.WebControls.Panel pnlFreeNotice;
         protected global::System.Web.UI.WebControls.Panel pnlPathways;
         protected global::System.Web.UI.WebControls.Repeater rptPathways;

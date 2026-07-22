@@ -9,8 +9,6 @@ namespace CloudPhoria.Student
         protected global::System.Web.UI.WebControls.Literal litDiffColour;
         protected global::System.Web.UI.WebControls.Literal litXP;
         protected global::System.Web.UI.WebControls.Literal litSubCount;
-        protected global::System.Web.UI.WebControls.Literal litExamDuration;
-        protected global::System.Web.UI.WebControls.Literal litExamPass;
         protected global::System.Web.UI.WebControls.Panel pnlError;
         protected global::System.Web.UI.WebControls.Literal litError;
         protected global::System.Web.UI.WebControls.Panel pnlProgress;
@@ -19,6 +17,5 @@ namespace CloudPhoria.Student
         protected global::System.Web.UI.WebControls.Panel pnlSubtopics;
         protected global::System.Web.UI.WebControls.Repeater rptSubtopics;
         protected global::System.Web.UI.WebControls.Panel pnlNoSubtopics;
-        protected global::System.Web.UI.WebControls.Panel pnlExam;
     }
 }

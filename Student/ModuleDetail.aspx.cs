@@ -11,9 +11,8 @@ namespace CloudPhoria.Student
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["UserID"] == null || Session["Role"] == null ||
-                Session["Role"].ToString() != "Student")
-            { Response.Redirect("~/LogIn.aspx", true); return; }
+            bool isGuest = (Session["UserID"] == null || Session["Role"] == null ||
+                Session["Role"].ToString() != "Student");
 
             if (!IsPostBack)
             {
@@ -26,7 +25,8 @@ namespace CloudPhoria.Student
 
         private void LoadModule(int moduleID)
         {
-            int studentID = Convert.ToInt32(Session["UserID"]);
+            int studentID = Session["UserID"] != null ? Convert.ToInt32(Session["UserID"]) : 0;
+            bool isGuest = (studentID == 0);
             string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
 
             try
@@ -36,10 +36,10 @@ namespace CloudPhoria.Student
                     conn.Open();
 
                     // Module info
+                    bool isFoundation = false;
                     using (SqlCommand cmd = new SqlCommand(
                         @"SELECT m.ModuleName, m.Description, m.DifficultyLevel, m.XPReward,
-                                 m.ExamDurationMinutes, m.ExamPassMarkPercent,
-                                 p.PathwayName
+                                 p.PathwayName, p.IsFoundation
                           FROM Modules m
                           INNER JOIN Pathways p ON p.PathwayID = m.PathwayID
                           WHERE m.ModuleID = @MID AND m.IsPublished = 1", conn))
@@ -56,8 +56,7 @@ namespace CloudPhoria.Student
                                 litDifficulty.Text = HttpUtility.HtmlEncode(rdr["DifficultyLevel"].ToString());
                                 litDiffColour.Text = DiffCol(rdr["DifficultyLevel"].ToString());
                                 litXP.Text         = rdr["XPReward"].ToString();
-                                litExamDuration.Text = rdr["ExamDurationMinutes"].ToString();
-                                litExamPass.Text   = rdr["ExamPassMarkPercent"].ToString();
+                                isFoundation       = Convert.ToBoolean(rdr["IsFoundation"]);
                             }
                             else
                             {
@@ -68,14 +67,55 @@ namespace CloudPhoria.Student
                         }
                     }
 
-                    // Auto-enroll: Create ModuleProgress if not exists (marks student as enrolled)
-                    using (SqlCommand cmd = new SqlCommand(
-                        @"IF NOT EXISTS (SELECT 1 FROM ModuleProgress WHERE ModuleID=@MID AND StudentID=@SID)
-                          INSERT INTO ModuleProgress (StudentID, ModuleID, Status) VALUES (@SID, @MID, 'InProgress')", conn))
+                    // Subscription check — Free tier can only access Foundation modules
+                    if (!isFoundation && !isGuest)
                     {
-                        cmd.Parameters.Add("@MID", SqlDbType.Int).Value = moduleID;
-                        cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
-                        cmd.ExecuteNonQuery();
+                        bool isFoundationOnly = true;
+                        using (SqlCommand cmd = new SqlCommand(
+                            @"SELECT TOP 1 sp.CanAccessFoundationOnly FROM UserSubscriptions us
+                              INNER JOIN SubscriptionPlans sp ON sp.PlanID=us.PlanID
+                              WHERE us.StudentID=@SID AND us.IsActive=1 ORDER BY us.StartDate DESC", conn))
+                        {
+                            cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
+                            object sr = cmd.ExecuteScalar();
+                            isFoundationOnly = (sr == null || sr == DBNull.Value) ? true : Convert.ToBoolean(sr);
+                        }
+                        if (isFoundationOnly)
+                        {
+                            litError.Text = "This module requires a Pro or Student subscription.";
+                            pnlError.Visible = true;
+                            return;
+                        }
+                    }
+
+                    // Check if student is enrolled in this pathway (has ModuleProgress for any module in the same pathway)
+                    if (!isGuest)
+                    {
+                        bool isEnrolled = false;
+                        using (SqlCommand cmd = new SqlCommand(
+                            @"SELECT COUNT(*) FROM ModuleProgress mp
+                              INNER JOIN Modules m2 ON m2.ModuleID = mp.ModuleID
+                              INNER JOIN Modules m3 ON m3.PathwayID = m2.PathwayID AND m3.ModuleID = @MID
+                              WHERE mp.StudentID = @SID", conn))
+                        {
+                            cmd.Parameters.Add("@MID", SqlDbType.Int).Value = moduleID;
+                            cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
+                            isEnrolled = Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+                        }
+
+                        if (!isEnrolled)
+                        {
+                            // Student hasn't enrolled in this pathway — redirect to pathway detail
+                            int pathwayID = 0;
+                            using (SqlCommand cmd = new SqlCommand("SELECT PathwayID FROM Modules WHERE ModuleID=@MID", conn))
+                            {
+                                cmd.Parameters.Add("@MID", SqlDbType.Int).Value = moduleID;
+                                object r = cmd.ExecuteScalar();
+                                if (r != null) pathwayID = Convert.ToInt32(r);
+                            }
+                            Response.Redirect("~/Student/PathwayDetail.aspx?pathwayID=" + pathwayID);
+                            return;
+                        }
                     }
 
                     // Subtopics with student progress
@@ -150,14 +190,6 @@ namespace CloudPhoria.Student
                         litSubCount.Text = "0";
                     }
 
-                    // Show exam section if there are exam questions
-                    using (SqlCommand cmd = new SqlCommand(
-                        "SELECT COUNT(*) FROM ExamQuestions WHERE ModuleID=@MID", conn))
-                    {
-                        cmd.Parameters.Add("@MID", SqlDbType.Int).Value = moduleID;
-                        int examQCount = Convert.ToInt32(cmd.ExecuteScalar());
-                        if (examQCount > 0) pnlExam.Visible = true;
-                    }
                 }
             }
             catch (SqlException)

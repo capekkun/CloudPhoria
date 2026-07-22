@@ -70,6 +70,11 @@
                                     <%# Convert.ToDateTime(Eval("UploadedAt")).ToString("dd MMM yyyy") %>
                                 </td>
                                 <td>
+                                    <a href='<%# Eval("FilePath") %>' target="_blank" rel="noopener noreferrer"
+                                       class="cp-btn cp-btn-outline cp-btn-sm"
+                                       title="Open file in new tab">
+                                        &#x1F441; View
+                                    </a>
                                     <asp:LinkButton runat="server"
                                         CommandName="Delete"
                                         CommandArgument='<%# Eval("MaterialID") %>'

@@ -373,44 +373,33 @@
 
         <%-- Brand --%>
         <a class="lp-brand" href="Default.aspx" aria-label="CloudPhoria home">
-            <div class="lp-brand-icon" aria-hidden="true">CP</div>
-            <span class="lp-brand-name">Cloud<em>Phoria</em></span>
+            <img src="Images/LogoCloudPhoria.png" alt="CloudPhoria" style="height:40px;width:auto;border-radius:8px;"
+                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+            <div class="lp-brand-icon" style="display:none;" aria-hidden="true">CP</div>
         </a>
 
         <%-- Centre navigation links — mirror TryHackMe's category nav --%>
         <ul class="lp-nav-links" role="list">
             <li>
-                <a href="Guest/Learn.aspx">
-                    <span class="nav-icon" aria-hidden="true">&#x1F4DA;</span>
-                    Learn
-                </a>
-            </li>
-            <li>
-                <a href="Guest/Learn.aspx">
-                    <span class="nav-icon" aria-hidden="true">&#x270F;&#xFE0F;</span>
-                    Practice
-                </a>
-            </li>
-            <li>
-                <a href="Guest/Learn.aspx">
-                    <span class="nav-icon" aria-hidden="true">&#x26A1;</span>
-                    Challenges
-                </a>
-            </li>
-            <li>
-                <a href="Guest/Learn.aspx">
+                <a href="Student/Pathways.aspx">
                     <span class="nav-icon" aria-hidden="true">&#x2601;&#xFE0F;</span>
                     Pathways
                 </a>
             </li>
             <li>
-                <a href="Guest/Learn.aspx">
-                    <span class="nav-icon" aria-hidden="true">&#x1F3EB;</span>
-                    Classrooms
+                <a href="Student/BossFights.aspx">
+                    <span class="nav-icon" aria-hidden="true">&#x1F480;</span>
+                    Boss Fights
                 </a>
             </li>
             <li>
-                <a href="Guest/Learn.aspx">
+                <a href="Student/Challenges.aspx">
+                    <span class="nav-icon" aria-hidden="true">&#x26A1;</span>
+                    Challenges
+                </a>
+            </li>
+            <li>
+                <a href="Student/Upgrade.aspx">
                     <span class="nav-icon" aria-hidden="true">&#x1F4B0;</span>
                     Pricing
                 </a>
@@ -419,8 +408,9 @@
 
         <%-- Right actions --%>
         <div class="lp-nav-actions">
+            <a class="lp-btn-ghost" href="#browse" style="color:rgba(255,255,255,0.6);">Browse Pathways</a>
             <a class="lp-btn-ghost" href="LogIn.aspx">Log In</a>
-            <a class="lp-btn-green" href="LogIn.aspx">Join for Free</a>
+            <a class="lp-btn-green" href="Register.aspx">Join for Free</a>
         </div>
 
     </nav>
@@ -445,8 +435,8 @@
             </p>
 
             <div class="lp-cta-row">
-                <a class="lp-cta-primary" href="LogIn.aspx">Join for Free</a>
-                <a class="lp-cta-outline" href="Guest/Learn.aspx">Explore as Guest</a>
+                <a class="lp-cta-primary" href="Register.aspx">Join for Free</a>
+                <a class="lp-cta-outline" href="LogIn.aspx">Sign In</a>
             </div>
 
             <div class="lp-checklist" role="list">
@@ -576,13 +566,35 @@
     </section>
 
     <%-- =====================================================
+         GUEST BROWSE — Read-only pathway/module preview
+         ===================================================== --%>
+    <section id="browse" style="position:relative;z-index:1;padding:60px 32px;max-width:1100px;margin:0 auto;">
+        <h2 style="font-size:28px;font-weight:800;text-align:center;margin:0 0 8px;">
+            &#x1F4DA; Explore Learning Pathways
+        </h2>
+        <p style="text-align:center;color:rgba(255,255,255,0.5);font-size:14px;margin:0 0 32px;">
+            Preview our pathways and modules. Create a free account to start learning.
+        </p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
+            <asp:Literal ID="litGuestPathways" runat="server" />
+        </div>
+        <div style="text-align:center;margin-top:32px;">
+            <a href="Register.aspx" style="display:inline-block;padding:14px 32px;
+                background:linear-gradient(90deg,#0EA5E9,#6366F1);color:#fff;font-size:15px;
+                font-weight:700;border-radius:10px;text-decoration:none;">
+                Join for Free to Start Learning &#x1F680;
+            </a>
+        </div>
+    </section>
+
+    <%-- =====================================================
          FOOTER STRIP
          ===================================================== --%>
     <footer class="lp-footer">
         <span>&copy; <%: DateTime.Now.Year %> CloudPhoria</span>
         <a href="Default.aspx">Home</a>
         <a href="LogIn.aspx">Log In</a>
-        <a href="Guest/Learn.aspx">Guest Access</a>
+        <a href="Register.aspx">Join for Free</a>
         <span>CT050-3-2-WAPP</span>
     </footer>
 

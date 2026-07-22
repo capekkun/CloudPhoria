@@ -21,18 +21,21 @@ namespace CloudPhoria.Student
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["UserID"] == null || Session["Role"] == null ||
-                Session["Role"].ToString() != "Student")
-            { Response.Redirect("~/LogIn.aspx", true); return; }
+            bool isGuest = (Session["UserID"] == null || Session["Role"] == null ||
+                Session["Role"].ToString() != "Student");
+
+            if (!isGuest)
+                ((SiteMaster)Master).PageHeading = "Learning Pathways";
 
             if (!IsPostBack) { LoadAll(); }
         }
 
         private void LoadAll()
         {
-            int studentID = Convert.ToInt32(Session["UserID"]);
+            int studentID = Session["UserID"] != null ? Convert.ToInt32(Session["UserID"]) : 0;
+            bool isGuest = (studentID == 0);
             string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
-            bool isFoundationOnly = false;
+            bool isFoundationOnly = true;
 
             try
             {
@@ -40,17 +43,23 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    // Subscription check
-                    using (SqlCommand cmd = new SqlCommand(
-                        @"SELECT TOP 1 sp.CanAccessFoundationOnly FROM UserSubscriptions us
-                          INNER JOIN SubscriptionPlans sp ON sp.PlanID=us.PlanID
-                          WHERE us.StudentID=@SID AND us.IsActive=1 ORDER BY us.StartDate DESC", conn))
+                    // Subscription check (skip for guests — treat as foundation only)
+                    if (!isGuest)
                     {
-                        cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
-                        object r = cmd.ExecuteScalar();
-                        isFoundationOnly = (r == null || r == DBNull.Value) ? true : Convert.ToBoolean(r);
+                        using (SqlCommand cmd = new SqlCommand(
+                            @"SELECT TOP 1 sp.CanAccessFoundationOnly FROM UserSubscriptions us
+                              INNER JOIN SubscriptionPlans sp ON sp.PlanID=us.PlanID
+                              WHERE us.StudentID=@SID AND us.IsActive=1 ORDER BY us.StartDate DESC", conn))
+                        {
+                            cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
+                            object r = cmd.ExecuteScalar();
+                            isFoundationOnly = (r == null || r == DBNull.Value) ? true : Convert.ToBoolean(r);
+                        }
                     }
-                    if (isFoundationOnly) pnlFreeNotice.Visible = true;
+                    if (isGuest)
+                        pnlGuestNotice.Visible = true;
+                    else if (isFoundationOnly)
+                        pnlFreeNotice.Visible = true;
 
                     // Counts
                     using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM Pathways", conn))

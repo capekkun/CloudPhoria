@@ -21,5 +21,15 @@ namespace CloudPhoria.Instructor
         protected global::System.Web.UI.WebControls.TextBox txtChStart;
         protected global::System.Web.UI.WebControls.TextBox txtChEnd;
         protected global::System.Web.UI.WebControls.Button btnCreateCh;
+        protected global::System.Web.UI.WebControls.Panel pnlManageQuestions;
+        protected global::System.Web.UI.WebControls.Literal litManageChTitle;
+        protected global::System.Web.UI.WebControls.TextBox txtChQText;
+        protected global::System.Web.UI.WebControls.TextBox txtChQPoints;
+        protected global::System.Web.UI.WebControls.TextBox txtChQTime;
+        protected global::System.Web.UI.WebControls.Repeater rptChOptions;
+        protected global::System.Web.UI.WebControls.Button btnAddChQuestion;
+        protected global::System.Web.UI.WebControls.Panel pnlChQuestionsList;
+        protected global::System.Web.UI.WebControls.Repeater rptChQuestions;
+        protected global::System.Web.UI.WebControls.Panel pnlNoChQuestions;
     }
 }

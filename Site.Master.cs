@@ -22,6 +22,11 @@ namespace CloudPhoria
             if (IsPublicPage) { HideAuthUI(); return; }
 
             CheckAuthentication();
+
+            // If guest (no session), skip user-specific loading
+            if (Session["UserID"] == null || Session["Role"] == null)
+                return;
+
             LoadCurrentUser();
             ConfigureNavigation();
             LoadNotificationCount();
@@ -45,7 +50,12 @@ namespace CloudPhoria
             object role = Session["Role"];
 
             if (uid == null || role == null)
-            { Response.Redirect("~/LogIn.aspx", true); return; }
+            {
+                // Guest mode — show guest nav, don't redirect
+                pnlGuestNav.Visible = true;
+                pnlGuestActions.Visible = true;
+                return;
+            }
 
             int userID;
             if (!int.TryParse(uid.ToString(), out userID) || userID <= 0)
@@ -109,6 +119,17 @@ namespace CloudPhoria
                 lnkProfile.NavigateUrl = "~/Instructor/Profile.aspx";
             else if (role == "Admin")
                 lnkProfile.NavigateUrl = "~/Admin/Profile.aspx";
+
+            // Notifications link in user dropdown.
+            if (role == "Student")
+            {
+                lnkDropNotifications.HRef     = ResolveUrl("~/Student/Notifications.aspx");
+                pnlDropAchievements.Visible   = true;
+            }
+            else if (role == "Instructor")
+                lnkDropNotifications.HRef = ResolveUrl("~/Instructor/Notifications.aspx");
+            else if (role == "Admin")
+                lnkDropNotifications.HRef = ResolveUrl("~/Admin/Notifications.aspx");
         }
 
         private void ConfigureNavigation()
@@ -158,6 +179,19 @@ namespace CloudPhoria
                         object r = cmd.ExecuteScalar();
                         litTopXP.Text = (r != null && r != DBNull.Value) ? r.ToString() : "0";
                     }
+
+                    // Check if on free plan to show "Go Pro" button
+                    using (SqlCommand cmd = new SqlCommand(
+                        @"SELECT TOP 1 sp.CanAccessFoundationOnly FROM UserSubscriptions us
+                          INNER JOIN SubscriptionPlans sp ON sp.PlanID=us.PlanID
+                          WHERE us.StudentID=@SID AND us.IsActive=1 ORDER BY us.StartDate DESC", conn))
+                    {
+                        cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
+                        object r = cmd.ExecuteScalar();
+                        bool isFoundationOnly = (r == null || r == DBNull.Value) ? true : Convert.ToBoolean(r);
+                        if (isFoundationOnly)
+                            pnlGoPro.Visible = true;
+                    }
                 }
             }
             catch (SqlException) { }
@@ -196,7 +230,7 @@ namespace CloudPhoria
         {
             Session.Clear();
             Session.Abandon();
-            Response.Redirect("~/LogIn.aspx", true);
+            Response.Redirect("~/Default.aspx", true);
         }
 
         private string GetInitials(string name)

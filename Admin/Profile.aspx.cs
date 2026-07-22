@@ -1,11 +1,16 @@
 using System;
 using System.Configuration;
 using System.Data;
+<<<<<<< HEAD
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+=======
+using System.Web;
+using System.Web.UI;
+>>>>>>> 726bdf5aeacf983cac6697131a8d378b065b2cac
 using Microsoft.Data.SqlClient;
 
 namespace CloudPhoria.Admin
@@ -21,22 +26,34 @@ namespace CloudPhoria.Admin
                 return;
             }
 
+<<<<<<< HEAD
             if (!IsPostBack)
             {
                 LoadProfile();
             }
+=======
+            ((SiteMaster)Master).PageHeading = "Profile";
+
+            if (!IsPostBack) LoadProfile();
+>>>>>>> 726bdf5aeacf983cac6697131a8d378b065b2cac
         }
 
         private void LoadProfile()
         {
+<<<<<<< HEAD
             int    userID = Convert.ToInt32(Session["UserID"]);
             string cs     = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
+=======
+            int userID = Convert.ToInt32(Session["UserID"]);
+            string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
+>>>>>>> 726bdf5aeacf983cac6697131a8d378b065b2cac
 
             try
             {
                 using (SqlConnection conn = new SqlConnection(cs))
                 {
                     conn.Open();
+<<<<<<< HEAD
 
                     // Load user details.
                     string userSQL = "SELECT FullName, Email, CreatedAt FROM Users WHERE UserID = @UID";
@@ -102,10 +119,40 @@ namespace CloudPhoria.Admin
                         cmd.Parameters.Add("@AdminID", SqlDbType.Int).Value = userID;
                         litBossCreated.Text = cmd.ExecuteScalar().ToString();
                     }
+=======
+                    using (SqlCommand cmd = new SqlCommand(
+                        "SELECT FullName, Email, CreatedAt FROM Users WHERE UserID=@UID", conn))
+                    {
+                        cmd.Parameters.Add("@UID", SqlDbType.Int).Value = userID;
+                        using (SqlDataReader r = cmd.ExecuteReader())
+                        {
+                            if (r.Read())
+                            {
+                                string fullName = r["FullName"].ToString();
+                                string email = r["Email"].ToString();
+                                DateTime createdAt = Convert.ToDateTime(r["CreatedAt"]);
+
+                                string[] parts = fullName.Trim().Split(' ');
+                                string initials = parts.Length >= 2
+                                    ? (parts[0].Substring(0, 1) + parts[parts.Length - 1].Substring(0, 1)).ToUpper()
+                                    : fullName.Substring(0, Math.Min(2, fullName.Length)).ToUpper();
+
+                                litInitials.Text = HttpUtility.HtmlEncode(initials);
+                                litFullName.Text = HttpUtility.HtmlEncode(fullName);
+                                litEmail.Text = HttpUtility.HtmlEncode(email);
+                                litEmailReadonly.Text = "<span style='font-size:13px;color:var(--cp-text);'>" + HttpUtility.HtmlEncode(email) + "</span>";
+                                litMemberSince.Text = createdAt.ToString("dd MMM yyyy");
+
+                                txtFullName.Text = fullName;
+                            }
+                        }
+                    }
+>>>>>>> 726bdf5aeacf983cac6697131a8d378b065b2cac
                 }
             }
             catch (SqlException)
             {
+<<<<<<< HEAD
                 ShowMessage("Could not load profile. Please try again.", false);
             }
         }
@@ -125,12 +172,26 @@ namespace CloudPhoria.Admin
 
             int    userID = Convert.ToInt32(Session["UserID"]);
             string cs     = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
+=======
+                ShowError("Could not load profile.");
+            }
+        }
+
+        protected void btnSaveProfile_Click(object sender, EventArgs e)
+        {
+            if (!Page.IsValid) return;
+
+            int userID = Convert.ToInt32(Session["UserID"]);
+            string fullName = txtFullName.Text.Trim();
+            string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
+>>>>>>> 726bdf5aeacf983cac6697131a8d378b065b2cac
 
             try
             {
                 using (SqlConnection conn = new SqlConnection(cs))
                 {
                     conn.Open();
+<<<<<<< HEAD
 
                     // Check the email is not already taken by another user.
                     string emailCheckSQL = "SELECT COUNT(*) FROM Users WHERE Email = @Email AND UserID <> @UID";
@@ -165,6 +226,23 @@ namespace CloudPhoria.Admin
             catch (SqlException)
             {
                 ShowMessage("Could not update profile. Please try again.", false);
+=======
+                    using (SqlCommand cmd = new SqlCommand("UPDATE Users SET FullName=@Name WHERE UserID=@UID", conn))
+                    {
+                        cmd.Parameters.Add("@Name", SqlDbType.NVarChar, 100).Value = fullName;
+                        cmd.Parameters.Add("@UID", SqlDbType.Int).Value = userID;
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                Session["FullName"] = fullName;
+                ShowSuccess("Profile updated successfully.");
+                LoadProfile();
+            }
+            catch (SqlException)
+            {
+                ShowError("Could not save profile.");
+>>>>>>> 726bdf5aeacf983cac6697131a8d378b065b2cac
             }
         }
 
@@ -172,6 +250,7 @@ namespace CloudPhoria.Admin
         {
             if (!Page.IsValid) return;
 
+<<<<<<< HEAD
             string currentPwd = txtCurrentPwd.Text;
             string newPwd     = txtNewPwd.Text;
             string confirmPwd = txtConfirmPwd.Text;
@@ -190,12 +269,24 @@ namespace CloudPhoria.Admin
 
             int    userID = Convert.ToInt32(Session["UserID"]);
             string cs     = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
+=======
+            int userID = Convert.ToInt32(Session["UserID"]);
+            string currentPwd = txtCurrentPassword.Text;
+            string newPwd = txtNewPassword.Text;
+            string confirmPwd = txtConfirmPassword.Text;
+
+            if (newPwd != confirmPwd) { ShowError("New passwords do not match."); return; }
+            if (newPwd.Length < 6) { ShowError("New password must be at least 6 characters."); return; }
+
+            string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
+>>>>>>> 726bdf5aeacf983cac6697131a8d378b065b2cac
 
             try
             {
                 using (SqlConnection conn = new SqlConnection(cs))
                 {
                     conn.Open();
+<<<<<<< HEAD
 
                     // Retrieve the stored hash for comparison.
                     string selectSQL = "SELECT PasswordHash FROM Users WHERE UserID = @UID";
@@ -288,6 +379,47 @@ namespace CloudPhoria.Admin
             string cssClass    = success ? "cp-alert cp-alert-success" : "cp-alert cp-alert-danger";
             litMessage.Text    = $"<div class='{cssClass}'>{HttpUtility.HtmlEncode(message)}</div>";
             pnlMessage.Visible = true;
+=======
+                    using (SqlCommand chk = new SqlCommand("SELECT PasswordHash FROM Users WHERE UserID=@UID", conn))
+                    {
+                        chk.Parameters.Add("@UID", SqlDbType.Int).Value = userID;
+                        object stored = chk.ExecuteScalar();
+                        if (stored == null || stored.ToString() != currentPwd)
+                        {
+                            ShowError("Current password is incorrect.");
+                            return;
+                        }
+                    }
+                    using (SqlCommand cmd = new SqlCommand("UPDATE Users SET PasswordHash=@Hash WHERE UserID=@UID", conn))
+                    {
+                        cmd.Parameters.Add("@Hash", SqlDbType.NVarChar, 256).Value = newPwd;
+                        cmd.Parameters.Add("@UID", SqlDbType.Int).Value = userID;
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                txtCurrentPassword.Text = ""; txtNewPassword.Text = ""; txtConfirmPassword.Text = "";
+                ShowSuccess("Password changed successfully.");
+            }
+            catch (SqlException)
+            {
+                ShowError("Could not change password.");
+            }
+        }
+
+        private void ShowSuccess(string msg)
+        {
+            litSuccess.Text = HttpUtility.HtmlEncode(msg);
+            pnlSuccess.Visible = true;
+            pnlError.Visible = false;
+        }
+
+        private void ShowError(string msg)
+        {
+            litError.Text = HttpUtility.HtmlEncode(msg);
+            pnlError.Visible = true;
+            pnlSuccess.Visible = false;
+>>>>>>> 726bdf5aeacf983cac6697131a8d378b065b2cac
         }
     }
 }

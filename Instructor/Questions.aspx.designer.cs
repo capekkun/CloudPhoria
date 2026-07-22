@@ -8,24 +8,11 @@ namespace CloudPhoria.Instructor
 {
     public partial class Questions
     {
-        protected global::System.Web.UI.WebControls.Panel pnlAddBtn;
         protected global::System.Web.UI.WebControls.DropDownList ddlSubTopic;
-        protected global::System.Web.UI.WebControls.Panel pnlSuccess;
-        protected global::System.Web.UI.WebControls.Literal litSuccess;
         protected global::System.Web.UI.WebControls.Panel pnlError;
         protected global::System.Web.UI.WebControls.Literal litError;
         protected global::System.Web.UI.WebControls.Panel pnlQuestions;
         protected global::System.Web.UI.WebControls.Repeater rptQuestions;
         protected global::System.Web.UI.WebControls.Panel pnlEmpty;
-        protected global::System.Web.UI.WebControls.DropDownList ddlSubTopicCreate;
-        protected global::System.Web.UI.WebControls.TextBox txtQuestionText;
-        protected global::System.Web.UI.WebControls.DropDownList ddlQType;
-        protected global::System.Web.UI.WebControls.TextBox txtQXP;
-        protected global::System.Web.UI.WebControls.TextBox txtOrderIdx;
-        protected global::System.Web.UI.WebControls.Panel pnlCorrectAnswer;
-        protected global::System.Web.UI.WebControls.TextBox txtCorrectAnswer;
-        protected global::System.Web.UI.WebControls.Panel pnlMCQOptions;
-        protected global::System.Web.UI.WebControls.Repeater rptOptions;
-        protected global::System.Web.UI.WebControls.Button btnCreate;
     }
 }
