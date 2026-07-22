@@ -260,22 +260,27 @@
         <%-- User avatar + dropdown --%>
         <asp:Panel ID="pnlUserMenu" runat="server" Visible="false">
             <div class="cp-topnav-user" style="display:flex;align-items:center;gap:10px;">
-                <div class="cp-topnav-avatar" id="cpAvatarBtn" onclick="document.getElementById('cpUserDrop').classList.toggle('open');">
+                <div class="cp-topnav-avatar" id="cpAvatarBtn"
+                     onclick="document.getElementById('cpUserDrop').classList.toggle('open');event.stopPropagation();"
+                     role="button" tabindex="0" aria-haspopup="true" aria-expanded="false"
+                     aria-label="Open user menu">
                     <asp:Literal ID="litTopbarInitials" runat="server" />
                 </div>
-                <asp:LinkButton ID="btnLogout" runat="server" CssClass="cp-topnav-link"
-                    style="color:#FCA5A5;font-size:13px;padding:6px 14px;border-radius:7px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);"
-                    OnClick="btnLogout_Click">
-                    &#x1F6AA; Log Out
-                </asp:LinkButton>
-                <div class="cp-topnav-dropdown" id="cpUserDrop">
+                <div class="cp-topnav-dropdown" id="cpUserDrop" onclick="event.stopPropagation();">
                     <div class="cp-topnav-dropdown-header">
                         <div class="cp-topnav-dropdown-name"><asp:Literal ID="litTopbarName" runat="server" /></div>
                         <div class="cp-topnav-dropdown-role"><asp:Literal ID="litTopbarRole" runat="server" /></div>
                     </div>
                     <asp:HyperLink ID="lnkProfile" runat="server" NavigateUrl="/Student/Profile.aspx">&#x1F464; My Profile</asp:HyperLink>
-                    <a href="/Student/Achievements.aspx">&#x1F3C5; Achievements</a>
-                    <a href="/Student/Notifications.aspx">&#x1F514; Notifications</a>
+                    <asp:Panel ID="pnlDropAchievements" runat="server" Visible="false">
+                        <a href="/Student/Achievements.aspx">&#x1F3C5; Achievements</a>
+                    </asp:Panel>
+                    <a runat="server" id="lnkDropNotifications" href="/Student/Notifications.aspx">&#x1F514; Notifications</a>
+                    <div style="border-top:1px solid rgba(255,255,255,0.06);margin:4px 0;"></div>
+                    <asp:LinkButton ID="btnLogout" runat="server" CssClass="danger"
+                        OnClick="btnLogout_Click">
+                        &#x1F6AA; Log Out
+                    </asp:LinkButton>
                 </div>
             </div>
         </asp:Panel>
