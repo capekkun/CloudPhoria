@@ -240,7 +240,7 @@
 
             <%-- Brand --%>
             <a class="cp-login-brand" href="Default.aspx">
-                <img src="Images/LogoCloudPhoriaBlack.png" alt="CloudPhoria" style="height:48px;width:auto;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                <img src="Images/LogoCloudPhoriaBlack.png" alt="CloudPhoria" style="height:80px;width:auto;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
                 <div class="cp-login-logo" style="display:none;" aria-hidden="true">CP</div>
             </a>
 

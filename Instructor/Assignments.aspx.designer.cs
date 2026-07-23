@@ -8,6 +8,7 @@ namespace CloudPhoria.Instructor
 {
     public partial class Assignments
     {
+        // ── Section 1 — Assignment list ──────────────────────────────────────
         protected global::System.Web.UI.WebControls.Panel pnlCreateBtn;
         protected global::System.Web.UI.WebControls.DropDownList ddlClassroom;
         protected global::System.Web.UI.WebControls.Panel pnlSuccess;
@@ -17,14 +18,38 @@ namespace CloudPhoria.Instructor
         protected global::System.Web.UI.WebControls.Panel pnlAssignments;
         protected global::System.Web.UI.WebControls.Repeater rptAssignments;
         protected global::System.Web.UI.WebControls.Panel pnlEmpty;
-        protected global::System.Web.UI.WebControls.Panel pnlSubmissions;
-        protected global::System.Web.UI.WebControls.Literal litAssignmentTitle;
-        protected global::System.Web.UI.WebControls.Repeater rptSubmissions;
+
+        // ── Section 2 — Submitted students ──────────────────────────────────
+        protected global::System.Web.UI.WebControls.Panel pnlSection2;
+        protected global::System.Web.UI.WebControls.Literal litSection2Title;
+        protected global::System.Web.UI.WebControls.LinkButton btnBackToAssignments;
+        protected global::System.Web.UI.WebControls.HiddenField hfSelectedAssignmentID;
+        protected global::System.Web.UI.WebControls.HiddenField hfSelectedAssignmentTitle;
+        protected global::System.Web.UI.WebControls.Panel pnlStudentList;
+        protected global::System.Web.UI.WebControls.Repeater rptStudents;
+        protected global::System.Web.UI.WebControls.Panel pnlNoStudents;
+
+        // ── Section 3 — Per-student detail ───────────────────────────────────
+        protected global::System.Web.UI.WebControls.Panel pnlSection3;
+        protected global::System.Web.UI.WebControls.LinkButton btnBackToStudents;
+        protected global::System.Web.UI.WebControls.HiddenField hfDetailStudentID;
+        protected global::System.Web.UI.WebControls.HiddenField hfDetailStudentName;
+        protected global::System.Web.UI.WebControls.HiddenField hfDetailSubmittedAt;
         protected global::System.Web.UI.WebControls.HiddenField hfSubmissionID;
         protected global::System.Web.UI.WebControls.HiddenField hfAssignmentIDFb;
+        protected global::System.Web.UI.WebControls.HiddenField hfExistingFeedback;
+        protected global::System.Web.UI.WebControls.HiddenField hfExistingGrade;
+        protected global::System.Web.UI.WebControls.Literal litDetailStudentName;
+        protected global::System.Web.UI.WebControls.Literal litDetailAssignmentTitle;
+        protected global::System.Web.UI.WebControls.Literal litDetailSubmittedAt;
+        protected global::System.Web.UI.WebControls.Repeater rptDetail;
+
+        // ── Feedback modal ────────────────────────────────────────────────────
         protected global::System.Web.UI.WebControls.TextBox txtFeedback;
         protected global::System.Web.UI.WebControls.TextBox txtGrade;
         protected global::System.Web.UI.WebControls.Button btnSaveFeedback;
+
+        // ── Create assignment modal ───────────────────────────────────────────
         protected global::System.Web.UI.WebControls.DropDownList ddlClassroomCreate;
         protected global::System.Web.UI.WebControls.TextBox txtTitle;
         protected global::System.Web.UI.WebControls.TextBox txtADesc;

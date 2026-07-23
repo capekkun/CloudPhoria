@@ -3,37 +3,98 @@
     Inherits="CloudPhoria.Instructor.Materials" %>
 
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
+<style>
+/* Upload choice cards */
+.cp-upload-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+@media (max-width: 560px) { .cp-upload-cards { grid-template-columns: 1fr; } }
+
+.cp-upload-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 28px 20px;
+    background: var(--cp-surface);
+    border: 2px dashed var(--cp-border);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s, transform 0.15s;
+    text-align: center;
+}
+.cp-upload-card:hover {
+    border-color: var(--cp-primary);
+    background: rgba(14,165,233,0.04);
+    transform: translateY(-2px);
+}
+.cp-upload-card .cp-uc-icon {
+    font-size: 36px;
+    line-height: 1;
+}
+.cp-upload-card .cp-uc-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--cp-text);
+}
+.cp-upload-card .cp-uc-sub {
+    font-size: 12px;
+    color: var(--cp-text-muted);
+}
+
+/* Type badge colours */
+.cp-badge-classroom  { background: rgba(139,92,246,0.12); color: #7c3aed; }
+.cp-badge-subtopic   { background: rgba(14,165,233,0.12); color: #0284c7; }
+</style>
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
 
+    <%-- Page header (no upload button here anymore) --%>
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
                 <h2>&#x1F4CE; Learning Materials</h2>
-                <p>Upload and manage files attached to your subtopics.</p>
+                <p>Upload and manage files for your subtopics and classrooms.</p>
             </div>
-            <div style="display:flex;gap:8px;">
-                <a href="SubTopics.aspx" class="cp-btn cp-btn-ghost">&#x2190; Subtopics</a>
-                <asp:Panel ID="pnlUploadBtn" runat="server" Visible="false">
-                    <button type="button" class="cp-btn cp-btn-primary" onclick="showModal('uploadModal')">
-                        &#x2B06; Upload Material
-                    </button>
-                </asp:Panel>
-            </div>
+            <a href="SubTopics.aspx" class="cp-btn cp-btn-ghost">&#x2190; Subtopics</a>
         </div>
     </div>
 
-    <%-- Subtopic filter --%>
-    <div class="cp-card cp-mb-md" style="padding:16px 20px;">
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-            <label class="cp-label" style="margin:0;white-space:nowrap;" for="<%= ddlSubTopic.ClientID %>">Filter by Subtopic:</label>
-            <asp:DropDownList ID="ddlSubTopic" runat="server" CssClass="cp-select"
-                              AutoPostBack="true" OnSelectedIndexChanged="ddlSubTopic_Changed"
-                              style="max-width:400px;" />
-        </div>
+    <%-- ═══════════════════════════════════════════
+         SECTION 1 — Upload choice cards
+    ═══════════════════════════════════════════ --%>
+    <div class="cp-upload-cards">
+
+        <%-- Card: Upload for Subtopic --%>
+        <asp:Panel ID="pnlSubtopicCard" runat="server">
+            <div class="cp-upload-card" role="button" tabindex="0"
+                 onclick="showModal('uploadSubtopicModal')"
+                 onkeydown="if(event.key==='Enter'||event.key===' ')showModal('uploadSubtopicModal')">
+                <div class="cp-uc-icon">&#x1F4D6;</div>
+                <div class="cp-uc-title">Upload for Subtopic</div>
+                <div class="cp-uc-sub">Attach a file to a specific lesson subtopic</div>
+            </div>
+        </asp:Panel>
+
+        <%-- Card: Upload for Classroom --%>
+        <asp:Panel ID="pnlClassroomCard" runat="server">
+            <div class="cp-upload-card" role="button" tabindex="0"
+                 onclick="showModal('uploadClassroomModal')"
+                 onkeydown="if(event.key==='Enter'||event.key===' ')showModal('uploadClassroomModal')">
+                <div class="cp-uc-icon">&#x1F3EB;</div>
+                <div class="cp-uc-title">Upload for Classroom</div>
+                <div class="cp-uc-sub">Share a file with students in a classroom</div>
+            </div>
+        </asp:Panel>
+
     </div>
 
+    <%-- Feedback banners --%>
     <asp:Panel ID="pnlSuccess" runat="server" Visible="false">
         <div class="cp-alert cp-alert-success"><span>&#x2714;</span>
             <asp:Literal ID="litSuccess" runat="server" /></div>
@@ -43,13 +104,47 @@
             <asp:Literal ID="litError" runat="server" /></div>
     </asp:Panel>
 
+    <%-- ═══════════════════════════════════════════
+         SECTION 2 — Filter + Uploaded Materials table
+    ═══════════════════════════════════════════ --%>
+    <h3 style="font-size:15px;font-weight:700;color:var(--cp-text);margin:0 0 14px;">
+        Uploaded Materials
+    </h3>
+
+    <%-- Filter row — two dropdowns side by side, wraps on small screens --%>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:16px;">
+
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <label class="cp-label" style="margin:0;white-space:nowrap;font-size:13px;"
+                   for="<%= ddlTypeFilter.ClientID %>">Type:</label>
+            <asp:DropDownList ID="ddlTypeFilter" runat="server" CssClass="cp-select"
+                              AutoPostBack="true"
+                              OnSelectedIndexChanged="ddlTypeFilter_Changed"
+                              style="width:150px;">
+                <asp:ListItem Value="All"       Selected="True">All Types</asp:ListItem>
+                <asp:ListItem Value="Subtopic">Subtopic</asp:ListItem>
+                <asp:ListItem Value="Classroom">Classroom</asp:ListItem>
+            </asp:DropDownList>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <asp:Literal ID="litSecondaryLabel" runat="server" Text="Filter by:" />
+            <asp:DropDownList ID="ddlSecondaryFilter" runat="server" CssClass="cp-select"
+                              AutoPostBack="true"
+                              OnSelectedIndexChanged="ddlSecondaryFilter_Changed"
+                              style="width:240px;max-width:100%;overflow:hidden;text-overflow:ellipsis;" />
+        </div>
+
+    </div>
+
     <asp:Panel ID="pnlMaterials" runat="server" Visible="false">
         <div class="cp-table-wrap">
-            <table class="cp-table" role="grid" aria-label="Learning materials">
+            <table class="cp-table" role="grid" aria-label="Uploaded materials">
                 <thead>
                     <tr>
                         <th scope="col">File Name</th>
-                        <th scope="col">Subtopic</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Linked To</th>
                         <th scope="col">Uploaded</th>
                         <th scope="col">Actions</th>
                     </tr>
@@ -60,19 +155,26 @@
                         <ItemTemplate>
                             <tr>
                                 <td style="font-weight:600;">
-                                    <span style="font-size:16px;margin-right:6px;">&#x1F4C4;</span>
+                                    <span style="font-size:15px;margin-right:6px;" aria-hidden="true">
+                                        &#x1F4C4;
+                                    </span>
                                     <%# HttpUtility.HtmlEncode(Eval("FileName").ToString()) %>
                                 </td>
-                                <td style="color:var(--cp-text-muted);font-size:12px;">
-                                    <%# HttpUtility.HtmlEncode(Eval("SubTopicName").ToString()) %>
+                                <td>
+                                    <%# Eval("MaterialType").ToString() == "Classroom"
+                                        ? "<span class='cp-badge cp-badge-classroom'>&#x1F3EB; Classroom</span>"
+                                        : "<span class='cp-badge cp-badge-subtopic'>&#x1F4D6; Subtopic</span>" %>
                                 </td>
-                                <td style="color:var(--cp-text-muted);">
+                                <td style="color:var(--cp-text-muted);font-size:12px;">
+                                    <%# HttpUtility.HtmlEncode(Eval("LinkedTo").ToString()) %>
+                                </td>
+                                <td style="color:var(--cp-text-muted);font-size:12px;">
                                     <%# Convert.ToDateTime(Eval("UploadedAt")).ToString("dd MMM yyyy") %>
                                 </td>
                                 <td>
                                     <asp:LinkButton runat="server"
                                         CommandName="Delete"
-                                        CommandArgument='<%# Eval("MaterialID") %>'
+                                        CommandArgument='<%# Eval("RecordID") + "|" + Eval("MaterialType") %>'
                                         CssClass="cp-btn cp-btn-danger cp-btn-sm"
                                         OnClientClick="return confirm('Remove this material?');">
                                         Remove
@@ -90,42 +192,106 @@
         <div class="cp-empty-state">
             <span class="cp-empty-state-icon" aria-hidden="true">&#x1F4CE;</span>
             <h3>No materials yet</h3>
-            <p>Upload files to support your lesson subtopics.</p>
+            <p>Use the cards above to upload files for your subtopics or classrooms.</p>
         </div>
     </asp:Panel>
 
-    <%-- Upload Modal --%>
-    <div id="uploadModal" class="cp-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="uploadTitle">
+    <%-- ═══════════════════════════════════════════
+         MODAL — Upload for Subtopic
+    ═══════════════════════════════════════════ --%>
+    <div id="uploadSubtopicModal" class="cp-modal-backdrop" role="dialog"
+         aria-modal="true" aria-labelledby="stUploadTitle">
         <div class="cp-modal">
-            <button class="cp-modal-close" type="button" onclick="hideModal('uploadModal')" aria-label="Close">&#x2715;</button>
-            <h2 class="cp-modal-title" id="uploadTitle">Upload Material</h2>
+            <button class="cp-modal-close" type="button"
+                    onclick="hideModal('uploadSubtopicModal')" aria-label="Close">&#x2715;</button>
+            <h2 class="cp-modal-title" id="stUploadTitle">
+                &#x1F4D6; Upload for Subtopic
+            </h2>
 
             <div class="cp-alert cp-alert-info" style="margin-bottom:16px;">
                 <span>&#x2139;</span>
-                <span>Allowed file types: PDF, DOCX, PPTX, TXT, PNG, JPG. Max 10 MB.</span>
+                <span>Allowed: PDF, DOCX, PPTX, TXT, PNG, JPG &mdash; Max 10 MB</span>
             </div>
 
             <div class="cp-form-group">
-                <label class="cp-label" for="<%= ddlSubTopicUpload.ClientID %>">Subtopic <span class="required">*</span></label>
+                <label class="cp-label" for="<%= ddlSubTopicUpload.ClientID %>">
+                    Subtopic <span class="required">*</span>
+                </label>
                 <asp:DropDownList ID="ddlSubTopicUpload" runat="server" CssClass="cp-select" />
             </div>
 
             <div class="cp-form-group">
-                <label class="cp-label" for="<%= fuMaterial.ClientID %>">File <span class="required">*</span></label>
+                <label class="cp-label" for="<%= fuMaterial.ClientID %>">
+                    File <span class="required">*</span>
+                </label>
                 <asp:FileUpload ID="fuMaterial" runat="server" CssClass="cp-input" />
             </div>
 
             <div class="cp-form-group">
-                <label class="cp-label" for="<%= txtDescription.ClientID %>">Description (optional)</label>
+                <label class="cp-label" for="<%= txtDescription.ClientID %>">
+                    Description (optional)
+                </label>
                 <asp:TextBox ID="txtDescription" runat="server" CssClass="cp-input"
                              MaxLength="500" placeholder="Brief note about this file..." />
             </div>
 
             <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;">
-                <button type="button" class="cp-btn cp-btn-ghost" onclick="hideModal('uploadModal')">Cancel</button>
-                <asp:Button ID="btnUpload" runat="server" Text="Upload"
+                <button type="button" class="cp-btn cp-btn-ghost"
+                        onclick="hideModal('uploadSubtopicModal')">Cancel</button>
+                <asp:Button ID="btnUploadSubtopic" runat="server"
+                            Text="Upload"
                             CssClass="cp-btn cp-btn-primary"
-                            OnClick="btnUpload_Click" />
+                            OnClick="btnUploadSubtopic_Click" />
+            </div>
+        </div>
+    </div>
+
+    <%-- ═══════════════════════════════════════════
+         MODAL — Upload for Classroom
+    ═══════════════════════════════════════════ --%>
+    <div id="uploadClassroomModal" class="cp-modal-backdrop" role="dialog"
+         aria-modal="true" aria-labelledby="clUploadTitle">
+        <div class="cp-modal">
+            <button class="cp-modal-close" type="button"
+                    onclick="hideModal('uploadClassroomModal')" aria-label="Close">&#x2715;</button>
+            <h2 class="cp-modal-title" id="clUploadTitle">
+                &#x1F3EB; Upload for Classroom
+            </h2>
+
+            <div class="cp-alert cp-alert-info" style="margin-bottom:16px;">
+                <span>&#x2139;</span>
+                <span>Allowed: PDF, DOCX, PPTX, TXT, PNG, JPG &mdash; Max 10 MB</span>
+            </div>
+
+            <div class="cp-form-group">
+                <label class="cp-label" for="<%= ddlClassroomUpload.ClientID %>">
+                    Classroom <span class="required">*</span>
+                </label>
+                <asp:DropDownList ID="ddlClassroomUpload" runat="server" CssClass="cp-select" />
+            </div>
+
+            <div class="cp-form-group">
+                <label class="cp-label" for="<%= fuClassroomMaterial.ClientID %>">
+                    File <span class="required">*</span>
+                </label>
+                <asp:FileUpload ID="fuClassroomMaterial" runat="server" CssClass="cp-input" />
+            </div>
+
+            <div class="cp-form-group">
+                <label class="cp-label" for="<%= txtClassroomDescription.ClientID %>">
+                    Description (optional)
+                </label>
+                <asp:TextBox ID="txtClassroomDescription" runat="server" CssClass="cp-input"
+                             MaxLength="500" placeholder="Brief note about this file..." />
+            </div>
+
+            <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;">
+                <button type="button" class="cp-btn cp-btn-ghost"
+                        onclick="hideModal('uploadClassroomModal')">Cancel</button>
+                <asp:Button ID="btnUploadClassroom" runat="server"
+                            Text="Upload"
+                            CssClass="cp-btn cp-btn-primary"
+                            OnClick="btnUploadClassroom_Click" />
             </div>
         </div>
     </div>
@@ -134,10 +300,16 @@
 
 <asp:Content ID="PageScripts" ContentPlaceHolderID="PageScripts" runat="server">
 <script>
-function showModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
-function hideModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
-document.querySelectorAll('.cp-modal-backdrop').forEach(function(el){
-    el.addEventListener('click',function(e){ if(e.target===el) hideModal(el.id); });
+function showModal(id) {
+    document.getElementById(id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function hideModal(id) {
+    document.getElementById(id).classList.remove('open');
+    document.body.style.overflow = '';
+}
+document.querySelectorAll('.cp-modal-backdrop').forEach(function(el) {
+    el.addEventListener('click', function(e) { if (e.target === el) hideModal(el.id); });
 });
 </script>
 </asp:Content>
