@@ -237,6 +237,7 @@
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="Handlers\ChatMessages.ashx" />
     <Content Include="Instructor\Dashboard.aspx" />
     <Content Include="Instructor\Modules.aspx" />
     <Content Include="Instructor\SubTopics.aspx" />
@@ -396,6 +397,9 @@
       <DependentUpon>Profile.aspx</DependentUpon>
     </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="Handlers\ChatMessages.ashx.cs">
+      <DependentUpon>ChatMessages.ashx</DependentUpon>
+    </Compile>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
