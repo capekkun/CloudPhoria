@@ -3,6 +3,21 @@
     Inherits="CloudPhoria.Instructor.Dashboard" %>
 
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
+<style>
+a.cp-stat-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+a.cp-stat-card-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+    text-decoration: none;
+    color: inherit;
+}
+</style>
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
@@ -46,34 +61,34 @@
     <%-- Stat cards — only shown when approved --%>
     <asp:Panel ID="pnlStats" runat="server" Visible="false">
         <div class="cp-grid-4 cp-mb-lg">
-            <div class="cp-stat-card">
+            <a href="Classrooms.aspx" class="cp-stat-card cp-stat-card-link" aria-label="Go to My Classrooms">
                 <div class="cp-stat-icon indigo" aria-hidden="true">&#x1F3EB;</div>
                 <div>
                     <div class="cp-stat-value"><asp:Literal ID="litClassroomCount" runat="server" Text="0" /></div>
                     <div class="cp-stat-label">My Classrooms</div>
                 </div>
-            </div>
-            <div class="cp-stat-card">
+            </a>
+            <a href="Modules.aspx" class="cp-stat-card cp-stat-card-link" aria-label="Go to Modules">
                 <div class="cp-stat-icon blue" aria-hidden="true">&#x1F4D6;</div>
                 <div>
                     <div class="cp-stat-value"><asp:Literal ID="litModuleCount" runat="server" Text="0" /></div>
                     <div class="cp-stat-label">Modules Created</div>
                 </div>
-            </div>
-            <div class="cp-stat-card">
+            </a>
+            <a href="Classrooms.aspx" class="cp-stat-card cp-stat-card-link" aria-label="Go to Classrooms to see students">
                 <div class="cp-stat-icon green" aria-hidden="true">&#x1F393;</div>
                 <div>
                     <div class="cp-stat-value"><asp:Literal ID="litStudentCount" runat="server" Text="0" /></div>
                     <div class="cp-stat-label">Total Students</div>
                 </div>
-            </div>
-            <div class="cp-stat-card">
+            </a>
+            <a href="Assignments.aspx" class="cp-stat-card cp-stat-card-link" aria-label="Go to Assignments">
                 <div class="cp-stat-icon amber" aria-hidden="true">&#x1F4DD;</div>
                 <div>
                     <div class="cp-stat-value"><asp:Literal ID="litPendingAssignments" runat="server" Text="0" /></div>
                     <div class="cp-stat-label">Pending Submissions</div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <%-- Two-column layout --%>

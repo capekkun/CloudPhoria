@@ -389,9 +389,8 @@ namespace CloudPhoria.Instructor
                         cmd.ExecuteNonQuery();
                     }
 
-                    Utils.SendNotification(conn, instructorID,
-                        "Material \"" + originalName + "\" uploaded for classroom.", "Material");
-                }
+                    SendNotification(conn, instructorID,
+                        "Material \"" + originalName + "\" uploaded for classroom.", "Material");                }
 
                 txtClassroomDescription.Text = string.Empty;
                 ShowSuccess("Material uploaded for classroom.");
@@ -498,7 +497,7 @@ namespace CloudPhoria.Instructor
                         del.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
                         del.ExecuteNonQuery();
                     }
-                    Utils.SendNotification(conn, instructorID,
+                    SendNotification(conn, instructorID,
                         "Classroom material \"" + (fileName ?? "file") + "\" was removed.", "Material");
                     TryDeleteFile(filePath);
                 }
@@ -554,6 +553,24 @@ namespace CloudPhoria.Instructor
                 if (File.Exists(physical)) File.Delete(physical);
             }
             catch { /* non-critical */ }
+        }
+
+        private static void SendNotification(SqlConnection conn, int userID,
+            string message, string notificationType)
+        {
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(
+                    @"INSERT INTO Notifications (UserID, Message, NotificationType, IsRead, CreatedAt)
+                      VALUES (@UID, @Msg, @Type, 0, GETDATE())", conn))
+                {
+                    cmd.Parameters.Add("@UID",  SqlDbType.Int).Value           = userID;
+                    cmd.Parameters.Add("@Msg",  SqlDbType.NVarChar, 500).Value = message;
+                    cmd.Parameters.Add("@Type", SqlDbType.NVarChar, 100).Value = notificationType;
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (SqlException) { /* non-critical */ }
         }
 
         private void ShowSuccess(string msg)

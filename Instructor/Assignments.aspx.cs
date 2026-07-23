@@ -536,9 +536,9 @@ namespace CloudPhoria.Instructor
                     using (SqlCommand cmd = new SqlCommand(
                         "DELETE FROM ClassroomAssignments WHERE AssignmentID=@AID AND InstructorID=@IID", conn))
                     {
-                        del.Parameters.Add("@AID", SqlDbType.Int).Value = assignmentID;
-                        del.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
-                        del.ExecuteNonQuery();
+                        cmd.Parameters.Add("@AID", SqlDbType.Int).Value = assignmentID;
+                        cmd.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
+                        cmd.ExecuteNonQuery();
                     }
                 }
 
