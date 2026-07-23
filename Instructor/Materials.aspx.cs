@@ -326,9 +326,6 @@ namespace CloudPhoria.Instructor
                         cmd.Parameters.Add("@FPath", SqlDbType.NVarChar, 500).Value = webPath;
                         cmd.ExecuteNonQuery();
                     }
-
-                    Utils.SendNotification(conn, instructorID,
-                        "Material \"" + originalName + "\" uploaded for subtopic.", "Material");
                 }
 
                 ShowSuccess("Material uploaded for subtopic.");
@@ -392,9 +389,8 @@ namespace CloudPhoria.Instructor
                         cmd.ExecuteNonQuery();
                     }
 
-                    Utils.SendNotification(conn, instructorID,
-                        "Material \"" + originalName + "\" uploaded for classroom.", "Material");
-                }
+                    SendNotification(conn, instructorID,
+                        "Material \"" + originalName + "\" uploaded for classroom.", "Material");                }
 
                 txtClassroomDescription.Text = string.Empty;
                 ShowSuccess("Material uploaded for classroom.");
@@ -430,19 +426,16 @@ namespace CloudPhoria.Instructor
                 using (SqlConnection conn = new SqlConnection(cs))
                 {
                     conn.Open();
-                    string filePath = null, fileName = null;
+                    // Retrieve file path first so we can delete the physical file.
+                    string filePath = null;
                     using (SqlCommand get = new SqlCommand(
-                        "SELECT FilePath, FileName FROM LearningMaterials WHERE MaterialID=@ID AND InstructorID=@IID",
-                        conn))
+                        "SELECT FilePath FROM LearningMaterials WHERE MaterialID=@ID AND InstructorID=@IID", conn))
                     {
                         get.Parameters.Add("@ID",  SqlDbType.Int).Value = materialID;
                         get.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
-                        using (SqlDataReader rdr = get.ExecuteReader())
-                        {
-                            if (!rdr.Read()) return;
-                            filePath = rdr["FilePath"].ToString();
-                            fileName = rdr["FileName"].ToString();
-                        }
+                        object r = get.ExecuteScalar();
+                        if (r == null || r == DBNull.Value) return; // Not owned by this instructor.
+                        filePath = r.ToString();
                     }
                     using (SqlCommand del = new SqlCommand(
                         "DELETE FROM LearningMaterials WHERE MaterialID=@ID AND InstructorID=@IID", conn))
@@ -451,9 +444,20 @@ namespace CloudPhoria.Instructor
                         del.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
                         del.ExecuteNonQuery();
                     }
-                    Utils.SendNotification(conn, instructorID,
-                        "Material \"" + (fileName ?? "file") + "\" was removed.", "Material");
-                    TryDeleteFile(filePath);
+
+                    // Delete the physical file if it exists.
+                    if (!string.IsNullOrEmpty(filePath))
+                    {
+                        try
+                        {
+                            string physical = Server.MapPath("~" + filePath);
+                            if (File.Exists(physical)) File.Delete(physical);
+                        }
+                        catch
+                        {
+                            // Non-critical — DB record already removed.
+                        }
+                    }
                 }
                 ShowSuccess("Material removed.");
                 LoadMaterials();
@@ -493,7 +497,7 @@ namespace CloudPhoria.Instructor
                         del.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
                         del.ExecuteNonQuery();
                     }
-                    Utils.SendNotification(conn, instructorID,
+                    SendNotification(conn, instructorID,
                         "Classroom material \"" + (fileName ?? "file") + "\" was removed.", "Material");
                     TryDeleteFile(filePath);
                 }
@@ -549,6 +553,24 @@ namespace CloudPhoria.Instructor
                 if (File.Exists(physical)) File.Delete(physical);
             }
             catch { /* non-critical */ }
+        }
+
+        private static void SendNotification(SqlConnection conn, int userID,
+            string message, string notificationType)
+        {
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(
+                    @"INSERT INTO Notifications (UserID, Message, NotificationType, IsRead, CreatedAt)
+                      VALUES (@UID, @Msg, @Type, 0, GETDATE())", conn))
+                {
+                    cmd.Parameters.Add("@UID",  SqlDbType.Int).Value           = userID;
+                    cmd.Parameters.Add("@Msg",  SqlDbType.NVarChar, 500).Value = message;
+                    cmd.Parameters.Add("@Type", SqlDbType.NVarChar, 100).Value = notificationType;
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (SqlException) { /* non-critical */ }
         }
 
         private void ShowSuccess(string msg)

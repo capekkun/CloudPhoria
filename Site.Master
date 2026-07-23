@@ -262,7 +262,7 @@
             <div class="cp-topnav-user" style="display:flex;align-items:center;gap:10px;">
                 <div class="cp-topnav-avatar" id="cpAvatarBtn"
                      onclick="document.getElementById('cpUserDrop').classList.toggle('open');event.stopPropagation();"
-                     role="button" tabindex="0" aria-haspopup="true" aria-expanded="false"
+                     role="button" tabindex="0" aria-haspopup="true"
                      aria-label="Open user menu">
                     <asp:Literal ID="litTopbarInitials" runat="server" />
                 </div>

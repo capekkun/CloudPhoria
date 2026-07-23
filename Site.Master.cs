@@ -120,11 +120,11 @@ namespace CloudPhoria
             else if (role == "Admin")
                 lnkProfile.NavigateUrl = "~/Admin/Profile.aspx";
 
-            // Notifications link in user dropdown.
+            // Set role-aware notifications link and achievements visibility in dropdown.
             if (role == "Student")
             {
-                lnkDropNotifications.HRef     = ResolveUrl("~/Student/Notifications.aspx");
-                pnlDropAchievements.Visible   = true;
+                lnkDropNotifications.HRef   = ResolveUrl("~/Student/Notifications.aspx");
+                pnlDropAchievements.Visible = true;
             }
             else if (role == "Instructor")
                 lnkDropNotifications.HRef = ResolveUrl("~/Instructor/Notifications.aspx");

@@ -392,10 +392,6 @@ namespace CloudPhoria.Instructor
                         cmd.Parameters.Add("@Code", SqlDbType.NVarChar, 20).Value  = code;
                         cmd.ExecuteNonQuery();
                     }
-
-                    Utils.SendNotification(conn, instructorID,
-                        "Classroom \"" + name + "\" created. Invite code: " + code,
-                        "Classroom");
                 }
 
                 txtClassName.Text  = string.Empty;
@@ -428,18 +424,6 @@ namespace CloudPhoria.Instructor
                 using (SqlConnection conn = new SqlConnection(cs))
                 {
                     conn.Open();
-
-                    // Get name before deleting for the notification message.
-                    string classroomName = string.Empty;
-                    using (SqlCommand getName = new SqlCommand(
-                        "SELECT ClassroomName FROM Classrooms WHERE ClassroomID=@CID AND InstructorID=@IID", conn))
-                    {
-                        getName.Parameters.Add("@CID", SqlDbType.Int).Value = classroomID;
-                        getName.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
-                        object r = getName.ExecuteScalar();
-                        classroomName = (r != null && r != DBNull.Value) ? r.ToString() : "classroom";
-                    }
-
                     using (SqlCommand cmd = new SqlCommand(
                         "DELETE FROM Classrooms WHERE ClassroomID=@CID AND InstructorID=@IID", conn))
                     {
@@ -447,10 +431,6 @@ namespace CloudPhoria.Instructor
                         cmd.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
                         cmd.ExecuteNonQuery();
                     }
-
-                    Utils.SendNotification(conn, instructorID,
-                        "Classroom \"" + classroomName + "\" was deleted.",
-                        "Classroom");
                 }
                 ShowSuccess("Classroom deleted.");
                 pnlClassrooms.Visible = false;

@@ -511,13 +511,6 @@ namespace CloudPhoria.Instructor
                             due.HasValue ? (object)due.Value : DBNull.Value;
                         assignmentID = Convert.ToInt32(cmd.ExecuteScalar());
                     }
-
-                    InsertObjectiveQuestion(conn, assignmentID, txtAQ1, txtAQ1O1, txtAQ1O2, txtAQ1O3, txtAQ1O4, 1);
-                    InsertObjectiveQuestion(conn, assignmentID, txtAQ2, txtAQ2O1, txtAQ2O2, txtAQ2O3, txtAQ2O4, 2);
-                    InsertSubjectiveQuestion(conn, assignmentID, txtAQ3, 3);
-
-                    Utils.SendNotification(conn, instructorID,
-                        "Assignment \"" + title + "\" created successfully.", "Assignment");
                 }
 
                 txtTitle.Text = txtADesc.Text = txtDueDate.Text = string.Empty;
@@ -540,27 +533,13 @@ namespace CloudPhoria.Instructor
                 using (SqlConnection conn = new SqlConnection(cs))
                 {
                     conn.Open();
-
-                    string assignTitle = string.Empty;
-                    using (SqlCommand getT = new SqlCommand(
-                        "SELECT Title FROM ClassroomAssignments WHERE AssignmentID=@AID AND InstructorID=@IID", conn))
-                    {
-                        getT.Parameters.Add("@AID", SqlDbType.Int).Value = assignmentID;
-                        getT.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
-                        object r = getT.ExecuteScalar();
-                        assignTitle = (r != null && r != DBNull.Value) ? r.ToString() : "assignment";
-                    }
-
-                    using (SqlCommand del = new SqlCommand(
+                    using (SqlCommand cmd = new SqlCommand(
                         "DELETE FROM ClassroomAssignments WHERE AssignmentID=@AID AND InstructorID=@IID", conn))
                     {
-                        del.Parameters.Add("@AID", SqlDbType.Int).Value = assignmentID;
-                        del.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
-                        del.ExecuteNonQuery();
+                        cmd.Parameters.Add("@AID", SqlDbType.Int).Value = assignmentID;
+                        cmd.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
+                        cmd.ExecuteNonQuery();
                     }
-
-                    Utils.SendNotification(conn, instructorID,
-                        "Assignment \"" + assignTitle + "\" was deleted.", "Assignment");
                 }
 
                 ShowSuccess("Assignment deleted.");

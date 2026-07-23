@@ -6,15 +6,15 @@
 
 namespace CloudPhoria.Admin
 {
-    public partial class InstructorApprovals
+    public partial class FunRoomReviews
     {
         protected global::System.Web.UI.WebControls.Panel pnlMessage;
         protected global::System.Web.UI.WebControls.Literal litMessage;
-        protected global::System.Web.UI.WebControls.DropDownList ddlFilter;
+        protected global::System.Web.UI.WebControls.DropDownList ddlStatus;
         protected global::System.Web.UI.WebControls.Button btnFilter;
         protected global::System.Web.UI.WebControls.Literal litCount;
         protected global::System.Web.UI.WebControls.Panel pnlList;
-        protected global::System.Web.UI.WebControls.Repeater rptInstructors;
+        protected global::System.Web.UI.WebControls.Repeater rptFunRooms;
         protected global::System.Web.UI.WebControls.Panel pnlEmpty;
     }
 }

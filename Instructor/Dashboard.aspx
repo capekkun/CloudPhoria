@@ -4,7 +4,6 @@
 
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-/* Clickable stat card */
 a.cp-stat-card-link {
     text-decoration: none;
     color: inherit;
@@ -161,7 +160,7 @@ a.cp-stat-card-link:hover {
                 </asp:Panel>
 
                 <asp:Panel ID="pnlNoSubmissions" runat="server" Visible="false">
-                    <div class="cp-empty-state" style="padding:24px 16px;">
+                    <div class="cp-empty-state">
                         <span class="cp-empty-state-icon" aria-hidden="true">&#x2705;</span>
                         <h3>No pending submissions</h3>
                         <p>All assignment submissions have been reviewed.</p>

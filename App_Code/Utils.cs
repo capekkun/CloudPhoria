@@ -37,6 +37,7 @@ namespace CloudPhoria
             }
             catch (SqlException) { /* audit logging must not break the main action */ }
         }
+
         /// <summary>
         /// Inserts a notification row for a user. Never throws — notifications
         /// must not break the calling action.
@@ -50,7 +51,7 @@ namespace CloudPhoria
                     @"INSERT INTO Notifications (UserID, Message, NotificationType, IsRead, CreatedAt)
                       VALUES (@UID, @Msg, @Type, 0, GETDATE())", conn))
                 {
-                    cmd.Parameters.Add("@UID",  SqlDbType.Int).Value          = userID;
+                    cmd.Parameters.Add("@UID",  SqlDbType.Int).Value           = userID;
                     cmd.Parameters.Add("@Msg",  SqlDbType.NVarChar, 500).Value = message;
                     cmd.Parameters.Add("@Type", SqlDbType.NVarChar, 100).Value = notificationType;
                     cmd.ExecuteNonQuery();

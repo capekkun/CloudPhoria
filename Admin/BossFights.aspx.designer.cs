@@ -6,26 +6,28 @@
 
 namespace CloudPhoria.Admin
 {
-    public partial class Challenges
+    public partial class BossFights
     {
         protected global::System.Web.UI.WebControls.Panel pnlMessage;
         protected global::System.Web.UI.WebControls.Literal litMessage;
         protected global::System.Web.UI.WebControls.TextBox txtTitle;
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvTitle;
-        protected global::System.Web.UI.WebControls.TextBox txtDescription;
+        protected global::System.Web.UI.WebControls.DropDownList ddlDifficulty;
         protected global::System.Web.UI.WebControls.TextBox txtXPReward;
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvXP;
         protected global::System.Web.UI.WebControls.RangeValidator rvXP;
-        protected global::System.Web.UI.WebControls.TextBox txtStartDate;
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvStart;
-        protected global::System.Web.UI.WebControls.TextBox txtEndDate;
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEnd;
+        protected global::System.Web.UI.WebControls.TextBox txtPlayerHP;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvHP;
+        protected global::System.Web.UI.WebControls.RangeValidator rvHP;
+        protected global::System.Web.UI.WebControls.TextBox txtTheme;
         protected global::System.Web.UI.WebControls.Button btnCreate;
-        protected global::System.Web.UI.WebControls.Literal litActiveCount;
-        protected global::System.Web.UI.WebControls.Literal litUpcomingCount;
-        protected global::System.Web.UI.WebControls.Literal litEndedCount;
+        protected global::System.Web.UI.WebControls.DropDownList ddlFilterDiff;
+        protected global::System.Web.UI.WebControls.DropDownList ddlFilterPub;
+        protected global::System.Web.UI.WebControls.Button btnFilter;
+        protected global::System.Web.UI.WebControls.Button btnClearFilter;
+        protected global::System.Web.UI.WebControls.Literal litCount;
         protected global::System.Web.UI.WebControls.Panel pnlList;
-        protected global::System.Web.UI.WebControls.Repeater rptChallenges;
+        protected global::System.Web.UI.WebControls.Repeater rptRooms;
         protected global::System.Web.UI.WebControls.Panel pnlEmpty;
     }
 }
