@@ -230,10 +230,6 @@ namespace CloudPhoria.Instructor
 
             LoadDetail(assignmentID, studentID);
 
-            // Keep Section 2 (student list) visible alongside Section 3.
-            litSection2Title.Text  = HttpUtility.HtmlEncode(hfSelectedAssignmentTitle.Value);
-            LoadStudentList(assignmentID);
-            pnlSection2.Visible = true;
             pnlSection3.Visible = true;
         }
 
@@ -295,28 +291,6 @@ namespace CloudPhoria.Instructor
             // Pre-fill the modal text boxes server-side so they render correctly.
             txtFeedback.Text = HttpUtility.UrlDecode(existingFeedback);
             txtGrade.Text    = HttpUtility.UrlDecode(existingGrade);
-
-            // Keep Section 2 and Section 3 visible while the modal is open.
-            int assignmentID;
-            if (int.TryParse(hfSelectedAssignmentID.Value, out assignmentID) && assignmentID > 0)
-            {
-                litSection2Title.Text = HttpUtility.HtmlEncode(hfSelectedAssignmentTitle.Value);
-                LoadStudentList(assignmentID);
-                pnlSection2.Visible = true;
-            }
-
-            int detailStudentID;
-            if (int.TryParse(hfDetailStudentID.Value, out detailStudentID) && detailStudentID > 0 && assignmentID > 0)
-            {
-                litDetailStudentName.Text     = HttpUtility.HtmlEncode(hfDetailStudentName.Value);
-                litDetailAssignmentTitle.Text = HttpUtility.HtmlEncode(hfSelectedAssignmentTitle.Value);
-                DateTime parsedDt;
-                litDetailSubmittedAt.Text = DateTime.TryParse(hfDetailSubmittedAt.Value, out parsedDt)
-                                           ? parsedDt.ToString("dd MMM yyyy HH:mm")
-                                           : HttpUtility.HtmlEncode(hfDetailSubmittedAt.Value);
-                LoadDetail(assignmentID, detailStudentID);
-                pnlSection3.Visible = true;
-            }
 
             // Open modal via JS after postback.
             ScriptManager.RegisterStartupScript(this, GetType(), "openFb",
@@ -577,36 +551,6 @@ namespace CloudPhoria.Instructor
                         assignTitle = (r != null && r != DBNull.Value) ? r.ToString() : "assignment";
                     }
 
-                    // Delete child rows first (no ON DELETE CASCADE on these FKs).
-                    // Feedback → AssignmentSubmissions → AssignmentQuestionOptions → AssignmentQuestions → ClassroomAssignments
-                    using (SqlCommand delFb = new SqlCommand(
-                        @"DELETE fb FROM Feedback fb
-                          INNER JOIN AssignmentSubmissions asub ON asub.SubmissionID = fb.SubmissionID
-                          WHERE asub.AssignmentID = @AID", conn))
-                    {
-                        delFb.Parameters.Add("@AID", SqlDbType.Int).Value = assignmentID;
-                        delFb.ExecuteNonQuery();
-                    }
-                    using (SqlCommand delSub = new SqlCommand(
-                        "DELETE FROM AssignmentSubmissions WHERE AssignmentID=@AID", conn))
-                    {
-                        delSub.Parameters.Add("@AID", SqlDbType.Int).Value = assignmentID;
-                        delSub.ExecuteNonQuery();
-                    }
-                    using (SqlCommand delOpts = new SqlCommand(
-                        @"DELETE aqo FROM AssignmentQuestionOptions aqo
-                          INNER JOIN AssignmentQuestions aq ON aq.AssignmentQuestionID = aqo.AssignmentQuestionID
-                          WHERE aq.AssignmentID = @AID", conn))
-                    {
-                        delOpts.Parameters.Add("@AID", SqlDbType.Int).Value = assignmentID;
-                        delOpts.ExecuteNonQuery();
-                    }
-                    using (SqlCommand delQ = new SqlCommand(
-                        "DELETE FROM AssignmentQuestions WHERE AssignmentID=@AID", conn))
-                    {
-                        delQ.Parameters.Add("@AID", SqlDbType.Int).Value = assignmentID;
-                        delQ.ExecuteNonQuery();
-                    }
                     using (SqlCommand del = new SqlCommand(
                         "DELETE FROM ClassroomAssignments WHERE AssignmentID=@AID AND InstructorID=@IID", conn))
                     {
