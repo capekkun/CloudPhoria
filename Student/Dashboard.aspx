@@ -15,49 +15,37 @@
         </div>
         <div style="display:flex;align-items:center;gap:16px;">
             <a href="Pathways.aspx" class="cp-btn cp-btn-primary">
-                &#x25B6; Browse Pathways
+                Browse Pathways
             </a>
-            <%-- CloudPhoria Robot Mascot --%>
-            <svg width="56" height="56" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <circle cx="40" cy="40" r="36" fill="#0EA5E9" opacity="0.12"/>
-                <ellipse cx="40" cy="44" rx="20" ry="18" fill="#0EA5E9"/>
-                <circle cx="33" cy="42" r="4" fill="#fff"/>
-                <circle cx="47" cy="42" r="4" fill="#fff"/>
-                <circle cx="33" cy="42" r="2" fill="#0F172A"/>
-                <circle cx="47" cy="42" r="2" fill="#0F172A"/>
-                <rect x="35" y="24" width="10" height="10" rx="5" fill="#6366F1"/>
-                <line x1="40" y1="34" x2="40" y2="28" stroke="#0EA5E9" stroke-width="2"/>
-                <circle cx="40" cy="24" r="3" fill="#F59E0B"/>
-                <ellipse cx="40" cy="58" rx="12" ry="4" fill="rgba(14,165,233,0.2)"/>
-            </svg>
+            <img src="/uploads/studentdashboard/robot-icon.png" alt="" width="56" height="56" style="border-radius:50%;object-fit:cover;" />
         </div>
     </div>
 
     <%-- Stat cards row --%>
     <div class="cp-grid-4 cp-mb-lg">
         <div class="cp-stat-card">
-            <div class="cp-stat-icon amber" aria-hidden="true">&#x26A1;</div>
+            <div class="cp-stat-icon" style="background-image:url('/uploads/studentdashboard/total-xp-icon.png');background-size:cover;background-position:center;" aria-hidden="true"></div>
             <div>
                 <div class="cp-stat-value"><asp:Literal ID="litTotalXP" runat="server" Text="0" /></div>
                 <div class="cp-stat-label">Total XP</div>
             </div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon blue" aria-hidden="true">&#x1F4D6;</div>
+            <div class="cp-stat-icon" style="background-image:url('/uploads/studentdashboard/modules-completed-icon.png');background-size:cover;background-position:center;" aria-hidden="true"></div>
             <div>
                 <div class="cp-stat-value"><asp:Literal ID="litModulesCompleted" runat="server" Text="0" /></div>
                 <div class="cp-stat-label">Modules Completed</div>
             </div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon green" aria-hidden="true">&#x1F3C5;</div>
+            <div class="cp-stat-icon" style="background-image:url('/uploads/studentdashboard/badges-earned-icon.png');background-size:cover;background-position:center;" aria-hidden="true"></div>
             <div>
                 <div class="cp-stat-value"><asp:Literal ID="litBadgesEarned" runat="server" Text="0" /></div>
                 <div class="cp-stat-label">Badges Earned</div>
             </div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon indigo" aria-hidden="true">&#x1F3EB;</div>
+            <div class="cp-stat-icon" style="background-image:url('/uploads/studentdashboard/classrooms-joined-icon.png');background-size:cover;background-position:center;" aria-hidden="true"></div>
             <div>
                 <div class="cp-stat-value"><asp:Literal ID="litClassroomsJoined" runat="server" Text="0" /></div>
                 <div class="cp-stat-label">Classrooms Joined</div>
@@ -103,7 +91,6 @@
 
             <asp:Panel ID="pnlNoContinue" runat="server" Visible="false">
                 <div class="cp-empty-state">
-                    <span class="cp-empty-state-icon" aria-hidden="true">&#x1F4DA;</span>
                     <h3>No modules in progress</h3>
                     <p>Start your first module to see your progress here.</p>
                     <a href="Pathways.aspx" class="cp-btn cp-btn-primary">Browse Pathways</a>
@@ -140,7 +127,6 @@
 
             <asp:Panel ID="pnlNoXP" runat="server" Visible="false">
                 <div class="cp-empty-state">
-                    <span class="cp-empty-state-icon" aria-hidden="true">&#x26A1;</span>
                     <h3>No XP earned yet</h3>
                     <p>Complete subtopics and exams to earn XP.</p>
                 </div>
@@ -159,7 +145,6 @@
                 <ItemTemplate>
                     <div style="display:flex;align-items:center;gap:12px;
                                 padding:12px 16px;border-bottom:1px solid var(--cp-border);">
-                        <span style="font-size:16px;" aria-hidden="true">&#x1F514;</span>
                         <div style="flex:1;min-width:0;">
                             <div style="font-size:13px;color:var(--cp-text);">
                                 <%# HttpUtility.HtmlEncode(Eval("Message").ToString()) %>
@@ -176,7 +161,7 @@
         </div>
         <div style="text-align:right;margin-top:8px;">
             <a href="Notifications.aspx" style="font-size:13px;color:var(--cp-primary);">
-                View all notifications &#x2192;
+                View all notifications
             </a>
         </div>
     </asp:Panel>

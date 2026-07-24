@@ -10,7 +10,7 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x1F4CB; Audit Logs</h2>
+                <h2>Audit Logs</h2>
                 <p>Full history of administrative and security-sensitive actions on the platform.</p>
             </div>
         </div>
@@ -22,7 +22,7 @@
             <div style="flex:1;min-width:160px;">
                 <label class="cp-label">Search Action / Admin</label>
                 <div class="cp-search-wrap">
-                    <span class="cp-search-icon" aria-hidden="true">&#x1F50D;</span>
+                    <span class="cp-search-icon" aria-hidden="true"></span>
                     <asp:TextBox ID="txtSearch" runat="server" CssClass="cp-input"
                         placeholder="Action type or admin name…" MaxLength="100" />
                 </div>
@@ -109,7 +109,6 @@
 
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x1F4CB;</span>
             <h3>No audit log entries found</h3>
             <p>Admin actions will appear here as they are performed.</p>
         </div>

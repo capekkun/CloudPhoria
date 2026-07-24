@@ -10,7 +10,7 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x1F464; My Profile</h2>
+                <h2>My Profile</h2>
                 <p>View and update your admin account details.</p>
             </div>
         </div>
@@ -39,7 +39,7 @@
                 </div>
                 <div style="margin-top:8px;">
                     <span class="cp-badge cp-badge-red" style="font-size:12px;padding:4px 12px;">
-                        &#x1F6E1; Administrator
+                        Administrator
                     </span>
                 </div>
                 <div style="font-size:13px;color:var(--cp-text-muted);margin-top:12px;">

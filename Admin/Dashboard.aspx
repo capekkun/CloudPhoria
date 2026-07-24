@@ -10,19 +10,19 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x1F6E1; Admin Control Centre</h2>
+                <h2>Admin Control Centre</h2>
                 <p>Platform overview and pending actions for CloudPhoria.</p>
             </div>
             <div style="display:flex;align-items:center;gap:8px;">
-                <a href="/Admin/Users.aspx" class="cp-btn cp-btn-primary">&#x1F465; Manage Users</a>
-                <a href="/Admin/Reports.aspx" class="cp-btn cp-btn-outline">&#x1F4CA; Reports</a>
+                <a href="/Admin/Users.aspx" class="cp-btn cp-btn-primary">Manage Users</a>
+                <a href="/Admin/Reports.aspx" class="cp-btn cp-btn-outline">Reports</a>
             </div>
         </div>
     </div>
 
     <asp:Panel ID="pnlPendingAlert" runat="server" Visible="false">
         <div class="cp-alert cp-alert-warning" style="margin-bottom:20px;">
-            <span style="font-size:16px;">&#x26A0;</span>
+            <span style="font-size:16px;"></span>
             <div>
                 <strong>Pending actions require your attention.</strong>
                 <asp:Literal ID="litPendingAlertText" runat="server" />
@@ -32,7 +32,7 @@
 
     <div class="cp-grid-4 cp-mb-lg">
         <div class="cp-stat-card">
-            <div class="cp-stat-icon blue">&#x1F465;</div>
+            <div class="cp-stat-icon blue"></div>
             <div><div class="cp-stat-value"><asp:Literal ID="litTotalUsers" runat="server" Text="0" /></div><div class="cp-stat-label">Total Users</div></div>
         </div>
         <div class="cp-stat-card">
@@ -40,30 +40,30 @@
             <div><div class="cp-stat-value"><asp:Literal ID="litPendingApprovals" runat="server" Text="0" /></div><div class="cp-stat-label">Pending Approvals</div></div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon red">&#x1F6A8;</div>
+            <div class="cp-stat-icon red"></div>
             <div><div class="cp-stat-value"><asp:Literal ID="litOpenReports" runat="server" Text="0" /></div><div class="cp-stat-label">Open Reports</div></div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon green">&#x1F4D6;</div>
+            <div class="cp-stat-icon green"></div>
             <div><div class="cp-stat-value"><asp:Literal ID="litPublishedModules" runat="server" Text="0" /></div><div class="cp-stat-label">Published Modules</div></div>
         </div>
     </div>
 
     <div class="cp-grid-4 cp-mb-lg">
         <div class="cp-stat-card">
-            <div class="cp-stat-icon indigo">&#x1F3AE;</div>
+            <div class="cp-stat-icon indigo"></div>
             <div><div class="cp-stat-value"><asp:Literal ID="litPendingFunRooms" runat="server" Text="0" /></div><div class="cp-stat-label">Pending Fun Rooms</div></div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon blue">&#x26A1;</div>
+            <div class="cp-stat-icon blue"></div>
             <div><div class="cp-stat-value"><asp:Literal ID="litActiveChallenges" runat="server" Text="0" /></div><div class="cp-stat-label">Active Challenges</div></div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon green">&#x1F480;</div>
+            <div class="cp-stat-icon green"></div>
             <div><div class="cp-stat-value"><asp:Literal ID="litBossFightRooms" runat="server" Text="0" /></div><div class="cp-stat-label">Boss Fight Rooms</div></div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon amber">&#x1F4CB;</div>
+            <div class="cp-stat-icon amber"></div>
             <div><div class="cp-stat-value"><asp:Literal ID="litTotalStudents" runat="server" Text="0" /></div><div class="cp-stat-label">Registered Students</div></div>
         </div>
     </div>

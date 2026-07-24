@@ -8,10 +8,7 @@
     <link id="CssBootstrap" rel="stylesheet" href="/Content/bootstrap.css" />
     <link id="CssSite" rel="stylesheet" href="/Content/Site.css?v=6" />
     <style>
-    /* ============================================================
-       CLOUDPHORIA AUTHENTICATED LAYOUT — Top Nav (TryHackMe-style)
-       Dark top nav bar + light content area below
-       ============================================================ */
+    /* Top nav bar (dark) + light content area below */
 
     /* Top Navigation Bar */
     .cp-topnav {
@@ -121,9 +118,7 @@
         padding:16px 32px; display:flex; align-items:center; justify-content:space-between;
         flex-wrap:wrap; gap:12px; }
     .cp-site-footer-brand { display:flex; align-items:center; gap:8px; }
-    .cp-site-footer-logo { width:24px; height:24px; background:linear-gradient(135deg,#0EA5E9,#6366F1);
-        border-radius:6px; display:flex; align-items:center; justify-content:center;
-        font-size:9px; font-weight:900; color:#fff; }
+    .cp-site-footer-logo { height:24px; width:auto; border-radius:6px; }
     .cp-site-footer-text { font-size:12px; color:rgba(255,255,255,0.35); }
     .cp-site-footer-text em { font-style:normal; color:#0EA5E9; }
     .cp-site-footer-links { display:flex; gap:16px; }
@@ -150,13 +145,11 @@
     </Scripts>
 </asp:ScriptManager>
 
-<%-- ============================================================
-     TOP NAVIGATION BAR
-     ============================================================ --%>
+<%-- Top navigation bar --%>
 <nav class="cp-topnav" aria-label="Main navigation">
 
     <%-- Mobile toggle --%>
-    <button class="cp-topnav-toggle" type="button" aria-label="Menu" onclick="document.querySelector('.cp-topnav-links').classList.toggle('show');">&#x2630;</button>
+    <button class="cp-topnav-toggle" type="button" aria-label="Menu" onclick="document.querySelector('.cp-topnav-links').classList.toggle('show');">Menu</button>
 
     <%-- Brand --%>
     <a class="cp-topnav-brand" href="/Default.aspx">
@@ -167,49 +160,49 @@
     <%-- Navigation links — role-specific --%>
     <div class="cp-topnav-links">
         <asp:Panel ID="pnlGuestNav" runat="server" Visible="false">
-            <a class="cp-topnav-link" href="/Student/Pathways.aspx"><span class="cp-topnav-icon">&#x1F4DA;</span> Browse Pathways</a>
-            <a class="cp-topnav-link" href="/Student/BossFights.aspx"><span class="cp-topnav-icon">&#x1F480;</span> Boss Fights</a>
-            <a class="cp-topnav-link" href="/Student/Challenges.aspx"><span class="cp-topnav-icon">&#x26A1;</span> Challenges</a>
-            <a class="cp-topnav-link" href="/Student/Upgrade.aspx"><span class="cp-topnav-icon">&#x1F4B0;</span> Pricing</a>
+            <a class="cp-topnav-link" href="/Student/Pathways.aspx">Browse Pathways</a>
+            <a class="cp-topnav-link" href="/Student/BossFights.aspx">Boss Fights</a>
+            <a class="cp-topnav-link" href="/Student/Challenges.aspx">Challenges</a>
+            <a class="cp-topnav-link" href="/Student/Upgrade.aspx">Pricing</a>
         </asp:Panel>
         <asp:Panel ID="pnlStudentNav" runat="server" Visible="false">
-            <a class="cp-topnav-link" href="/Student/Dashboard.aspx"><span class="cp-topnav-icon">&#x2302;</span> Dashboard</a>
+            <a class="cp-topnav-link" href="/Student/Dashboard.aspx">Dashboard</a>
             <div class="cpdd" onclick="this.classList.toggle('open');event.stopPropagation();">
-                <span class="cp-topnav-link">&#x1F4DA; Learn &#x25BE;</span>
+                <span class="cp-topnav-link">Learn</span>
                 <div class="cpdd-menu" onclick="event.stopPropagation();">
-                    <a href="/Student/Pathways.aspx">&#x25B6; Learning Pathways</a>
-                    <a href="/Student/MyLearning.aspx">&#x1F4D6; My Learning</a>
-                    <a href="/Student/Exams.aspx">&#x1F4CB; Module Exams</a>
+                    <a href="/Student/Pathways.aspx">Learning Pathways</a>
+                    <a href="/Student/MyLearning.aspx">My Learning</a>
+                    <a href="/Student/Exams.aspx">Module Exams</a>
                 </div>
             </div>
             <div class="cpdd" onclick="this.classList.toggle('open');event.stopPropagation();">
-                <span class="cp-topnav-link">&#x1F3AE; Compete &#x25BE;</span>
+                <span class="cp-topnav-link">Compete</span>
                 <div class="cpdd-menu" onclick="event.stopPropagation();">
-                    <a href="/Student/Challenges.aspx">&#x26A1; Challenges</a>
-                    <a href="/Student/BossFights.aspx">&#x1F480; Boss Fights</a>
+                    <a href="/Student/Challenges.aspx">Challenges</a>
+                    <a href="/Student/BossFights.aspx">Boss Fights</a>
                 </div>
             </div>
-            <a class="cp-topnav-link" href="/Student/Classrooms.aspx"><span class="cp-topnav-icon">&#x1F3EB;</span> Classrooms</a>
-            <a class="cp-topnav-link" href="/Student/Upgrade.aspx" style="color:#F59E0B;"><span class="cp-topnav-icon">&#x1F680;</span> Go Pro</a>
+            <a class="cp-topnav-link" href="/Student/Classrooms.aspx">Classrooms</a>
+            <a class="cp-topnav-link" href="/Student/Upgrade.aspx" style="color:#F59E0B;">Go Pro</a>
         </asp:Panel>
         <asp:Panel ID="pnlInstructorNav" runat="server" Visible="false">
-            <a class="cp-topnav-link" href="/Instructor/Dashboard.aspx"><span class="cp-topnav-icon">&#x2302;</span> Dashboard</a>
-            <a class="cp-topnav-link" href="/Instructor/Modules.aspx"><span class="cp-topnav-icon">&#x1F4D6;</span> Modules</a>
-            <a class="cp-topnav-link" href="/Instructor/SubTopics.aspx"><span class="cp-topnav-icon">&#x1F4C4;</span> Subtopics</a>
-            <a class="cp-topnav-link" href="/Instructor/Questions.aspx"><span class="cp-topnav-icon">&#x2753;</span> Questions</a>
-            <a class="cp-topnav-link" href="/Instructor/Classrooms.aspx"><span class="cp-topnav-icon">&#x1F3EB;</span> Classrooms</a>
-            <a class="cp-topnav-link" href="/Instructor/Materials.aspx"><span class="cp-topnav-icon">&#x1F4CE;</span> Materials</a>
-            <a class="cp-topnav-link" href="/Instructor/Assignments.aspx"><span class="cp-topnav-icon">&#x1F4DD;</span> Assignments</a>
-            <a class="cp-topnav-link" href="/Instructor/Challenges.aspx"><span class="cp-topnav-icon">&#x26A1;</span> Challenges</a>
+            <a class="cp-topnav-link" href="/Instructor/Dashboard.aspx">Dashboard</a>
+            <a class="cp-topnav-link" href="/Instructor/Modules.aspx">Modules</a>
+            <a class="cp-topnav-link" href="/Instructor/SubTopics.aspx">Subtopics</a>
+            <a class="cp-topnav-link" href="/Instructor/Questions.aspx">Questions</a>
+            <a class="cp-topnav-link" href="/Instructor/Classrooms.aspx">Classrooms</a>
+            <a class="cp-topnav-link" href="/Instructor/Materials.aspx">Materials</a>
+            <a class="cp-topnav-link" href="/Instructor/Assignments.aspx">Assignments</a>
+            <a class="cp-topnav-link" href="/Instructor/Challenges.aspx">Challenges</a>
         </asp:Panel>
         <asp:Panel ID="pnlAdminNav" runat="server" Visible="false">
-            <a class="cp-topnav-link" href="/Admin/Dashboard.aspx"><span class="cp-topnav-icon">&#x2302;</span> Dashboard</a>
-            <a class="cp-topnav-link" href="/Admin/Users.aspx"><span class="cp-topnav-icon">&#x1F465;</span> Users</a>
-            <a class="cp-topnav-link" href="/Admin/InstructorApprovals.aspx"><span class="cp-topnav-icon">&#x2714;</span> Approvals</a>
-            <a class="cp-topnav-link" href="/Admin/Courses.aspx"><span class="cp-topnav-icon">&#x1F4D6;</span> Courses</a>
-            <a class="cp-topnav-link" href="/Admin/Challenges.aspx"><span class="cp-topnav-icon">&#x26A1;</span> Challenges</a>
-            <a class="cp-topnav-link" href="/Admin/Reports.aspx"><span class="cp-topnav-icon">&#x1F4CA;</span> Reports</a>
-            <a class="cp-topnav-link" href="/Admin/AuditLogs.aspx"><span class="cp-topnav-icon">&#x1F4CB;</span> Audit Logs</a>
+            <a class="cp-topnav-link" href="/Admin/Dashboard.aspx">Dashboard</a>
+            <a class="cp-topnav-link" href="/Admin/Users.aspx">Users</a>
+            <a class="cp-topnav-link" href="/Admin/InstructorApprovals.aspx">Approvals</a>
+            <a class="cp-topnav-link" href="/Admin/Courses.aspx">Courses</a>
+            <a class="cp-topnav-link" href="/Admin/Challenges.aspx">Challenges</a>
+            <a class="cp-topnav-link" href="/Admin/Reports.aspx">Reports</a>
+            <a class="cp-topnav-link" href="/Admin/AuditLogs.aspx">Audit Logs</a>
         </asp:Panel>
     </div>
 
@@ -231,7 +224,7 @@
         <%-- XP counter (Students only) --%>
         <asp:Panel ID="pnlXPCounter" runat="server" Visible="false">
             <div class="cp-topnav-xp">
-                &#x26A1; <asp:Literal ID="litTopXP" runat="server" Text="0" /> <span>XP</span>
+                <asp:Literal ID="litTopXP" runat="server" Text="0" /> <span>XP</span>
             </div>
         </asp:Panel>
 
@@ -242,7 +235,7 @@
                 border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;
                 transition:opacity 0.15s;box-shadow:0 2px 8px rgba(99,102,241,0.3);"
                 onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
-                &#x1F680; Go Pro
+                Go Pro
             </a>
         </asp:Panel>
 
@@ -250,7 +243,10 @@
         <asp:Panel ID="pnlNotifications" runat="server" Visible="false">
             <a class="cp-topnav-bell" runat="server" id="lnkNotifications"
                href="/Student/Notifications.aspx" aria-label="Notifications">
-                &#x1F514;
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;">
+                    <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
                 <asp:Panel ID="pnlNotifBadge" runat="server" Visible="false" CssClass="cp-topnav-bell-badge">
                     <asp:Literal ID="litNotifCount" runat="server" />
                 </asp:Panel>
@@ -271,15 +267,15 @@
                         <div class="cp-topnav-dropdown-name"><asp:Literal ID="litTopbarName" runat="server" /></div>
                         <div class="cp-topnav-dropdown-role"><asp:Literal ID="litTopbarRole" runat="server" /></div>
                     </div>
-                    <asp:HyperLink ID="lnkProfile" runat="server" NavigateUrl="/Student/Profile.aspx">&#x1F464; My Profile</asp:HyperLink>
+                    <asp:HyperLink ID="lnkProfile" runat="server" NavigateUrl="/Student/Profile.aspx">My Profile</asp:HyperLink>
                     <asp:Panel ID="pnlDropAchievements" runat="server" Visible="false">
-                        <a href="/Student/Achievements.aspx">&#x1F3C5; Achievements</a>
+                        <a href="/Student/Achievements.aspx">Achievements</a>
                     </asp:Panel>
-                    <a runat="server" id="lnkDropNotifications" href="/Student/Notifications.aspx">&#x1F514; Notifications</a>
+                    <a runat="server" id="lnkDropNotifications" href="/Student/Notifications.aspx">Notifications</a>
                     <div style="border-top:1px solid rgba(255,255,255,0.06);margin:4px 0;"></div>
                     <asp:LinkButton ID="btnLogout" runat="server" CssClass="danger"
                         OnClick="btnLogout_Click">
-                        &#x1F6AA; Log Out
+                        Log Out
                     </asp:LinkButton>
                 </div>
             </div>
@@ -288,19 +284,18 @@
     </div>
 </nav>
 
-<%-- ============================================================
-     MAIN CONTENT AREA
-     ============================================================ --%>
+<%-- Main content area --%>
 <main class="cp-main-content" role="main">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+        <asp:ContentPlaceHolder ID="TopbarActions" runat="server" />
+    </div>
     <asp:ContentPlaceHolder ID="MainContent" runat="server" />
 </main>
 
-<%-- ============================================================
-     FOOTER
-     ============================================================ --%>
+<%-- Footer --%>
 <footer class="cp-site-footer" role="contentinfo">
     <div class="cp-site-footer-brand">
-        <div class="cp-site-footer-logo" aria-hidden="true">CP</div>
+        <img src="/Images/LogoCloudphoria.png" alt="CloudPhoria" class="cp-site-footer-logo" />
         <span class="cp-site-footer-text">Cloud<em>Phoria</em> &copy; <%: DateTime.Now.Year %> &mdash; CT050-3-2-WAPP</span>
     </div>
     <div class="cp-site-footer-links">
@@ -336,7 +331,6 @@ document.addEventListener('click', function() {
 
 <%-- Placeholders for compatibility --%>
 <asp:ContentPlaceHolder ID="HeadContent2" runat="server" Visible="false" />
-<asp:ContentPlaceHolder ID="TopbarActions" runat="server" />
 <asp:ContentPlaceHolder ID="PageScripts" runat="server" />
 </form>
 </body>

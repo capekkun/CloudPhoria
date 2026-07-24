@@ -10,7 +10,7 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x1F514; Notifications</h2>
+                <h2>Notifications</h2>
                 <p>Your recent notifications and alerts.</p>
             </div>
             <asp:Panel ID="pnlMarkAllBtn" runat="server" Visible="false">
@@ -23,7 +23,7 @@
     </div>
 
     <asp:Panel ID="pnlSuccess" runat="server" Visible="false">
-        <div class="cp-alert cp-alert-success"><span>&#x2714;</span>
+        <div class="cp-alert cp-alert-success"><span></span>
             <asp:Literal ID="litSuccess" runat="server" /></div>
     </asp:Panel>
 
@@ -37,7 +37,6 @@
                                 border-bottom:1px solid var(--cp-border);
                                 background:<%# Convert.ToBoolean(Eval("IsRead")) ? "transparent" : "rgba(14,165,233,0.04)" %>;">
                         <span style="font-size:20px;flex-shrink:0;margin-top:2px;" aria-hidden="true">
-                            &#x1F514;
                         </span>
                         <div style="flex:1;min-width:0;">
                             <div style="font-size:13px;color:var(--cp-text);font-weight:<%# Convert.ToBoolean(Eval("IsRead")) ? "400" : "600" %>;">
@@ -66,7 +65,6 @@
 
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x1F514;</span>
             <h3>No notifications</h3>
             <p>You're all caught up. Notifications will appear here.</p>
         </div>

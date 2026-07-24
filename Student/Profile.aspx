@@ -106,17 +106,17 @@
 
     <%-- Report an Issue --%>
     <div class="cp-card cp-mb-md" style="margin-top:16px;">
-        <h3 class="cp-card-title">&#x26A0; Report an Issue</h3>
+        <h3 class="cp-card-title">Report an Issue</h3>
         <p style="font-size:13px;color:var(--cp-text-muted);margin:0 0 16px;">
             Report inappropriate content, a bug, or a policy violation. Admin will review it.
         </p>
 
         <asp:Panel ID="pnlReportSuccess" runat="server" Visible="false">
-            <div class="cp-alert cp-alert-success"><span>&#x2714;</span>
+            <div class="cp-alert cp-alert-success"><span></span>
                 <asp:Literal ID="litReportSuccess" runat="server" /></div>
         </asp:Panel>
         <asp:Panel ID="pnlReportError" runat="server" Visible="false">
-            <div class="cp-alert cp-alert-danger"><span>&#x26A0;</span>
+            <div class="cp-alert cp-alert-danger"><span></span>
                 <asp:Literal ID="litReportError" runat="server" /></div>
         </asp:Panel>
 

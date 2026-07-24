@@ -4,20 +4,19 @@
 
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-.pw-hero{background:linear-gradient(135deg,#0F172A 0%,#1E293B 60%,#0F172A 100%);
+.pw-hero{background-color:#0F172A;background-size:cover;background-position:center;
     padding:40px 32px;color:#fff;border-radius:0;margin:-24px -32px 24px;position:relative;overflow:hidden;}
 .pw-hero::before{content:'';position:absolute;inset:0;
-    background-image:linear-gradient(rgba(14,165,233,0.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(14,165,233,0.03) 1px,transparent 1px);
-    background-size:40px 40px;pointer-events:none;}
-.pw-hero a{color:#38BDF8;font-size:13px;text-decoration:none;position:relative;z-index:1;}
-.pw-hero h1{font-size:34px;font-weight:800;margin:12px 0 10px;position:relative;z-index:1;}
-.pw-hero p{font-size:14px;color:rgba(255,255,255,0.65);max-width:640px;line-height:1.7;margin:0 0 20px;position:relative;z-index:1;}
-.pw-hero-meta{display:flex;gap:20px;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,0.5);position:relative;z-index:1;margin-bottom:20px;}
+    background:linear-gradient(135deg,rgba(15,23,42,0.88) 0%,rgba(30,41,59,0.78) 60%,rgba(15,23,42,0.92) 100%);
+    pointer-events:none;}
+.pw-hero a{color:#38BDF8;font-size:13px;text-decoration:none;position:relative;z-index:2;}
+.pw-hero h1{font-size:34px;font-weight:800;margin:12px 0 10px;position:relative;z-index:2;}
+.pw-hero p{font-size:14px;color:rgba(255,255,255,0.65);max-width:640px;line-height:1.7;margin:0 0 20px;position:relative;z-index:2;}
+.pw-hero-meta{display:flex;gap:20px;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,0.5);position:relative;z-index:2;margin-bottom:20px;}
 .pw-hero-meta span{display:flex;align-items:center;gap:5px;}
 .pw-enroll-btn{display:inline-block;padding:12px 28px;background:linear-gradient(90deg,#0EA5E9,#6366F1);
     color:#fff;font-size:14px;font-weight:600;border-radius:8px;text-decoration:none;
-    transition:opacity 0.15s,transform 0.15s;position:relative;z-index:1;border:none;cursor:pointer;}
+    transition:opacity 0.15s,transform 0.15s;position:relative;z-index:2;border:none;cursor:pointer;}
 .pw-enroll-btn:hover{opacity:0.9;transform:translateY(-1px);color:#fff;text-decoration:none;}
 .pw-enroll-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
 
@@ -43,7 +42,7 @@
     border-radius:14px;padding:28px;text-align:center;position:relative;overflow:hidden;}
 .pw-cert-card::before{content:'';position:absolute;inset:0;
     background:radial-gradient(circle at 50% 0%,rgba(14,165,233,0.08),transparent 60%);pointer-events:none;}
-.pw-cert-icon{font-size:48px;margin-bottom:12px;display:block;position:relative;z-index:1;}
+.pw-cert-image{max-width:220px;width:100%;height:auto;margin:0 auto 16px;display:block;position:relative;z-index:1;border-radius:8px;}
 .pw-cert-name{font-size:18px;font-weight:700;color:#172033;margin:0 0 8px;position:relative;z-index:1;}
 .pw-cert-desc{font-size:13px;color:#64748B;max-width:400px;margin:0 auto;line-height:1.6;position:relative;z-index:1;}
 
@@ -69,13 +68,13 @@
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
 
 <%-- Hero --%>
-<div class="pw-hero">
+<div class="pw-hero" id="pwHeroBg" runat="server">
     <a href="Pathways.aspx">&#x2190; Back to All Pathways</a>
     <h1><asp:Literal ID="litPathwayName" runat="server" /></h1>
     <p><asp:Literal ID="litDescription" runat="server" /></p>
     <div class="pw-hero-meta">
-        <span>&#x1F4D6; <asp:Literal ID="litModuleCount" runat="server" /> Modules</span>
-        <span>&#x26A1; <asp:Literal ID="litTotalXP" runat="server" /> Total XP</span>
+        <span><asp:Literal ID="litModuleCount" runat="server" /> Modules</span>
+        <span><asp:Literal ID="litTotalXP" runat="server" /> Total XP</span>
         <asp:Literal ID="litCertBadge" runat="server" />
         <asp:Literal ID="litFoundationBadge" runat="server" />
     </div>
@@ -86,12 +85,12 @@
     <asp:Panel ID="pnlAlreadyEnrolled" runat="server" Visible="false">
         <span style="background:rgba(34,197,94,0.15);color:#22C55E;padding:8px 18px;border-radius:8px;
             font-size:13px;font-weight:600;position:relative;z-index:1;">
-            &#x2713; You are enrolled in this pathway
+            You are enrolled in this pathway
         </span>
     </asp:Panel>
     <asp:Panel ID="pnlUpgradeNeeded" runat="server" Visible="false">
         <a href="/Register.aspx" class="pw-enroll-btn" style="background:linear-gradient(90deg,#F59E0B,#EF4444);text-decoration:none;">
-            &#x1F512; Register / Upgrade to Enroll
+            Register / Upgrade to Enroll
         </a>
     </asp:Panel>
 </div>
@@ -120,7 +119,7 @@
 
 <%-- Modules --%>
 <div class="pw-section">
-    <h2>&#x1F4D6; Modules</h2>
+    <h2>Modules</h2>
     <asp:Panel ID="pnlModules" runat="server" Visible="false">
         <div class="pw-mod-list">
             <asp:Repeater ID="rptModules" runat="server">
@@ -152,13 +151,13 @@
 <%-- Pathway Exam Info --%>
 <asp:Panel ID="pnlExamInfo" runat="server" Visible="false">
     <div class="pw-section">
-        <h2>&#x1F4CB; Pathway Examination</h2>
+        <h2>Pathway Examination</h2>
         <div class="pw-exam-card" style="margin-bottom:16px;">
             <h3>Complete all modules to unlock the pathway certification exam</h3>
             <div class="pw-exam-details">
                 <span>&#x23F1; Avg. Duration: <asp:Literal ID="litExamDuration" runat="server" /> min per module exam</span>
-                <span>&#x1F3AF; Avg. Pass Mark: <asp:Literal ID="litExamPass" runat="server" />%</span>
-                <span>&#x1F4D6; <asp:Literal ID="litExamModules" runat="server" /> module exams required</span>
+                <span>Avg. Pass Mark: <asp:Literal ID="litExamPass" runat="server" />%</span>
+                <span><asp:Literal ID="litExamModules" runat="server" /> module exams required</span>
             </div>
         </div>
 
@@ -169,7 +168,7 @@
                     <ItemTemplate>
                         <div class="pw-mod-card" style="cursor:default;">
                             <div class="pw-mod-num" style="background:linear-gradient(135deg,#6366F1,#8B5CF6);font-size:16px;">
-                                &#x1F4DD;
+                                <%# Container.ItemIndex + 1 %>
                             </div>
                             <div class="pw-mod-info">
                                 <div class="pw-mod-name"><%# HttpUtility.HtmlEncode(Eval("ModuleName").ToString()) %></div>
@@ -180,10 +179,10 @@
                                 </div>
                             </div>
                             <%# Convert.ToBoolean(Eval("IsPassed"))
-                                ? "<span class='cp-badge cp-badge-green'>&#x2713; Passed</span>"
+                                ? "<span class='cp-badge cp-badge-green'>Passed</span>"
                                 : Convert.ToBoolean(Eval("CanTakeExam"))
                                     ? "<a href='Exams.aspx?moduleID=" + Eval("ModuleID") + "' class='cp-btn cp-btn-primary cp-btn-sm'>Start Exam</a>"
-                                    : "<span class='cp-badge cp-badge-grey' title='Complete all subtopics first'>&#x1F512; Locked</span>" %>
+                                    : "<span class='cp-badge cp-badge-grey' title='Complete all subtopics first'>Locked</span>" %>
                         </div>
                     </ItemTemplate>
                 </asp:Repeater>
@@ -195,9 +194,9 @@
 <%-- Certification --%>
 <asp:Panel ID="pnlCertification" runat="server" Visible="false">
     <div class="pw-section">
-        <h2>&#x1F3C5; Certification</h2>
+        <h2>Certification</h2>
         <div class="pw-cert-card">
-            <span class="pw-cert-icon">&#x1F3C6;</span>
+            <asp:Image ID="imgCert" runat="server" CssClass="pw-cert-image" Visible="false" AlternateText="" />
             <div class="pw-cert-name"><asp:Literal ID="litCertName" runat="server" /></div>
             <div class="pw-cert-desc">
                 Complete all modules and pass all module exams in this pathway to earn your certification.
@@ -206,7 +205,7 @@
             <asp:Panel ID="pnlCertEarned" runat="server" Visible="false">
                 <div style="margin-top:16px;padding:10px 20px;background:rgba(34,197,94,0.12);
                     border-radius:8px;display:inline-block;color:#16A34A;font-weight:600;font-size:13px;">
-                    &#x2713; You have earned this certification!
+                    You have earned this certification!
                 </div>
             </asp:Panel>
         </div>

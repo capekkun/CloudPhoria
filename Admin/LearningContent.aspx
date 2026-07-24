@@ -10,7 +10,7 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x1F4D6; Learning Content</h2>
+                <h2>Learning Content</h2>
                 <p>Overview of all pathways, modules, and subtopics. Publish or unpublish content platform-wide.</p>
             </div>
         </div>
@@ -40,7 +40,7 @@
             <div style="flex:1;min-width:160px;">
                 <label class="cp-label">Search Module Name</label>
                 <div class="cp-search-wrap">
-                    <span class="cp-search-icon" aria-hidden="true">&#x1F50D;</span>
+                    <span class="cp-search-icon" aria-hidden="true"></span>
                     <asp:TextBox ID="txtSearch" runat="server" CssClass="cp-input"
                         placeholder="Module name…" MaxLength="100" />
                 </div>
@@ -99,7 +99,7 @@
                                     </span>
                                 </td>
                                 <td style="font-size:12px;color:var(--cp-text-muted);">
-                                    <span class="cp-xp-chip">&#x26A1; <%# Eval("XPReward") %> XP</span>
+                                    <span class="cp-xp-chip"><%# Eval("XPReward") %> XP</span>
                                 </td>
                                 <td>
                                     <%# Convert.ToBoolean(Eval("IsPublished"))
@@ -133,7 +133,6 @@
 
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x1F4D6;</span>
             <h3>No modules found</h3>
             <p>Try adjusting your filters.</p>
         </div>

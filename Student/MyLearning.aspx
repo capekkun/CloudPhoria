@@ -78,7 +78,7 @@
                         </div>
                         <div class="cp-flex-row">
                             <span class="cp-xp-chip">+<%# Eval("XPEarned") %> XP</span>
-                            <span class="cp-badge cp-badge-green">&#x2713; Done</span>
+                            <span class="cp-badge cp-badge-green">Done</span>
                         </div>
                     </div>
                 </div>

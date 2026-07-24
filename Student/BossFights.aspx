@@ -6,7 +6,9 @@
 <style>
     .boss-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px; }
     .boss-card {
-        background:#111827;
+        background-color:#111827;
+        background-size:cover;
+        background-position:center;
         border:1px solid rgba(255,255,255,0.08);
         border-radius:14px;
         padding:20px;
@@ -21,6 +23,24 @@
         width:100px; height:100px; border-radius:50%;
         background:radial-gradient(circle, rgba(220,38,38,0.15) 0%, transparent 70%);
         pointer-events:none;
+    }
+    .boss-card-scrim {
+        position:absolute; inset:0;
+        background:linear-gradient(180deg,rgba(17,24,39,0.55) 0%,rgba(17,24,39,0.9) 100%);
+        pointer-events:none;
+    }
+    .boss-card-icon {
+        width:56px; height:56px; border-radius:10px; object-fit:cover;
+        border:1px solid rgba(255,255,255,0.15); flex-shrink:0;
+        position:relative; z-index:1;
+    }
+    .boss-start-icon {
+        width:96px; height:96px; border-radius:14px; object-fit:cover;
+        border:2px solid rgba(255,255,255,0.15); display:block; margin:0 auto 16px;
+    }
+    .boss-battle-icon {
+        width:40px; height:40px; border-radius:8px; object-fit:cover;
+        border:1px solid rgba(255,255,255,0.15); vertical-align:middle; margin-right:10px;
     }
     .boss-diff-easy       { color:#22C55E; }
     .boss-diff-medium     { color:#F59E0B; }
@@ -101,32 +121,38 @@
         <div class="boss-grid">
             <asp:Repeater ID="rptRooms" runat="server">
                 <ItemTemplate>
-                    <div class="boss-card">
+                    <div class="boss-card" style='background-image:url(<%# GetBossIconPath(Eval("IconPath")).Replace("-icon.png","-bg.png") %>);'>
+                        <div class="boss-card-scrim" aria-hidden="true"></div>
                         <div class="boss-card-glow" aria-hidden="true"></div>
-                        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
-                            <h3 style="font-size:15px;font-weight:700;margin:0;color:#fff;">
-                                <%# HttpUtility.HtmlEncode(Eval("Title").ToString()) %>
-                            </h3>
-                            <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;"
-                                  class="boss-diff-<%# Eval("DifficultyLevel").ToString().ToLower() %>">
-                                <%# HttpUtility.HtmlEncode(Eval("DifficultyLevel").ToString()) %>
-                            </span>
+                        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;position:relative;z-index:1;">
+                            <img class="boss-card-icon" src='<%# GetBossIconPath(Eval("IconPath")) %>' alt="" onerror="this.style.display='none';" />
+                            <div style="flex:1;min-width:0;">
+                                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                                    <h3 style="font-size:15px;font-weight:700;margin:0;color:#fff;">
+                                        <%# HttpUtility.HtmlEncode(Eval("Title").ToString()) %>
+                                    </h3>
+                                    <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;"
+                                          class="boss-diff-<%# Eval("DifficultyLevel").ToString().ToLower() %>">
+                                        <%# HttpUtility.HtmlEncode(Eval("DifficultyLevel").ToString()) %>
+                                    </span>
+                                </div>
+                                <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;">
+                                    Boss: <strong style="color:#fff;"><%# HttpUtility.HtmlEncode(Eval("BossName").ToString()) %></strong>
+                                </div>
+                            </div>
                         </div>
-                        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:8px;">
-                            Boss: <strong style="color:#fff;"><%# HttpUtility.HtmlEncode(Eval("BossName").ToString()) %></strong>
-                        </div>
-                        <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:4px;">
+                        <div style="position:relative;z-index:1;font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:4px;">
                             Boss HP: <%# Eval("MaxHP") %>
                         </div>
-                        <div class="boss-hp-bar-wrap">
+                        <div class="boss-hp-bar-wrap" style="position:relative;z-index:1;">
                             <div class="boss-hp-bar" style="width:100%;"></div>
                         </div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;">
+                        <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;margin-top:14px;">
                             <span class="cp-xp-chip">+<%# Eval("XPReward") %> XP on win</span>
                             <%# Convert.ToBoolean(Eval("HasWon"))
-                                ? "<span class='cp-badge cp-badge-green'>&#x2713; Defeated</span>"
+                                ? "<span class='cp-badge cp-badge-green'>Defeated</span>"
                                 : Session["UserID"] != null
-                                    ? "<a href='BossFights.aspx?roomID=" + Eval("RoomID") + "' class='cp-btn cp-btn-danger cp-btn-sm'>&#x1F5F1; Enter Battle</a>"
+                                    ? "<a href='BossFights.aspx?roomID=" + Eval("RoomID") + "' class='cp-btn cp-btn-danger cp-btn-sm'>Enter Battle</a>"
                                     : "<a href='/Register.aspx' class='cp-btn cp-btn-outline cp-btn-sm'>Register to Battle</a>" %>
                         </div>
                     </div>
@@ -141,30 +167,34 @@
 
             <asp:Panel ID="pnlBattleStart" runat="server">
                 <div style="text-align:center;padding:20px 0;">
+                    <asp:Image ID="imgStartBossIcon" runat="server" CssClass="boss-start-icon" Visible="false" AlternateText="" />
                     <h2 style="font-size:24px;font-weight:800;margin:0 0 8px;">
-                        &#x2694;&#xFE0F; <asp:Literal ID="litStartBossName" runat="server" />
+                        <asp:Literal ID="litStartBossName" runat="server" />
                     </h2>
                     <p style="color:rgba(255,255,255,0.5);font-size:14px;margin:0 0 24px;">
                         Drag the correct answer into the drop zone to deal damage. Wrong answers let the boss attack you!
                     </p>
-                    <asp:Button ID="btnStartBattle" runat="server" Text="&#x1F5F1; Start Battle" CssClass="battle-start-btn" OnClick="btnStartBattle_Click" />
+                    <asp:Button ID="btnStartBattle" runat="server" Text="Start Battle" CssClass="battle-start-btn" OnClick="btnStartBattle_Click" />
                 </div>
             </asp:Panel>
 
             <asp:Panel ID="pnlBattleActive" runat="server" Visible="false">
                 <div class="battle-header">
-                    <span class="battle-boss-name">&#x1F480; <asp:Literal ID="litBattleBossName" runat="server" /></span>
+                    <span class="battle-boss-name">
+                        <asp:Image ID="imgBattleBossIcon" runat="server" CssClass="boss-battle-icon" Visible="false" AlternateText="" />
+                        <asp:Literal ID="litBattleBossName" runat="server" />
+                    </span>
                     <span class="battle-timer" id="battleTimer">--</span>
                 </div>
 
                 <div class="battle-hp-row">
                     <div class="battle-hp-box">
-                        <div class="battle-hp-lbl">&#x1F480; Boss HP</div>
+                        <div class="battle-hp-lbl">Boss HP</div>
                         <div class="battle-hp-val"><asp:Literal ID="litBossHP" runat="server" /> / <asp:Literal ID="litBossMaxHP" runat="server" /></div>
                         <div class="battle-hp-bar-wrap"><div class="battle-hp-bar-boss" id="bossHPBar" runat="server" style="width:100%;"></div></div>
                     </div>
                     <div class="battle-hp-box">
-                        <div class="battle-hp-lbl">&#x1F6E1; Your HP</div>
+                        <div class="battle-hp-lbl">Your HP</div>
                         <div class="battle-hp-val"><asp:Literal ID="litPlayerHP" runat="server" /> / <asp:Literal ID="litPlayerMaxHP" runat="server" /></div>
                         <div class="battle-hp-bar-wrap"><div class="battle-hp-bar-player" id="playerHPBar" runat="server" style="width:100%;"></div></div>
                     </div>
@@ -286,7 +316,6 @@
 
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x1F480;</span>
             <h3>No boss fights available</h3>
             <p>Admins publish new boss fight rooms regularly. Check back soon.</p>
         </div>

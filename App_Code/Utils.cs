@@ -39,6 +39,43 @@ namespace CloudPhoria
         }
 
         /// <summary>
+        /// Maps a Pathway name to its uploaded background image in /uploads/modules/.
+        /// Falls back to the Cloud Foundations image if the name doesn't match.
+        /// </summary>
+        public static string GetPathwayBgImage(string pathwayName)
+        {
+            switch (pathwayName)
+            {
+                case "Cloud Foundations":       return "/uploads/modules/cloud-foundations.png";
+                case "Cloud Architecture":       return "/uploads/modules/cloud-architecture.png";
+                case "Cloud Security":           return "/uploads/modules/cloud-security.png";
+                case "DevOps Engineering":       return "/uploads/modules/devops-engineering.png";
+                case "Data Engineering":         return "/uploads/modules/data-engineering.png";
+                case "Cloud Networking":         return "/uploads/modules/cloud-networking.png";
+                case "Serverless & Containers":  return "/uploads/modules/serverless-containers.png";
+                default:                          return "/uploads/modules/cloud-foundations.png";
+            }
+        }
+
+        /// <summary>
+        /// Maps a Pathway name to its uploaded certification image in /uploads/Certification/.
+        /// Returns null if the pathway has no certification image (e.g. Cloud Foundations).
+        /// </summary>
+        public static string GetCertificationImage(string pathwayName)
+        {
+            switch (pathwayName)
+            {
+                case "Cloud Architecture":       return "/uploads/Certification/cloud-architecture-cert.png";
+                case "Cloud Security":           return "/uploads/Certification/cloud-security-cert.png";
+                case "DevOps Engineering":       return "/uploads/Certification/devops-engineering-cert.png";
+                case "Data Engineering":         return "/uploads/Certification/data-engineering-cert.png";
+                case "Cloud Networking":         return "/uploads/Certification/cloud-networking-cert.png";
+                case "Serverless & Containers":  return "/uploads/Certification/serverless-containers-cert.png";
+                default:                          return null;
+            }
+        }
+
+        /// <summary>
         /// Inserts a notification row for a user. Never throws — notifications
         /// must not break the calling action.
         /// </summary>

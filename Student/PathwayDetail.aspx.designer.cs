@@ -2,6 +2,7 @@ namespace CloudPhoria.Student
 {
     public partial class PathwayDetail
     {
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl pwHeroBg;
         protected global::System.Web.UI.WebControls.Literal litPathwayName;
         protected global::System.Web.UI.WebControls.Literal litDescription;
         protected global::System.Web.UI.WebControls.Literal litModuleCount;
@@ -28,6 +29,7 @@ namespace CloudPhoria.Student
         protected global::System.Web.UI.WebControls.Panel pnlModuleExams;
         protected global::System.Web.UI.WebControls.Repeater rptModuleExams;
         protected global::System.Web.UI.WebControls.Panel pnlCertification;
+        protected global::System.Web.UI.WebControls.Image imgCert;
         protected global::System.Web.UI.WebControls.Literal litCertName;
         protected global::System.Web.UI.WebControls.Panel pnlCertEarned;
     }

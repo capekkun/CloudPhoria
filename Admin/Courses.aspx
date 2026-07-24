@@ -8,7 +8,7 @@
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
 
 <div class="cp-page-header">
-    <h2>&#x1F4D6; Manage Courses</h2>
+    <h2>Manage Courses</h2>
     <p>Create modules, subtopics and questions, assign instructors, and moderate published content. Only Admin can create or edit learning content — Instructors manage the classroom side (materials, assignments, challenges) for whatever is assigned to them.</p>
 </div>
 
@@ -139,7 +139,7 @@
 <asp:Panel ID="pnlManageSubTopics" runat="server" Visible="false">
     <div class="cp-page-header-row" style="margin-bottom:16px;">
         <div>
-            <h2>&#x1F4C4; Subtopics &mdash; <asp:Literal ID="litManageModuleTitle" runat="server" /></h2>
+            <h2>Subtopics &mdash; <asp:Literal ID="litManageModuleTitle" runat="server" /></h2>
             <p>Create and manage lesson subtopics for this module.</p>
         </div>
         <a href="Courses.aspx" class="cp-btn cp-btn-ghost">&#x2190; Back to Courses</a>
@@ -223,7 +223,7 @@
 <asp:Panel ID="pnlManageQuestions" runat="server" Visible="false">
     <div class="cp-page-header-row" style="margin-bottom:16px;">
         <div>
-            <h2>&#x2753; Questions &mdash; <asp:Literal ID="litManageSubTopicTitle" runat="server" /></h2>
+            <h2>Questions &mdash; <asp:Literal ID="litManageSubTopicTitle" runat="server" /></h2>
             <p>Manage inline questions (MCQ, Regex, StringMatch) for this subtopic.</p>
         </div>
         <a href="Courses.aspx" class="cp-btn cp-btn-ghost">&#x2190; Back to Courses</a>

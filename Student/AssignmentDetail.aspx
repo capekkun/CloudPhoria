@@ -27,11 +27,11 @@
 
 <div class="asgn-hero">
     <a href="ClassroomDetail.aspx?classroomID=<%= Request.QueryString["classroomID"] %>">&#x2190; Back to Classroom</a>
-    <h1>&#x1F4DD; <asp:Literal ID="litTitle" runat="server" /></h1>
+    <h1><asp:Literal ID="litTitle" runat="server" /></h1>
     <p><asp:Literal ID="litDesc" runat="server" /></p>
     <div class="asgn-meta">
-        <span>&#x1F3EB; <asp:Literal ID="litClassroom" runat="server" /></span>
-        <span>&#x1F464; <asp:Literal ID="litInstructor" runat="server" /></span>
+        <span><asp:Literal ID="litClassroom" runat="server" /></span>
+        <span><asp:Literal ID="litInstructor" runat="server" /></span>
         <asp:Literal ID="litDue" runat="server" />
     </div>
 </div>
@@ -58,7 +58,7 @@
 
 <asp:Panel ID="pnlNoQuestions" runat="server" Visible="false">
     <div class="cp-card" style="text-align:center;padding:40px;color:#64748B;">
-        <span style="font-size:40px;display:block;margin-bottom:10px;">&#x1F4CB;</span>
+        <span style="font-size:40px;display:block;margin-bottom:10px;"></span>
         No questions have been added to this assignment yet.
     </div>
 </asp:Panel>

@@ -10,18 +10,18 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x1F464; My Profile</h2>
+                <h2>My Profile</h2>
                 <p>View and update your instructor account information.</p>
             </div>
         </div>
     </div>
 
     <asp:Panel ID="pnlSuccess" runat="server" Visible="false">
-        <div class="cp-alert cp-alert-success"><span>&#x2714;</span>
+        <div class="cp-alert cp-alert-success"><span></span>
             <asp:Literal ID="litSuccess" runat="server" /></div>
     </asp:Panel>
     <asp:Panel ID="pnlError" runat="server" Visible="false">
-        <div class="cp-alert cp-alert-danger"><span>&#x26A0;</span>
+        <div class="cp-alert cp-alert-danger"><span></span>
             <asp:Literal ID="litError" runat="server" /></div>
     </asp:Panel>
 
@@ -159,17 +159,17 @@
 
     <%-- Report an Issue --%>
     <div class="cp-card" style="margin-top:0;">
-        <h3 style="font-size:15px;font-weight:600;margin:0 0 8px;">&#x26A0; Report an Issue</h3>
+        <h3 style="font-size:15px;font-weight:600;margin:0 0 8px;">Report an Issue</h3>
         <p style="font-size:13px;color:var(--cp-text-muted);margin:0 0 16px;">
             Report a student, classroom content, or a platform bug. Admin will review it.
         </p>
 
         <asp:Panel ID="pnlReportSuccess" runat="server" Visible="false">
-            <div class="cp-alert cp-alert-success"><span>&#x2714;</span>
+            <div class="cp-alert cp-alert-success"><span></span>
                 <asp:Literal ID="litReportSuccess" runat="server" /></div>
         </asp:Panel>
         <asp:Panel ID="pnlReportError" runat="server" Visible="false">
-            <div class="cp-alert cp-alert-danger"><span>&#x26A0;</span>
+            <div class="cp-alert cp-alert-danger"><span></span>
                 <asp:Literal ID="litReportError" runat="server" /></div>
         </asp:Panel>
 

@@ -33,9 +33,9 @@
 .pw-card{background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:0;overflow:hidden;
     transition:box-shadow 0.15s,border-color 0.15s,transform 0.15s;text-decoration:none;color:#172033;display:block;}
 .pw-card:hover{box-shadow:0 8px 30px rgba(14,165,233,0.1);border-color:#0EA5E9;transform:translateY(-2px);text-decoration:none;color:#172033;}
-.pw-card-top{height:8px;}
+.pw-card-top{height:110px;background-size:cover;background-position:center;position:relative;}
+.pw-card-top::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,23,42,0) 0%,rgba(15,23,42,0.15) 100%);}
 .pw-card-body{padding:20px 22px;}
-.pw-card-icon{font-size:32px;margin-bottom:12px;display:block;}
 .pw-card h3{font-size:16px;font-weight:700;color:#172033;margin:0 0 6px;}
 .pw-card p{font-size:13px;color:#64748B;margin:0 0 12px;line-height:1.6;}
 .pw-card-meta{font-size:12px;color:#94A3B8;display:flex;gap:12px;margin-bottom:12px;}
@@ -45,7 +45,7 @@
 .mod-row{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:16px 20px;
     display:flex;align-items:center;gap:16px;transition:border-color 0.15s,transform 0.15s;}
 .mod-row:hover{border-color:#0EA5E9;transform:translateY(-1px);}
-.mod-ico{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.mod-ico{width:48px;height:48px;border-radius:10px;flex-shrink:0;background-size:cover;background-position:center;}
 
 @media(max-width:768px){
     .learn-hero{padding:32px 20px;margin:-16px -16px 0;}
@@ -70,9 +70,9 @@
 
 <%-- Tabs --%>
 <div class="learn-tabs">
-    <a class="learn-tab active" href="javascript:void(0)" onclick="showLearnTab('paths',this)">&#x25B6; Pathways</a>
-    <a class="learn-tab" href="javascript:void(0)" onclick="showLearnTab('modules',this)">&#x1F4D6; Modules</a>
-    <a class="learn-tab" href="javascript:void(0)" onclick="showLearnTab('progress',this)">&#x1F4CA; My Progress</a>
+    <a class="learn-tab active" href="javascript:void(0)" onclick="showLearnTab('paths',this)">Pathways</a>
+    <a class="learn-tab" href="javascript:void(0)" onclick="showLearnTab('modules',this)">Modules</a>
+    <a class="learn-tab" href="javascript:void(0)" onclick="showLearnTab('progress',this)">My Progress</a>
 </div>
 
 <%-- Error --%>
@@ -83,7 +83,7 @@
 <%-- Guest notice --%>
 <asp:Panel ID="pnlGuestNotice" runat="server" Visible="false">
     <div class="cp-alert cp-alert-info cp-mb-md" style="border-color:rgba(99,102,241,0.3);background:rgba(99,102,241,0.05);">
-        &#x1F440; You are browsing as a <strong>Guest</strong> — you can preview pathways and read lesson content, but cannot enroll, answer questions, or earn XP.
+        You are browsing as a <strong>Guest</strong> — you can preview pathways and read lesson content, but cannot enroll, answer questions, or earn XP.
         <a href="/Register.aspx" style="color:#6366F1;font-weight:600;margin-left:8px;">Create a free account to start learning &rarr;</a>
     </div>
 </asp:Panel>
@@ -102,19 +102,18 @@
             <asp:Repeater ID="rptPathways" runat="server">
                 <ItemTemplate>
                     <a class="pw-card" href="PathwayDetail.aspx?pathwayID=<%# Eval("PathwayID") %>">
-                        <div class="pw-card-top" style="background:<%# Eval("AccentColour") %>;"></div>
+                        <div class="pw-card-top" style='background-image:url(<%# Eval("BgImage") %>);'></div>
                         <div class="pw-card-body">
-                            <span class="pw-card-icon"><%# Eval("Icon") %></span>
                             <h3><%# HttpUtility.HtmlEncode(Eval("PathwayName").ToString()) %></h3>
                             <p><%# HttpUtility.HtmlEncode(Eval("ShortDesc").ToString()) %></p>
                             <div class="pw-card-meta">
-                                <span>&#x1F4D6; <%# Eval("ModuleCount") %> modules</span>
-                                <%# Convert.ToInt32(Eval("CertCount")) > 0 ? "<span>&#x1F3C5; Certification</span>" : "" %>
+                                <span><%# Eval("ModuleCount") %> modules</span>
+                                <%# Convert.ToInt32(Eval("CertCount")) > 0 ? "<span>Certification</span>" : "" %>
                             </div>
                             <%# Convert.ToBoolean(Eval("IsFoundation"))
                                 ? "<span class='cp-badge cp-badge-green'>Free</span>"
                                 : Convert.ToBoolean(Eval("IsLocked"))
-                                    ? "<span class='cp-badge cp-badge-grey'>&#x1F512; Upgrade</span>"
+                                    ? "<span class='cp-badge cp-badge-grey'>Upgrade</span>"
                                     : "<span class='cp-badge cp-badge-blue'>Available</span>" %>
                         </div>
                     </a>
@@ -138,7 +137,7 @@
             <asp:Repeater ID="rptModules" runat="server">
                 <ItemTemplate>
                     <a href="ModuleDetail.aspx?moduleID=<%# Eval("ModuleID") %>" class="mod-row" style="text-decoration:none;color:inherit;">
-                        <div class="mod-ico" style="background:<%# Eval("IconBg") %>;"><%# Eval("ModIcon") %></div>
+                        <div class="mod-ico" style='background-image:url(<%# Eval("ModImage") %>);'></div>
                         <div style="flex:1;min-width:0;">
                             <div style="font-size:14px;font-weight:600;color:#172033;"><%# HttpUtility.HtmlEncode(Eval("ModuleName").ToString()) %></div>
                             <div style="font-size:12px;color:#64748B;margin-top:3px;">
@@ -161,7 +160,7 @@
         <asp:Repeater ID="rptProgress" runat="server">
             <ItemTemplate>
                 <div class="mod-row">
-                    <div class="mod-ico" style="background:rgba(14,165,233,0.1);">&#x1F4D6;</div>
+                    <div class="mod-ico" style='background-image:url(<%# Eval("ModImage") %>);'></div>
                     <div style="flex:1;min-width:0;">
                         <div style="font-size:14px;font-weight:600;color:#172033;"><%# HttpUtility.HtmlEncode(Eval("ModuleName").ToString()) %></div>
                         <div style="font-size:12px;color:#64748B;margin-top:3px;"><%# HttpUtility.HtmlEncode(Eval("PathwayName").ToString()) %></div>
@@ -178,7 +177,6 @@
     </asp:Panel>
     <asp:Panel ID="pnlNoProgress" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon">&#x1F4CA;</span>
             <h3>No progress yet</h3>
             <p>Start a module to track your learning progress here.</p>
         </div>

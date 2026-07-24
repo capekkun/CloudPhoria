@@ -140,17 +140,17 @@
         </div>
         <div class="teams-nav">
             <a class="teams-nav-item active" href="javascript:void(0)" onclick="showTeamsPanel('chat',this)">
-                <span class="icon">&#x1F4AC;</span> Chat
+                Chat
             </a>
             <a class="teams-nav-item" href="javascript:void(0)" onclick="showTeamsPanel('files',this)">
-                <span class="icon">&#x1F4CE;</span> Files & Attachments
+                Files & Attachments
             </a>
             <a class="teams-nav-item" href="javascript:void(0)" onclick="showTeamsPanel('assignments',this)">
-                <span class="icon">&#x1F4DD;</span> Assignments
+                Assignments
             </a>
             <div class="teams-nav-divider"></div>
             <a class="teams-nav-item" href="javascript:void(0)" onclick="showTeamsPanel('members',this)">
-                <span class="icon">&#x1F465;</span> Members
+                Members
             </a>
         </div>
         <div class="teams-sidebar-footer">
@@ -158,7 +158,7 @@
                 <span class="icon">&#x2190;</span> Back to Classrooms
             </a>
             <asp:LinkButton ID="btnLogout" runat="server" CssClass="teams-logout" OnClick="btnLogout_Click">
-                <span style="font-size:16px;">&#x1F6AA;</span> Log Out
+                Log Out
             </asp:LinkButton>
         </div>
     </div>
@@ -169,7 +169,7 @@
         <%-- Chat Panel --%>
         <div class="teams-panel active" id="panelChat">
             <div class="teams-main-header">
-                <h3>&#x1F4AC; Chat</h3>
+                <h3>Chat</h3>
                 <span style="font-size:12px;color:#6B7280;">
                     <asp:Literal ID="litMemberCount" runat="server" /> members
                 </span>
@@ -182,7 +182,7 @@
                     <asp:TextBox ID="txtMessage" runat="server"
                         placeholder="Type a message..."
                         MaxLength="2000" autocomplete="off" />
-                    <asp:Button ID="btnSend" runat="server" Text="Send &#x27A4;"
+                    <asp:Button ID="btnSend" runat="server" Text="Send"
                         CssClass="teams-chat-send" OnClick="btnSend_Click" />
                 </div>
             </div>
@@ -191,7 +191,7 @@
         <%-- Files Panel --%>
         <div class="teams-panel" id="panelFiles">
             <div class="teams-main-header">
-                <h3>&#x1F4CE; Files & Attachments</h3>
+                <h3>Files & Attachments</h3>
                 <span style="font-size:12px;color:#6B7280;">
                     Shared by instructor
                 </span>
@@ -204,7 +204,7 @@
         <%-- Assignments Panel --%>
         <div class="teams-panel" id="panelAssignments">
             <div class="teams-main-header">
-                <h3>&#x1F4DD; Assignments</h3>
+                <h3>Assignments</h3>
                 <span style="font-size:12px;color:#6B7280;">
                     Posted by instructor
                 </span>
@@ -217,7 +217,7 @@
         <%-- Members Panel --%>
         <div class="teams-panel" id="panelMembers">
             <div class="teams-main-header">
-                <h3>&#x1F465; Members</h3>
+                <h3>Members</h3>
             </div>
             <div class="teams-main-body">
                 <asp:Literal ID="litMembers" runat="server" />

@@ -89,7 +89,6 @@
 
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x1F3EB;</span>
             <h3>No classrooms yet</h3>
             <p>Join a classroom using an invite code from your instructor.</p>
         </div>

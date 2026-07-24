@@ -167,7 +167,7 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x1F3EB; Classrooms</h2>
+                <h2>Classrooms</h2>
                 <p>Create and manage your classrooms. Click a classroom to open its chat room.</p>
             </div>
             <button type="button" class="cp-btn cp-btn-primary" onclick="showModal('createModal')">
@@ -178,11 +178,11 @@
 
     <%-- Feedback --%>
     <asp:Panel ID="pnlSuccess" runat="server" Visible="false">
-        <div class="cp-alert cp-alert-success"><span>&#x2714;</span>
+        <div class="cp-alert cp-alert-success"><span></span>
             <asp:Literal ID="litSuccess" runat="server" /></div>
     </asp:Panel>
     <asp:Panel ID="pnlError" runat="server" Visible="false">
-        <div class="cp-alert cp-alert-danger"><span>&#x26A0;</span>
+        <div class="cp-alert cp-alert-danger"><span></span>
             <asp:Literal ID="litError" runat="server" /></div>
     </asp:Panel>
 
@@ -213,7 +213,7 @@
                                 CommandName="OpenChat"
                                 CommandArgument='<%# Eval("ClassroomID") + "|" + Eval("ClassroomName") %>'
                                 CssClass="cp-btn cp-btn-primary cp-btn-sm">
-                                &#x1F4AC; Open Chat
+                                Open Chat
                             </asp:LinkButton>
                             <asp:LinkButton runat="server"
                                 CommandName="Delete"
@@ -231,7 +231,6 @@
 
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x1F3EB;</span>
             <h3>No classrooms yet</h3>
             <p>Create a classroom and share the invite code with your students.</p>
             <button type="button" class="cp-btn cp-btn-primary" onclick="showModal('createModal')">
@@ -260,7 +259,7 @@
             <asp:LinkButton ID="btnCloseChat" runat="server"
                 CssClass="cp-btn cp-btn-ghost cp-btn-sm"
                 OnClick="btnCloseChat_Click">
-                &#x2715; Close Chat
+                Close Chat
             </asp:LinkButton>
         </div>
 
@@ -279,19 +278,19 @@
                 <div class="inst-teams-nav">
                     <button class="inst-teams-nav-item active" type="button"
                             onclick="instShowPanel('chat',this)">
-                        <span class="icon">&#x1F4AC;</span> Chat
+                        <span class="icon"></span> Chat
                     </button>
                     <button class="inst-teams-nav-item" type="button"
                             onclick="instShowPanel('files',this)">
-                        <span class="icon">&#x1F4CE;</span> Files &amp; Attachments
+                        <span class="icon"></span> Files &amp; Attachments
                     </button>
                     <button class="inst-teams-nav-item" type="button"
                             onclick="instShowPanel('assignments',this)">
-                        <span class="icon">&#x1F4DD;</span> Assignments
+                        <span class="icon"></span> Assignments
                     </button>
                     <button class="inst-teams-nav-item" type="button"
                             onclick="instShowPanel('members',this)">
-                        <span class="icon">&#x1F465;</span> Members
+                        <span class="icon"></span> Members
                     </button>
                 </div>
             </div>
@@ -302,7 +301,7 @@
                 <%-- Chat panel --%>
                 <div class="inst-teams-panel active" id="instPanelChat">
                     <div class="inst-teams-panel-header">
-                        <h4>&#x1F4AC; Chat</h4>
+                        <h4>Chat</h4>
                         <span style="font-size:11px;color:#6B7280;" id="instMemberCount"></span>
                     </div>
                     <div class="inst-teams-panel-body" id="instChatScroll">
@@ -314,7 +313,7 @@
                         <asp:TextBox ID="txtMessage" runat="server"
                             placeholder="Type a message and press Enter..."
                             MaxLength="2000" autocomplete="off" />
-                        <asp:Button ID="btnSend" runat="server" Text="Send &#x27A4;"
+                        <asp:Button ID="btnSend" runat="server" Text="Send"
                             CssClass="inst-chat-send"
                             OnClick="btnSend_Click" />
                     </div>
@@ -323,7 +322,7 @@
                 <%-- Files panel --%>
                 <div class="inst-teams-panel" id="instPanelFiles">
                     <div class="inst-teams-panel-header">
-                        <h4>&#x1F4CE; Files &amp; Attachments</h4>
+                        <h4>Files &amp; Attachments</h4>
                         <a href="Materials.aspx" class="cp-btn cp-btn-outline cp-btn-sm">
                             Manage in Materials Page &#x2192;
                         </a>
@@ -336,7 +335,7 @@
                 <%-- Assignments panel --%>
                 <div class="inst-teams-panel" id="instPanelAssignments">
                     <div class="inst-teams-panel-header">
-                        <h4>&#x1F4DD; Assignments</h4>
+                        <h4>Assignments</h4>
                         <a href="Assignments.aspx" class="cp-btn cp-btn-outline cp-btn-sm">
                             Manage in Assignments Page &#x2192;
                         </a>
@@ -349,7 +348,7 @@
                 <%-- Members panel --%>
                 <div class="inst-teams-panel" id="instPanelMembers">
                     <div class="inst-teams-panel-header">
-                        <h4>&#x1F465; Members</h4>
+                        <h4>Members</h4>
                     </div>
                     <div class="inst-teams-panel-body">
                         <asp:Literal ID="litMembers" runat="server" />
@@ -366,7 +365,7 @@
          aria-modal="true" aria-labelledby="createCTitle">
         <div class="cp-modal">
             <button class="cp-modal-close" type="button"
-                    onclick="hideModal('createModal')" aria-label="Close">&#x2715;</button>
+                    onclick="hideModal('createModal')" aria-label="Close"></button>
             <h2 class="cp-modal-title" id="createCTitle">New Classroom</h2>
 
             <div class="cp-form-group">
@@ -498,7 +497,7 @@ function pollMessages() {
                 var msgClass = isMine ? 'inst-msg inst-msg-mine' : 'inst-msg';
                 var avClass  = isInst ? 'inst-msg-avatar inst-msg-avatar-inst' : 'inst-msg-avatar';
                 var bubbleBadge = isInst && !isMine
-                    ? ' <span style="font-size:10px;color:#F59E0B;">&#x2B50; Instructor</span>'
+                    ? ' <span style="font-size:10px;color:#F59E0B;">Instructor</span>'
                     : '';
                 var div = document.createElement('div');
                 div.className = msgClass;

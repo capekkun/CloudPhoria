@@ -10,7 +10,7 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x26A1; Challenges</h2>
+                <h2>Challenges</h2>
                 <p>Create and manage official admin challenges for the CloudPhoria platform.</p>
             </div>
             <div>
@@ -89,7 +89,7 @@
     <%-- Stats row --%>
     <div class="cp-grid-3 cp-mb-lg">
         <div class="cp-stat-card">
-            <div class="cp-stat-icon amber" aria-hidden="true">&#x26A1;</div>
+            <div class="cp-stat-icon amber" aria-hidden="true"></div>
             <div>
                 <div class="cp-stat-value"><asp:Literal ID="litActiveCount" runat="server" Text="0" /></div>
                 <div class="cp-stat-label">Active Now</div>
@@ -103,7 +103,7 @@
             </div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon green" aria-hidden="true">&#x2714;</div>
+            <div class="cp-stat-icon green" aria-hidden="true"></div>
             <div>
                 <div class="cp-stat-value"><asp:Literal ID="litEndedCount" runat="server" Text="0" /></div>
                 <div class="cp-stat-label">Ended</div>
@@ -149,7 +149,7 @@
                                     <span class="cp-badge cp-badge-red" style="font-size:10px;">Admin</span>
                                 </td>
                                 <td>
-                                    <span class="cp-xp-chip">&#x26A1; <%# Eval("XPReward") %> XP</span>
+                                    <span class="cp-xp-chip"><%# Eval("XPReward") %> XP</span>
                                 </td>
                                 <td style="font-size:12px;color:var(--cp-text-muted);">
                                     <%# Convert.ToDateTime(Eval("StartDate")).ToString("dd MMM yyyy HH:mm") %>
@@ -175,7 +175,6 @@
 
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x26A1;</span>
             <h3>No challenges yet</h3>
             <p>Create a challenge using the button above.</p>
         </div>

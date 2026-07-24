@@ -14,7 +14,7 @@
                 <p>Your earned badges, certifications, and XP history.</p>
             </div>
             <div class="cp-xp-chip" style="font-size:14px;padding:6px 16px;">
-                &#x26A1; <asp:Literal ID="litTotalXP" runat="server" Text="0" /> XP
+                <asp:Literal ID="litTotalXP" runat="server" Text="0" /> XP
             </div>
         </div>
     </div>
@@ -34,7 +34,7 @@
             <asp:Repeater ID="rptBadges" runat="server">
                 <ItemTemplate>
                     <div class="cp-card" style="text-align:center;padding:20px;">
-                        <div style="font-size:32px;margin-bottom:8px;" aria-hidden="true">&#x1F3C5;</div>
+                        <img src="/uploads/studentdashboard/badges-earned-icon.png" alt="" style="width:40px;height:40px;object-fit:cover;border-radius:8px;margin-bottom:8px;" />
                         <div style="font-size:13px;font-weight:600;color:var(--cp-text);">
                             <%# HttpUtility.HtmlEncode(Eval("BadgeName").ToString()) %>
                         </div>
@@ -60,7 +60,10 @@
         <div class="cp-grid-3 cp-mb-lg">
             <asp:Repeater ID="rptCerts" runat="server">
                 <ItemTemplate>
-                    <div class="cp-card" style="border-left:3px solid var(--cp-indigo);padding:20px;">
+                    <div class="cp-card" style="text-align:center;padding:20px;">
+                        <%# !string.IsNullOrEmpty(Eval("CertImage").ToString())
+                            ? "<img src='" + HttpUtility.HtmlAttributeEncode(Eval("CertImage").ToString()) + "' alt='' style='max-width:180px;width:100%;height:auto;border-radius:8px;margin-bottom:10px;' />"
+                            : "" %>
                         <div style="font-size:15px;font-weight:700;color:var(--cp-text);">
                             <%# HttpUtility.HtmlEncode(Eval("CertificateName").ToString()) %>
                         </div>

@@ -251,7 +251,7 @@
             <%-- General error message panel --%>
             <asp:Panel ID="pnlError" runat="server" Visible="false">
                 <div class="cp-login-alert" role="alert">
-                    <span aria-hidden="true">&#x26A0;</span>
+                    <span aria-hidden="true"></span>
                     <asp:Literal ID="litError" runat="server" />
                 </div>
             </asp:Panel>
@@ -314,7 +314,7 @@
                             aria-label="Show password"
                             aria-pressed="false"
                             onclick="togglePasswordVisibility()">
-                        &#x1F441;
+                        
                     </button>
                 </div>
                 <asp:RequiredFieldValidator
@@ -359,12 +359,12 @@
             input.type = 'text';
             btn.setAttribute('aria-label', 'Hide password');
             btn.setAttribute('aria-pressed', 'true');
-            btn.innerHTML = '&#x1F648;';
+            btn.innerHTML = '';
         } else {
             input.type = 'password';
             btn.setAttribute('aria-label', 'Show password');
             btn.setAttribute('aria-pressed', 'false');
-            btn.innerHTML = '&#x1F441;';
+            btn.innerHTML = '';
         }
     }
 

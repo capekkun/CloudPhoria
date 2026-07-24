@@ -10,7 +10,7 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x1F514; Notifications</h2>
+                <h2>Notifications</h2>
                 <p>Your personal notifications from platform activity.</p>
             </div>
             <div>
@@ -30,14 +30,14 @@
     <%-- Stats row --%>
     <div class="cp-grid-2 cp-mb-lg" style="max-width:480px;">
         <div class="cp-stat-card">
-            <div class="cp-stat-icon red" aria-hidden="true">&#x1F514;</div>
+            <div class="cp-stat-icon red" aria-hidden="true"></div>
             <div>
                 <div class="cp-stat-value"><asp:Literal ID="litUnreadCount" runat="server" Text="0" /></div>
                 <div class="cp-stat-label">Unread</div>
             </div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon blue" aria-hidden="true">&#x1F4EC;</div>
+            <div class="cp-stat-icon blue" aria-hidden="true"></div>
             <div>
                 <div class="cp-stat-value"><asp:Literal ID="litTotalCount" runat="server" Text="0" /></div>
                 <div class="cp-stat-label">Total</div>
@@ -57,7 +57,7 @@
                     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
                         <div style="display:flex;align-items:flex-start;gap:12px;flex:1;min-width:0;">
                             <span style="font-size:18px;flex-shrink:0;" aria-hidden="true">
-                                <%# !Convert.ToBoolean(Eval("IsRead")) ? "&#x1F514;" : "&#x1F515;" %>
+                                <%# !Convert.ToBoolean(Eval("IsRead")) ? "" : "" %>
                             </span>
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:13px;color:var(--cp-text);line-height:1.5;">
@@ -81,7 +81,7 @@
                                 Mark Read
                             </asp:LinkButton>
                             <%# Convert.ToBoolean(Eval("IsRead"))
-                                ? "<span style='font-size:11px;color:var(--cp-success);'>&#x2714; Read</span>"
+                                ? "<span style='font-size:11px;color:var(--cp-success);'>Read</span>"
                                 : "" %>
                         </div>
                     </div>
@@ -92,7 +92,6 @@
 
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x1F514;</span>
             <h3>No notifications</h3>
             <p>You have no notifications at this time.</p>
         </div>

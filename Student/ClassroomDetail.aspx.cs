@@ -161,7 +161,6 @@ namespace CloudPhoria.Student
                     if (dtMsg.Rows.Count == 0)
                     {
                         litMessages.Text = @"<div class='teams-chat-empty'>
-                            <span>&#x1F4AC;</span>
                             <div style='font-size:15px;font-weight:600;color:#374151;margin-bottom:4px;'>No messages yet</div>
                             <div style='font-size:13px;'>Start the conversation with your classmates!</div>
                         </div>";
@@ -206,7 +205,7 @@ namespace CloudPhoria.Student
                             "<div class='teams-msg-time'>{6}</div>" +
                             "</div></div>",
                             msgClass, avatarClass, HttpUtility.HtmlEncode(initials),
-                            name, isInstructor ? " <span style='font-size:10px;color:#F59E0B;'>&#x2B50; Instructor</span>" : "",
+                            name, isInstructor ? " <span style='font-size:10px;color:#F59E0B;'>Instructor</span>" : "",
                             text, time);
                     }
 
@@ -232,7 +231,6 @@ namespace CloudPhoria.Student
             if (dtMat.Rows.Count == 0)
             {
                 litFiles.Text = @"<div class='teams-file-empty'>
-                    <span>&#x1F4C2;</span>
                     <div style='font-size:14px;font-weight:600;color:#374151;margin-bottom:4px;'>No files shared yet</div>
                     <div style='font-size:13px;'>Your instructor will share materials here.</div>
                 </div>";
@@ -246,17 +244,13 @@ namespace CloudPhoria.Student
             {
                 string fileName = HttpUtility.HtmlEncode(row["FileName"].ToString());
                 string uploadDate = Convert.ToDateTime(row["UploadedAt"]).ToString("dd MMM yyyy");
-                string ext = System.IO.Path.GetExtension(row["FileName"].ToString()).ToLower();
-                string icon = GetFileIcon(ext);
-
                 sb.AppendFormat(
                     "<div class='teams-file-item'>" +
-                    "<div class='teams-file-icon'>{0}</div>" +
                     "<div class='teams-file-info'>" +
-                    "<div class='teams-file-name'>{1}</div>" +
-                    "<div class='teams-file-meta'>Uploaded {2}</div>" +
+                    "<div class='teams-file-name'>{0}</div>" +
+                    "<div class='teams-file-meta'>Uploaded {1}</div>" +
                     "</div></div>",
-                    icon, fileName, uploadDate);
+                    fileName, uploadDate);
             }
 
             sb.Append("</div>");
@@ -276,7 +270,6 @@ namespace CloudPhoria.Student
             if (dtAsgn.Rows.Count == 0)
             {
                 litAssignments.Text = @"<div class='teams-asgn-empty'>
-                    <span>&#x1F4CB;</span>
                     <div style='font-size:14px;font-weight:600;color:#374151;margin-bottom:4px;'>No assignments yet</div>
                     <div style='font-size:13px;'>Assignments from your instructor will appear here.</div>
                 </div>";
@@ -422,19 +415,5 @@ namespace CloudPhoria.Student
             return (parts[0][0].ToString() + parts[parts.Length - 1][0].ToString()).ToUpper();
         }
 
-        private string GetFileIcon(string ext)
-        {
-            switch (ext)
-            {
-                case ".pdf": return "&#x1F4D5;";
-                case ".doc": case ".docx": return "&#x1F4C4;";
-                case ".xls": case ".xlsx": return "&#x1F4CA;";
-                case ".ppt": case ".pptx": return "&#x1F4CA;";
-                case ".zip": case ".rar": return "&#x1F4E6;";
-                case ".jpg": case ".jpeg": case ".png": case ".gif": return "&#x1F5BC;";
-                case ".mp4": case ".avi": case ".mov": return "&#x1F3AC;";
-                default: return "&#x1F4CE;";
-            }
-        }
     }
 }

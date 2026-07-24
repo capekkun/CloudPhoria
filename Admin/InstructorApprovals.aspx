@@ -10,7 +10,7 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x2714; Instructor Approvals</h2>
+                <h2>Instructor Approvals</h2>
                 <p>Review instructor licence applications and grant or deny platform access.</p>
             </div>
         </div>
@@ -98,7 +98,6 @@
 
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x2714;</span>
             <h3>No instructors found</h3>
             <p>No instructor applications match the selected filter.</p>
         </div>

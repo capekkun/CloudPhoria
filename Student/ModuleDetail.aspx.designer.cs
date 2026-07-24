@@ -2,6 +2,7 @@ namespace CloudPhoria.Student
 {
     public partial class ModuleDetail
     {
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl modHeroBg;
         protected global::System.Web.UI.WebControls.Literal litModuleName;
         protected global::System.Web.UI.WebControls.Literal litModuleDesc;
         protected global::System.Web.UI.WebControls.Literal litPathway;

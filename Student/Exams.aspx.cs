@@ -545,13 +545,13 @@ namespace CloudPhoria.Student
 
                 if (isPassed)
                 {
-                    litExamFinalIcon.Text = "&#x1F389;";
+                    litExamFinalIcon.Text = "";
                     litExamFinalTitle.Text = "Exam Passed!";
                     pnlExamFinalXP.Visible = xpAwarded > 0;
                 }
                 else
                 {
-                    litExamFinalIcon.Text = "&#x1F614;";
+                    litExamFinalIcon.Text = "";
                     litExamFinalTitle.Text = "Exam Not Passed";
                 }
 

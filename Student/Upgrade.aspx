@@ -97,16 +97,16 @@
                 <span class="up-price-period">/ forever</span>
             </div>
             <ul class="up-features">
-                <li><span class="up-check">&#x2713;</span> Foundation pathway access</li>
-                <li><span class="up-check">&#x2713;</span> Module exams (Foundation)</li>
-                <li><span class="up-check">&#x2713;</span> Boss fights &amp; challenges</li>
-                <li><span class="up-check">&#x2713;</span> Classrooms &amp; assignments</li>
-                <li><span class="up-cross">&#x2717;</span> Specialisation pathways</li>
-                <li><span class="up-cross">&#x2717;</span> Certifications</li>
-                <li><span class="up-cross">&#x2717;</span> Priority support</li>
+                <li><span class="up-check"></span> Foundation pathway access</li>
+                <li><span class="up-check"></span> Module exams (Foundation)</li>
+                <li><span class="up-check"></span> Boss fights &amp; challenges</li>
+                <li><span class="up-check"></span> Classrooms &amp; assignments</li>
+                <li><span class="up-cross"></span> Specialisation pathways</li>
+                <li><span class="up-cross"></span> Certifications</li>
+                <li><span class="up-cross"></span> Priority support</li>
             </ul>
             <asp:Panel ID="pnlFreeCurrent" runat="server" Visible="false">
-                <div class="up-btn up-btn-current">&#x2713; Current Plan</div>
+                <div class="up-btn up-btn-current">Current Plan</div>
             </asp:Panel>
             <asp:Panel ID="pnlFreeNotCurrent" runat="server" Visible="false">
                 <a href="/Register.aspx" class="up-btn up-btn-free" style="text-decoration:none;text-align:center;">Register for Free</a>
@@ -122,24 +122,24 @@
                 <span class="up-price-period">/ month</span>
             </div>
             <ul class="up-features">
-                <li><span class="up-check">&#x2713;</span> Everything in Free</li>
-                <li><span class="up-check">&#x2713;</span> All specialisation pathways</li>
-                <li><span class="up-check">&#x2713;</span> Module exams on every pathway</li>
-                <li><span class="up-check">&#x2713;</span> Certificate of completion</li>
-                <li><span class="up-check">&#x2713;</span> Priority support</li>
-                <li><span class="up-check">&#x2713;</span> Full access to all content</li>
+                <li><span class="up-check"></span> Everything in Free</li>
+                <li><span class="up-check"></span> All specialisation pathways</li>
+                <li><span class="up-check"></span> Module exams on every pathway</li>
+                <li><span class="up-check"></span> Certificate of completion</li>
+                <li><span class="up-check"></span> Priority support</li>
+                <li><span class="up-check"></span> Full access to all content</li>
             </ul>
             <asp:Panel ID="pnlProCurrent" runat="server" Visible="false">
-                <div class="up-btn up-btn-current">&#x2713; Current Plan</div>
+                <div class="up-btn up-btn-current">Current Plan</div>
             </asp:Panel>
             <asp:Panel ID="pnlProUpgrade" runat="server" Visible="false">
                 <% if (Session["UserID"] != null) { %>
                 <a href="javascript:void(0)" class="up-btn up-btn-pro" onclick="openPaymentModal();">
-                    Upgrade to Pro &#x1F680;
+                    Upgrade to Pro
                 </a>
                 <% } else { %>
                 <a href="/Register.aspx" class="up-btn up-btn-pro">
-                    Register to Get Pro &#x1F680;
+                    Register to Get Pro
                 </a>
                 <% } %>
             </asp:Panel>
@@ -180,14 +180,14 @@
 
         <asp:Button ID="btnPay" runat="server" Text="Pay $9.99 & Upgrade"
             CssClass="up-modal-btn" OnClick="btnPay_Click" />
-        <div class="up-modal-secure">&#x1F512; Secure payment. Cancel anytime.</div>
+        <div class="up-modal-secure">Secure payment. Cancel anytime.</div>
     </div>
 </div>
 
 <asp:Panel ID="pnlSuccessOverlay" runat="server" Visible="false">
 <div class="up-modal-overlay show">
     <div class="up-modal" style="text-align:center;">
-        <div style="font-size:64px;margin-bottom:16px;">&#x1F389;</div>
+        <div style="font-size:64px;margin-bottom:16px;"></div>
         <h2 style="color:#22C55E;">Welcome to Pro!</h2>
         <p style="margin-bottom:24px;">Your account has been upgraded. You now have full access to all pathways, certifications, and features.</p>
         <a href="/Student/Dashboard.aspx" class="up-btn up-btn-pro" style="display:inline-block;width:auto;padding:14px 32px;">

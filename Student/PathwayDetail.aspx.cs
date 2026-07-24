@@ -4,6 +4,7 @@ using System.Data;
 using System.Web;
 using System.Web.UI;
 using Microsoft.Data.SqlClient;
+using CloudPhoria;
 
 namespace CloudPhoria.Student
 {
@@ -87,6 +88,7 @@ namespace CloudPhoria.Student
                     litPathwayName.Text = HttpUtility.HtmlEncode(pathwayName);
                     litDescription.Text = HttpUtility.HtmlEncode(description);
                     Page.Title = pathwayName;
+                    pwHeroBg.Style["background-image"] = "url('" + Utils.GetPathwayBgImage(pathwayName) + "')";
 
                     if (isFoundation)
                         litFoundationBadge.Text = "<span style='background:rgba(34,197,94,0.15);color:#22C55E;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;'>Free</span>";
@@ -110,9 +112,16 @@ namespace CloudPhoria.Student
 
                     if (certID > 0)
                     {
-                        litCertBadge.Text = "<span>&#x1F3C5; Certification Available</span>";
+                        litCertBadge.Text = "<span>Certification Available</span>";
                         litCertName.Text = HttpUtility.HtmlEncode(certName);
                         pnlCertification.Visible = true;
+
+                        string certImage = Utils.GetCertificationImage(pathwayName);
+                        if (!string.IsNullOrEmpty(certImage))
+                        {
+                            imgCert.ImageUrl = certImage;
+                            imgCert.Visible = true;
+                        }
 
                         // Check if student already earned it
                         using (SqlCommand cmd2 = new SqlCommand(

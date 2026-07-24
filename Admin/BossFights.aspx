@@ -10,7 +10,7 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x1F480; Boss Fight Rooms</h2>
+                <h2>Boss Fight Rooms</h2>
                 <p>Manage official admin-created Boss Fight rooms. Publish or unpublish to control student access.</p>
             </div>
             <div>
@@ -160,7 +160,7 @@
                                 </td>
                                 <td><%# GetDifficultyBadge(Eval("DifficultyLevel").ToString()) %></td>
                                 <td>
-                                    <span class="cp-xp-chip">&#x26A1; <%# Eval("XPReward") %> XP</span>
+                                    <span class="cp-xp-chip"><%# Eval("XPReward") %> XP</span>
                                 </td>
                                 <td style="text-align:center;">
                                     <span class="cp-badge cp-badge-blue"><%# Eval("QuestionCount") %></span>
@@ -199,7 +199,6 @@
 
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x1F480;</span>
             <h3>No boss fight rooms found</h3>
             <p>Create a new room using the button above.</p>
         </div>

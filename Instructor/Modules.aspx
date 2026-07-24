@@ -11,7 +11,7 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x1F4D6; Modules</h2>
+                <h2>Modules</h2>
                 <p>Modules assigned to you by an Admin. Only Admin can create, edit, or publish modules — contact your Admin if a module needs changes.</p>
             </div>
         </div>
@@ -19,7 +19,7 @@
 
     <asp:Panel ID="pnlError" runat="server" Visible="false">
         <div class="cp-alert cp-alert-danger">
-            <span>&#x26A0;</span>
+            <span></span>
             <asp:Literal ID="litError" runat="server" />
         </div>
     </asp:Panel>
@@ -75,7 +75,6 @@
 
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x1F4D6;</span>
             <h3>No modules assigned yet</h3>
             <p>Ask an Admin to assign you a module from Manage Courses.</p>
         </div>

@@ -23,8 +23,8 @@
     <a href="ModuleDetail.aspx?moduleID=<%= ViewState["ModuleID"] %>">&#x2190; Back to module</a>
     <h1><asp:Literal ID="litSubName" runat="server" /></h1>
     <div class="sub-hero-meta">
-        <span>&#x1F4DA; <asp:Literal ID="litModuleName" runat="server" /></span>
-        <span>&#x26A1; +<asp:Literal ID="litXP" runat="server" /> XP</span>
+        <span><asp:Literal ID="litModuleName" runat="server" /></span>
+        <span>+<asp:Literal ID="litXP" runat="server" /> XP</span>
         <span><asp:Literal ID="litStatus" runat="server" /></span>
     </div>
 </div>
@@ -43,11 +43,11 @@
 <%-- Learning materials --%>
 <asp:Panel ID="pnlMaterials" runat="server" Visible="false">
     <div class="sub-materials">
-        <h3 style="font-size:15px;font-weight:600;margin:0 0 12px;">&#x1F4CE; Learning Materials</h3>
+        <h3 style="font-size:15px;font-weight:600;margin:0 0 12px;">Learning Materials</h3>
         <asp:Repeater ID="rptMaterials" runat="server">
             <ItemTemplate>
                 <div class="sub-mat-item">
-                    <span style="font-size:18px;">&#x1F4C4;</span>
+                    <span style="font-size:18px;"></span>
                     <div style="flex:1;">
                         <div style="font-size:13px;font-weight:600;color:#172033;">
                             <%# HttpUtility.HtmlEncode(Eval("FileName").ToString()) %>
@@ -63,7 +63,7 @@
 <asp:Panel ID="pnlQuestions" runat="server" Visible="false">
     <div style="margin:32px 0 16px;padding:16px 20px;background:linear-gradient(90deg,#EEF2FF,#E0E7FF);
         border-radius:10px;border-left:4px solid #6366F1;">
-        <p style="font-size:14px;font-weight:600;color:#312E81;margin:0 0 4px;">&#x1F4DD; Test Your Knowledge</p>
+        <p style="font-size:14px;font-weight:600;color:#312E81;margin:0 0 4px;">Test Your Knowledge</p>
         <p style="font-size:13px;color:#4338CA;margin:0;">
             Make sure you've read the lesson above before answering. Select the correct option for each question.
         </p>
@@ -91,9 +91,9 @@
 <asp:Panel ID="pnlComplete" runat="server" Visible="false">
     <div class="cp-card" style="text-align:center;margin-top:20px;">
         <p style="font-size:14px;color:#64748B;margin:0 0 16px;">
-            &#x2705; Done reviewing? Mark this subtopic as complete to earn XP.
+            Done reviewing? Mark this subtopic as complete to earn XP.
         </p>
-        <asp:Button ID="btnComplete" runat="server" Text="&#x2713; Mark as Complete"
+        <asp:Button ID="btnComplete" runat="server" Text="Mark as Complete"
             CssClass="cp-btn cp-btn-primary"
             OnClick="btnComplete_Click"
             OnClientClick="return confirm('Mark this subtopic as complete?');" />
@@ -104,7 +104,7 @@
 <asp:Panel ID="pnlGuestPrompt" runat="server" Visible="false">
     <div style="margin-top:24px;padding:28px;background:linear-gradient(135deg,#EEF2FF,#E0E7FF);
         border:2px solid #6366F1;border-radius:14px;text-align:center;">
-        <div style="font-size:36px;margin-bottom:12px;">&#x1F512;</div>
+        <div style="font-size:36px;margin-bottom:12px;"></div>
         <h3 style="font-size:18px;font-weight:700;color:#312E81;margin:0 0 8px;">Want to answer questions and earn XP?</h3>
         <p style="font-size:14px;color:#4338CA;margin:0 0 20px;">
             Create a free account to access interactive questions, track your progress, and earn certifications.
@@ -112,14 +112,14 @@
         <a href="/Register.aspx" style="display:inline-block;padding:12px 28px;
             background:linear-gradient(90deg,#6366F1,#8B5CF6);color:#fff;font-size:14px;
             font-weight:700;border-radius:8px;text-decoration:none;">
-            Register for Free &#x1F680;
+            Register for Free
         </a>
     </div>
 </asp:Panel>
 
 <asp:Panel ID="pnlAlreadyDone" runat="server" Visible="false">
     <div class="cp-alert cp-alert-success">
-        &#x2713; You have completed this subtopic!
+        You have completed this subtopic!
     </div>
 </asp:Panel>
 
@@ -137,12 +137,12 @@ function selectAnswer(el, result) {
         el.style.background = 'rgba(34,197,94,0.15)';
         el.style.borderColor = '#22C55E';
         el.style.color = '#16A34A';
-        el.innerHTML = '&#x2713; ' + el.textContent.substring(2);
+        el.innerHTML = '' + el.textContent.substring(2);
     } else {
         el.style.background = 'rgba(239,68,68,0.15)';
         el.style.borderColor = '#EF4444';
         el.style.color = '#DC2626';
-        el.innerHTML = '&#x2717; ' + el.textContent.substring(2);
+        el.innerHTML = '' + el.textContent.substring(2);
     }
     el.style.opacity = '1';
     el.style.fontWeight = '600';

@@ -1,7 +1,6 @@
 using System;
 using System.Configuration;
 using System.Data;
-using System.IO;
 using System.Text;
 using System.Web;
 using System.Web.UI;
@@ -205,7 +204,7 @@ namespace CloudPhoria.Instructor
                 {
                     litMessages.Text =
                         "<div class='inst-chat-empty'>" +
-                        "<span>&#x1F4AC;</span>" +
+                        "<span></span>" +
                         "<div style='font-size:14px;font-weight:600;color:#374151;margin-bottom:4px;'>No messages yet</div>" +
                         "<div style='font-size:12px;'>Start the conversation with your students!</div>" +
                         "</div>";
@@ -241,7 +240,7 @@ namespace CloudPhoria.Instructor
                     string msgCls = isMine ? "inst-msg inst-msg-mine" : "inst-msg";
                     string avCls  = isMine ? "inst-msg-avatar inst-msg-avatar-inst" : "inst-msg-avatar";
                     string badge  = isMine
-                        ? " <span style='font-size:10px;color:#F59E0B;'>&#x2B50; You (Instructor)</span>"
+                        ? " <span style='font-size:10px;color:#F59E0B;'>You (Instructor)</span>"
                         : string.Empty;
 
                     sb.AppendFormat(
@@ -287,7 +286,7 @@ namespace CloudPhoria.Instructor
             {
                 litFiles.Text =
                     "<div class='inst-empty-panel'>" +
-                    "<span>&#x1F4C2;</span>" +
+                    "<span></span>" +
                     "<div style='font-size:13px;font-weight:600;color:#374151;margin-bottom:4px;'>No files uploaded yet</div>" +
                     "<div style='font-size:12px;'>Use the Materials page to upload files for this classroom.</div>" +
                     "</div>";
@@ -301,20 +300,16 @@ namespace CloudPhoria.Instructor
                 string fileName = row["FileName"].ToString();
                 string filePath = row["FilePath"].ToString();
                 string uploaded = Convert.ToDateTime(row["UploadedAt"]).ToString("dd MMM yyyy");
-                string ext      = Path.GetExtension(fileName).ToLower();
-                string icon     = GetFileIcon(ext);
 
                 sb.AppendFormat(
                     "<div class='inst-file-item'>" +
-                    "<div class='inst-file-icon'>{0}</div>" +
                     "<div style='flex:1;min-width:0;'>" +
-                    "<div class='inst-file-name'>{1}</div>" +
-                    "<div class='inst-file-meta'>Uploaded {2}</div>" +
+                    "<div class='inst-file-name'>{0}</div>" +
+                    "<div class='inst-file-meta'>Uploaded {1}</div>" +
                     "</div>" +
-                    "<a href='{3}' target='_blank' rel='noopener noreferrer' " +
-                    "class='cp-btn cp-btn-outline cp-btn-sm'>&#x1F441; View</a>" +
+                    "<a href='{2}' target='_blank' rel='noopener noreferrer' " +
+                    "class='cp-btn cp-btn-outline cp-btn-sm'>View</a>" +
                     "</div>",
-                    icon,
                     HttpUtility.HtmlEncode(fileName),
                     HttpUtility.HtmlEncode(uploaded),
                     HttpUtility.HtmlEncode(filePath));
@@ -341,7 +336,7 @@ namespace CloudPhoria.Instructor
             {
                 litAssignments.Text =
                     "<div class='inst-empty-panel'>" +
-                    "<span>&#x1F4CB;</span>" +
+                    "<span></span>" +
                     "<div style='font-size:13px;font-weight:600;color:#374151;margin-bottom:4px;'>No assignments yet</div>" +
                     "<div style='font-size:12px;'>Use the Assignments page to create assignments for this classroom.</div>" +
                     "</div>";
@@ -543,19 +538,6 @@ namespace CloudPhoria.Instructor
                     ? parts[0].Substring(0, 2)
                     : parts[0][0].ToString()).ToUpper();
             return (parts[0][0].ToString() + parts[parts.Length - 1][0].ToString()).ToUpper();
-        }
-
-        private static string GetFileIcon(string ext)
-        {
-            switch (ext)
-            {
-                case ".pdf":  return "&#x1F4D5;";
-                case ".doc":  case ".docx": return "&#x1F4C4;";
-                case ".ppt":  case ".pptx": return "&#x1F4CA;";
-                case ".txt":  return "&#x1F4CB;";
-                case ".png":  case ".jpg": case ".jpeg": return "&#x1F5BC;";
-                default:      return "&#x1F4CE;";
-            }
         }
 
         private void ShowSuccess(string msg)

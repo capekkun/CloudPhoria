@@ -58,7 +58,7 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x1F4CE; Learning Materials</h2>
+                <h2>Learning Materials</h2>
                 <p>Upload and manage files for your subtopics and classrooms.</p>
             </div>
             <a href="SubTopics.aspx" class="cp-btn cp-btn-ghost">&#x2190; Subtopics</a>
@@ -75,7 +75,7 @@
             <div class="cp-upload-card" role="button" tabindex="0"
                  onclick="showModal('uploadSubtopicModal')"
                  onkeydown="if(event.key==='Enter'||event.key===' ')showModal('uploadSubtopicModal')">
-                <div class="cp-uc-icon">&#x1F4D6;</div>
+                <div class="cp-uc-icon"></div>
                 <div class="cp-uc-title">Upload for Subtopic</div>
                 <div class="cp-uc-sub">Attach a file to a specific lesson subtopic</div>
             </div>
@@ -86,7 +86,7 @@
             <div class="cp-upload-card" role="button" tabindex="0"
                  onclick="showModal('uploadClassroomModal')"
                  onkeydown="if(event.key==='Enter'||event.key===' ')showModal('uploadClassroomModal')">
-                <div class="cp-uc-icon">&#x1F3EB;</div>
+                <div class="cp-uc-icon"></div>
                 <div class="cp-uc-title">Upload for Classroom</div>
                 <div class="cp-uc-sub">Share a file with students in a classroom</div>
             </div>
@@ -96,11 +96,11 @@
 
     <%-- Feedback banners --%>
     <asp:Panel ID="pnlSuccess" runat="server" Visible="false">
-        <div class="cp-alert cp-alert-success"><span>&#x2714;</span>
+        <div class="cp-alert cp-alert-success"><span></span>
             <asp:Literal ID="litSuccess" runat="server" /></div>
     </asp:Panel>
     <asp:Panel ID="pnlError" runat="server" Visible="false">
-        <div class="cp-alert cp-alert-danger"><span>&#x26A0;</span>
+        <div class="cp-alert cp-alert-danger"><span></span>
             <asp:Literal ID="litError" runat="server" /></div>
     </asp:Panel>
 
@@ -156,14 +156,13 @@
                             <tr>
                                 <td style="font-weight:600;">
                                     <span style="font-size:15px;margin-right:6px;" aria-hidden="true">
-                                        &#x1F4C4;
                                     </span>
                                     <%# HttpUtility.HtmlEncode(Eval("FileName").ToString()) %>
                                 </td>
                                 <td>
                                     <%# Eval("MaterialType").ToString() == "Classroom"
-                                        ? "<span class='cp-badge cp-badge-classroom'>&#x1F3EB; Classroom</span>"
-                                        : "<span class='cp-badge cp-badge-subtopic'>&#x1F4D6; Subtopic</span>" %>
+                                        ? "<span class='cp-badge cp-badge-classroom'>Classroom</span>"
+                                        : "<span class='cp-badge cp-badge-subtopic'>Subtopic</span>" %>
                                 </td>
                                 <td style="color:var(--cp-text-muted);font-size:12px;">
                                     <%# HttpUtility.HtmlEncode(Eval("LinkedTo").ToString()) %>
@@ -176,7 +175,7 @@
                                        target="_blank" rel="noopener noreferrer"
                                        class="cp-btn cp-btn-outline cp-btn-sm"
                                        title="Open in new tab">
-                                        &#x1F441; View
+                                        View
                                     </a>
                                     <asp:LinkButton runat="server"
                                         CommandName="Delete"
@@ -196,7 +195,6 @@
 
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x1F4CE;</span>
             <h3>No materials yet</h3>
             <p>Use the cards above to upload files for your subtopics or classrooms.</p>
         </div>
@@ -209,9 +207,9 @@
          aria-modal="true" aria-labelledby="stUploadTitle">
         <div class="cp-modal">
             <button class="cp-modal-close" type="button"
-                    onclick="hideModal('uploadSubtopicModal')" aria-label="Close">&#x2715;</button>
+                    onclick="hideModal('uploadSubtopicModal')" aria-label="Close"></button>
             <h2 class="cp-modal-title" id="stUploadTitle">
-                &#x1F4D6; Upload for Subtopic
+                Upload for Subtopic
             </h2>
 
             <div class="cp-alert cp-alert-info" style="margin-bottom:16px;">
@@ -259,9 +257,9 @@
          aria-modal="true" aria-labelledby="clUploadTitle">
         <div class="cp-modal">
             <button class="cp-modal-close" type="button"
-                    onclick="hideModal('uploadClassroomModal')" aria-label="Close">&#x2715;</button>
+                    onclick="hideModal('uploadClassroomModal')" aria-label="Close"></button>
             <h2 class="cp-modal-title" id="clUploadTitle">
-                &#x1F3EB; Upload for Classroom
+                Upload for Classroom
             </h2>
 
             <div class="cp-alert cp-alert-info" style="margin-bottom:16px;">

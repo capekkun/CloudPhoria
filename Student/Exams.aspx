@@ -31,7 +31,7 @@
     <%-- ============== EXAM INTRO / LOCKED MESSAGE (?moduleID=) ============== --%>
     <asp:Panel ID="pnlExamIntro" runat="server" Visible="false">
         <div class="cp-page-header">
-            <h2>&#x1F4CB; <asp:Literal ID="litExamIntroTitle" runat="server" /></h2>
+            <h2><asp:Literal ID="litExamIntroTitle" runat="server" /></h2>
             <p>Duration: <asp:Literal ID="litExamIntroDuration" runat="server" /> min &bull;
                Pass mark: <asp:Literal ID="litExamIntroPassMark" runat="server" />%</p>
         </div>
@@ -53,7 +53,7 @@
                     The timer starts as soon as you click Start and keeps running even if you leave the page.
                     Once started, this attempt counts — answer carefully.
                 </p>
-                <asp:Button ID="btnStartExam" runat="server" Text="&#x1F4CB; Start Exam"
+                <asp:Button ID="btnStartExam" runat="server" Text="Start Exam"
                             CssClass="cp-btn cp-btn-primary" OnClick="btnStartExam_Click" />
             </div>
         </asp:Panel>
@@ -136,7 +136,7 @@
                         </div>
                         <%# Convert.ToBoolean(Eval("IsUnlocked"))
                             ? "<a href='Exams.aspx?moduleID=" + Eval("ModuleID") + "' class='cp-btn cp-btn-primary cp-btn-sm'>Start Exam</a>"
-                            : "<span class='cp-badge cp-badge-grey' title='Complete all subtopics first'>&#x1F512; Locked</span>" %>
+                            : "<span class='cp-badge cp-badge-grey' title='Complete all subtopics first'>Locked</span>" %>
                     </div>
                 </div>
             </ItemTemplate>

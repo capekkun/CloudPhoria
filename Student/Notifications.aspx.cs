@@ -89,24 +89,5 @@ namespace CloudPhoria.Student
             }
         }
 
-        protected string GetNotifIcon(object notifType)
-        {
-            string t = notifType != null && notifType != DBNull.Value
-                       ? notifType.ToString() : "";
-            switch (t)
-            {
-                case "BadgeAwarded":     return "&#x1F3C5;";
-                case "CertIssued":       return "&#x1F4DC;";
-                case "BossFightWon":     return "&#x1F480;";
-                case "BossFightLost":    return "&#x1F4A5;";
-                case "ChallengeAlert":   return "&#x26A1;";
-                case "FeedbackReceived": return "&#x1F4DD;";
-                case "AssignmentPosted": return "&#x1F4CB;";
-                case "ConsultBooked":    return "&#x1F4C5;";
-                case "MaterialUploaded": return "&#x1F4CE;";
-                case "NewModule":        return "&#x1F4D6;";
-                default:                 return "&#x1F514;";
-            }
-        }
     }
 }

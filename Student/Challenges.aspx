@@ -36,7 +36,7 @@
     <%-- ============== LEADERBOARD-ONLY VIEW (?leaderboard=) ============== --%>
     <asp:Panel ID="pnlLeaderboardOnlyView" runat="server" Visible="false">
         <div class="cp-page-header">
-            <h2>&#x1F3C6; Leaderboard &mdash; <asp:Literal ID="litLeaderboardOnlyTitle" runat="server" /></h2>
+            <h2>Leaderboard &mdash; <asp:Literal ID="litLeaderboardOnlyTitle" runat="server" /></h2>
             <p><a href="Challenges.aspx">&#x2190; Back to Challenges</a></p>
         </div>
     </asp:Panel>
@@ -44,7 +44,7 @@
     <%-- ============== CHALLENGE INTRO / RESULT SCREEN (?challengeID=) ============== --%>
     <asp:Panel ID="pnlIntro" runat="server" Visible="false">
         <div class="cp-page-header">
-            <h2>&#x26A1; <asp:Literal ID="litIntroTitle" runat="server" /></h2>
+            <h2><asp:Literal ID="litIntroTitle" runat="server" /></h2>
             <p><asp:Literal ID="litIntroDesc" runat="server" /></p>
         </div>
 
@@ -64,7 +64,7 @@
                 <p style="font-size:12px;color:var(--cp-text-muted);margin:0 0 16px;">
                     Each question has its own timer. You get one attempt at this challenge — answer carefully!
                 </p>
-                <asp:Button ID="btnStartChallenge" runat="server" Text="&#x26A1; Start Challenge"
+                <asp:Button ID="btnStartChallenge" runat="server" Text="Start Challenge"
                             CssClass="cp-btn cp-btn-primary" OnClick="btnStartChallenge_Click" />
             </div>
         </asp:Panel>
@@ -109,7 +109,7 @@
     <%-- ============== FINAL RESULT + LEADERBOARD ============== --%>
     <asp:Panel ID="pnlFinalResult" runat="server" Visible="false">
         <div class="cp-card quiz-final">
-            <span style="font-size:48px;display:block;margin-bottom:12px;">&#x1F3C1;</span>
+            <span style="font-size:48px;display:block;margin-bottom:12px;"></span>
             <h2 style="margin:0 0 8px;">Challenge Complete!</h2>
             <p style="font-size:24px;font-weight:800;color:var(--cp-primary);margin:0 0 4px;">
                 <asp:Literal ID="litFinalScore" runat="server" /> points
@@ -123,7 +123,7 @@
 
     <asp:Panel ID="pnlLeaderboard" runat="server" Visible="false">
         <h3 style="font-size:15px;font-weight:600;color:var(--cp-text);margin:20px 0 12px;">
-            &#x1F3C6; Top 10 Leaderboard
+            Top 10 Leaderboard
         </h3>
         <div class="cp-card" style="padding:8px 16px;">
             <asp:Repeater ID="rptLeaderboard" runat="server">
@@ -171,13 +171,13 @@
                         </div>
                         <div style="display:flex;gap:8px;align-items:center;">
                         <%# Convert.ToBoolean(Eval("HasParticipated"))
-                            ? "<span class='cp-badge cp-badge-green'>&#x2713; Participated</span>"
+                            ? "<span class='cp-badge cp-badge-green'>Participated</span>"
                             : Session["UserID"] != null
                                 ? (Convert.ToInt32(Eval("QuestionCount")) > 0
                                     ? "<a href='Challenges.aspx?challengeID=" + Eval("ChallengeID") + "' class='cp-btn cp-btn-primary cp-btn-sm'>Join Challenge</a>"
                                     : "<span class='cp-badge cp-badge-grey'>No questions yet</span>")
                                 : "<a href='/Register.aspx' class='cp-btn cp-btn-outline cp-btn-sm'>Register to Join</a>" %>
-                        <a href='Challenges.aspx?leaderboard=<%# Eval("ChallengeID") %>' class="cp-btn cp-btn-ghost cp-btn-sm">&#x1F3C6; Leaderboard</a>
+                        <a href='Challenges.aspx?leaderboard=<%# Eval("ChallengeID") %>' class="cp-btn cp-btn-ghost cp-btn-sm">Leaderboard</a>
                         </div>
                     </div>
                 </ItemTemplate>
@@ -186,7 +186,6 @@
     </asp:Panel>
     <asp:Panel ID="pnlNoActive" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x26A1;</span>
             <h3>No active challenges</h3>
             <p>Check back soon — new challenges are added regularly.</p>
         </div>

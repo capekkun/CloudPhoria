@@ -35,7 +35,7 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x1F4DD; Assignments</h2>
+                <h2>Assignments</h2>
                 <p>Create and manage assignments. Review student submissions below.</p>
             </div>
             <asp:Panel ID="pnlCreateBtn" runat="server" Visible="false">
@@ -59,11 +59,11 @@
 
     <%-- Feedback banners --%>
     <asp:Panel ID="pnlSuccess" runat="server" Visible="false">
-        <div class="cp-alert cp-alert-success"><span>&#x2714;</span>
+        <div class="cp-alert cp-alert-success"><span></span>
             <asp:Literal ID="litSuccess" runat="server" /></div>
     </asp:Panel>
     <asp:Panel ID="pnlError" runat="server" Visible="false">
-        <div class="cp-alert cp-alert-danger"><span>&#x26A0;</span>
+        <div class="cp-alert cp-alert-danger"><span></span>
             <asp:Literal ID="litError" runat="server" /></div>
     </asp:Panel>
 
@@ -117,7 +117,6 @@
 
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x1F4DD;</span>
             <h3>No assignments yet</h3>
             <p>Create an assignment to start receiving student submissions.</p>
         </div>
@@ -133,7 +132,7 @@
                     flex-wrap:wrap;gap:10px;margin-bottom:14px;">
             <div>
                 <h3 style="font-size:16px;font-weight:700;margin:0 0 4px;">
-                    &#x1F9D1;&#x200D;&#x1F393; Submitted Students
+                    Submitted Students
                 </h3>
                 <div style="font-size:13px;color:var(--cp-text-muted);">
                     Assignment: <strong><asp:Literal ID="litSection2Title" runat="server" /></strong>
@@ -193,7 +192,6 @@
 
         <asp:Panel ID="pnlNoStudents" runat="server" Visible="false">
             <div class="cp-empty-state" style="padding:24px 16px;">
-                <span class="cp-empty-state-icon" aria-hidden="true">&#x1F4ED;</span>
                 <h3>No submissions yet</h3>
                 <p>No students have submitted this assignment.</p>
             </div>
@@ -209,7 +207,7 @@
         <div style="display:flex;align-items:center;justify-content:space-between;
                     flex-wrap:wrap;gap:10px;margin-bottom:14px;">
             <h3 style="font-size:16px;font-weight:700;margin:0;">
-                &#x1F4CB; Student Submission Detail
+                Student Submission Detail
             </h3>
             <asp:LinkButton ID="btnBackToStudents" runat="server"
                 CssClass="cp-btn cp-btn-ghost cp-btn-sm"
@@ -314,7 +312,7 @@
          aria-modal="true" aria-labelledby="fbTitle">
         <div class="cp-modal">
             <button class="cp-modal-close" type="button"
-                    onclick="hideModal('feedbackModal')" aria-label="Close">&#x2715;</button>
+                    onclick="hideModal('feedbackModal')" aria-label="Close"></button>
             <h2 class="cp-modal-title" id="fbTitle">Mark Submission</h2>
 
             <div class="cp-form-group">
@@ -356,7 +354,7 @@
          aria-modal="true" aria-labelledby="createATitle">
         <div class="cp-modal" style="max-width:580px;">
             <button class="cp-modal-close" type="button"
-                    onclick="hideModal('createModal')" aria-label="Close">&#x2715;</button>
+                    onclick="hideModal('createModal')" aria-label="Close"></button>
             <h2 class="cp-modal-title" id="createATitle">New Assignment</h2>
 
             <div class="cp-form-group">
