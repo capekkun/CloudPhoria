@@ -548,6 +548,36 @@ namespace CloudPhoria.Student
                             }
                         }
 
+                        // Award the pathway's certification once every published
+                        // module in this module's pathway has been passed (respects
+                        // UNIQUE (StudentID, CertificationID) — never awarded twice).
+                        if (isPassed)
+                        {
+                            using (SqlCommand cmd = new SqlCommand(
+                                @"INSERT INTO UserCertifications (StudentID, CertificationID, IssuedAt)
+                                  SELECT @SID, c.CertificationID, GETDATE()
+                                  FROM Certifications c
+                                  INNER JOIN Modules m ON m.PathwayID = c.PathwayID
+                                  WHERE m.ModuleID = @MID
+                                    AND NOT EXISTS (
+                                        SELECT 1 FROM UserCertifications uc
+                                        WHERE uc.StudentID = @SID AND uc.CertificationID = c.CertificationID
+                                    )
+                                    AND NOT EXISTS (
+                                        SELECT 1 FROM Modules m2
+                                        WHERE m2.PathwayID = c.PathwayID AND m2.IsPublished = 1
+                                          AND NOT EXISTS (
+                                              SELECT 1 FROM ExamAttempts ea2
+                                              WHERE ea2.StudentID = @SID AND ea2.ModuleID = m2.ModuleID AND ea2.IsPassed = 1
+                                          )
+                                    )", conn, tx))
+                            {
+                                cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
+                                cmd.Parameters.Add("@MID", SqlDbType.Int).Value = moduleID;
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+
                         tx.Commit();
                     }
                 }
