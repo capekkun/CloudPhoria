@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Data.SqlClient;
+using CloudPhoria;
 
 namespace CloudPhoria.Instructor
 {
@@ -389,7 +390,7 @@ namespace CloudPhoria.Instructor
                         cmd.ExecuteNonQuery();
                     }
 
-                    Utils.SendNotification(conn, instructorID,
+                    SendNotificationInline(conn, instructorID,
                         "Material \"" + originalName + "\" uploaded for classroom.", "Material");
                 }
 
@@ -498,7 +499,7 @@ namespace CloudPhoria.Instructor
                         del.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
                         del.ExecuteNonQuery();
                     }
-                    Utils.SendNotification(conn, instructorID,
+                    SendNotificationInline(conn, instructorID,
                         "Classroom material \"" + (fileName ?? "file") + "\" was removed.", "Material");
                     TryDeleteFile(filePath);
                 }
@@ -568,6 +569,23 @@ namespace CloudPhoria.Instructor
             litError.Text      = HttpUtility.HtmlEncode(msg);
             pnlError.Visible   = true;
             pnlSuccess.Visible = false;
+        }
+
+        private void SendNotificationInline(SqlConnection conn, int userID, string message, string notificationType)
+        {
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(
+                    @"INSERT INTO Notifications (UserID, Message, NotificationType, IsRead, CreatedAt)
+                      VALUES (@UID, @Msg, @Type, 0, GETDATE())", conn))
+                {
+                    cmd.Parameters.Add("@UID", SqlDbType.Int).Value = userID;
+                    cmd.Parameters.Add("@Msg", SqlDbType.NVarChar, 500).Value = message ?? "";
+                    cmd.Parameters.Add("@Type", SqlDbType.NVarChar, 50).Value = notificationType ?? "";
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (SqlException) { }
         }
     }
 }

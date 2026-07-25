@@ -37,5 +37,28 @@ namespace CloudPhoria
             }
             catch (SqlException) { /* audit logging must not break the main action */ }
         }
+
+        /// <summary>
+        /// Sends a notification to a user. Never throws — notification
+        /// failures must not break the calling action.
+        /// </summary>
+        public static void SendNotification(SqlConnection conn, int userID, string message, string notificationType)
+        {
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(
+                    @"INSERT INTO Notifications (UserID, Message, NotificationType, IsRead, CreatedAt)
+                      VALUES (@UID, @Msg, @Type, 0, GETDATE())", conn))
+                {
+                    cmd.Parameters.Add("@UID", SqlDbType.Int).Value = userID;
+                    cmd.Parameters.Add("@Msg", SqlDbType.NVarChar, 500).Value =
+                        string.IsNullOrEmpty(message) ? (object)DBNull.Value : message;
+                    cmd.Parameters.Add("@Type", SqlDbType.NVarChar, 50).Value =
+                        string.IsNullOrEmpty(notificationType) ? (object)DBNull.Value : notificationType;
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (SqlException) { /* notification must not break the main action */ }
+        }
     }
 }
