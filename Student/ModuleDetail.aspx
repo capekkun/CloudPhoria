@@ -7,7 +7,7 @@
 .mod-hero{background-color:#0F172A;background-size:cover;background-position:center;
     padding:32px;color:#fff;border-radius:0;margin:-24px -32px 24px;position:relative;overflow:hidden;}
 .mod-hero::before{content:'';position:absolute;inset:0;
-    background:linear-gradient(135deg,rgba(15,23,42,0.85) 0%,rgba(30,41,59,0.75) 60%,rgba(15,23,42,0.9) 100%);
+    background-color:rgba(15,23,42,0.85);
     pointer-events:none;}
 .mod-hero a{color:#38BDF8;font-size:13px;text-decoration:none;position:relative;z-index:2;}
 .mod-hero h1{font-size:32px;font-weight:800;margin:12px 0 8px;position:relative;z-index:2;}

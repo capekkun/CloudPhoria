@@ -26,13 +26,13 @@
             align-items: center;
             justify-content: center;
             padding: 24px 16px;
-            background: linear-gradient(135deg, #0F172A 0%, #172033 60%, #0F172A 100%);
+            background-color: #0F172A;
         }
 
         .cp-login-box {
             background: #FFFFFF;
-            border-radius: 18px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 420px;
             overflow: hidden;
@@ -41,7 +41,7 @@
         /* Top accent stripe */
         .cp-login-accent {
             height: 4px;
-            background: linear-gradient(90deg, #0EA5E9 0%, #6366F1 100%);
+            background-color: #0EA5E9;
         }
 
         .cp-login-body {
@@ -59,8 +59,8 @@
         .cp-login-logo {
             width: 38px;
             height: 38px;
-            background: linear-gradient(135deg, #0EA5E9, #6366F1);
-            border-radius: 10px;
+            background-color: #0EA5E9;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -110,7 +110,7 @@
             color: #172033;
             background: #F4F7FB;
             border: 1.5px solid #E2E8F0;
-            border-radius: 9px;
+            border-radius: 8px;
             transition: border-color 0.15s, box-shadow 0.15s;
             font-family: inherit;
             box-sizing: border-box;
@@ -167,7 +167,7 @@
         .cp-login-alert {
             background: rgba(239,68,68,0.08);
             border: 1px solid rgba(239,68,68,0.25);
-            border-radius: 9px;
+            border-radius: 8px;
             padding: 11px 14px;
             font-size: 13px;
             color: #DC2626;
@@ -190,7 +190,7 @@
             background: #0EA5E9;
             color: #ffffff;
             border: none;
-            border-radius: 9px;
+            border-radius: 6px;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;

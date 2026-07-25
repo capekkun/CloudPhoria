@@ -23,7 +23,7 @@
         In Progress
     </h3>
     <asp:Panel ID="pnlInProgress" runat="server" Visible="false">
-        <asp:Repeater ID="rptInProgress" runat="server">
+        <asp:Repeater ID="rptInProgress" runat="server" OnItemDataBound="rptInProgress_ItemDataBound">
             <ItemTemplate>
                 <div class="cp-module-card">
                     <div class="cp-flex-between">
@@ -34,9 +34,7 @@
                             <div style="font-size:12px;color:var(--cp-text-muted);margin-top:3px;">
                                 <%# HttpUtility.HtmlEncode(Eval("PathwayName").ToString()) %>
                                 &bull;
-                                <span style="color:<%# Eval("DiffColour") %>;font-weight:600;">
-                                    <%# HttpUtility.HtmlEncode(Eval("DifficultyLevel").ToString()) %>
-                                </span>
+                                <asp:Label ID="lblDifficulty" runat="server" Font-Bold="true" />
                             </div>
                         </div>
                         <span class="cp-badge cp-badge-blue">In Progress</span>
@@ -46,7 +44,7 @@
                         <span><%# Eval("ProgressPct") %>%</span>
                     </div>
                     <div class="cp-progress-wrap">
-                        <div class="cp-progress-bar" style="width:<%# Eval("ProgressPct") %>%;"></div>
+                        <asp:Panel ID="pnlProgressFill" runat="server" CssClass="cp-progress-bar" />
                     </div>
                 </div>
             </ItemTemplate>
@@ -73,7 +71,7 @@
                             </div>
                             <div style="font-size:12px;color:var(--cp-text-muted);margin-top:3px;">
                                 <%# HttpUtility.HtmlEncode(Eval("PathwayName").ToString()) %>
-                                &bull; Completed <%# Convert.ToDateTime(Eval("CompletedAt")).ToString("dd MMM yyyy") %>
+                                &bull; Completed <%# FormatCompletedDate(Eval("CompletedAt")) %>
                             </div>
                         </div>
                         <div class="cp-flex-row">

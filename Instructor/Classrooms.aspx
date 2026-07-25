@@ -10,7 +10,7 @@
     grid-template-columns: 220px 1fr;
     height: 620px;
     border: 1px solid var(--cp-border);
-    border-radius: 14px;
+    border-radius: 8px;
     overflow: hidden;
     margin-top: 4px;
     background: #fff;
@@ -71,23 +71,23 @@
 .inst-msg-mine { flex-direction: row-reverse; }
 .inst-msg-avatar {
     width: 32px; height: 32px; border-radius: 50%;
-    background: linear-gradient(135deg,#6366F1,#8B5CF6);
+    background-color: #6366F1;
     display: flex; align-items: center; justify-content: center;
     font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
 }
-.inst-msg-avatar-inst { background: linear-gradient(135deg,#F59E0B,#EF4444); }
+.inst-msg-avatar-inst { background-color: #F59E0B; }
 .inst-msg-content { max-width: 60%; }
 .inst-msg-name {
     font-size: 11px; font-weight: 600; color: #374151; margin-bottom: 3px;
 }
 .inst-msg-mine .inst-msg-name { text-align: right; color: #6366F1; }
 .inst-msg-bubble {
-    background: #F3F4F6; border-radius: 0 10px 10px 10px;
+    background: #F3F4F6; border-radius: 0 8px 8px 8px;
     padding: 9px 13px; font-size: 13px; line-height: 1.5;
     color: #1F2937; word-break: break-word;
 }
 .inst-msg-mine .inst-msg-bubble {
-    background: #6366F1; color: #fff; border-radius: 10px 0 10px 10px;
+    background: #6366F1; color: #fff; border-radius: 8px 0 8px 8px;
 }
 .inst-msg-time { font-size: 10px; color: #9CA3AF; margin-top: 3px; }
 .inst-msg-mine .inst-msg-time { text-align: right; }
@@ -139,11 +139,11 @@
 .inst-member-item:last-child { border-bottom: none; }
 .inst-member-avatar {
     width: 34px; height: 34px; border-radius: 50%;
-    background: linear-gradient(135deg,#6366F1,#8B5CF6);
+    background-color: #6366F1;
     display: flex; align-items: center; justify-content: center;
     font-size: 11px; font-weight: 700; color: #fff;
 }
-.inst-member-avatar-inst { background: linear-gradient(135deg,#F59E0B,#EF4444); }
+.inst-member-avatar-inst { background-color: #F59E0B; }
 .inst-member-name { font-size: 13px; font-weight: 600; color: #111827; }
 .inst-member-role { font-size: 11px; color: #6B7280; }
 .inst-empty-panel {

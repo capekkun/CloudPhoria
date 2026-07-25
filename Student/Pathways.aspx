@@ -5,12 +5,8 @@
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
 /* Dark hero banner */
-.learn-hero{background:linear-gradient(135deg,#0F172A 0%,#1E293B 60%,#0F172A 100%);
+.learn-hero{background-color:#0F172A;
     padding:48px 32px;color:#fff;border-radius:0;margin:-24px -32px 0;position:relative;overflow:hidden;}
-.learn-hero::before{content:'';position:absolute;inset:0;
-    background-image:linear-gradient(rgba(14,165,233,0.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(14,165,233,0.03) 1px,transparent 1px);
-    background-size:40px 40px;pointer-events:none;}
 .learn-hero h1{font-size:42px;font-weight:800;margin:0 0 12px;position:relative;z-index:1;}
 .learn-hero p{font-size:15px;color:rgba(255,255,255,0.6);max-width:540px;line-height:1.7;margin:0 0 28px;position:relative;z-index:1;}
 .learn-stats{display:flex;gap:36px;flex-wrap:wrap;position:relative;z-index:1;}
@@ -30,11 +26,10 @@
 
 /* Pathway grid cards */
 .pw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;}
-.pw-card{background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:0;overflow:hidden;
-    transition:box-shadow 0.15s,border-color 0.15s,transform 0.15s;text-decoration:none;color:#172033;display:block;}
-.pw-card:hover{box-shadow:0 8px 30px rgba(14,165,233,0.1);border-color:#0EA5E9;transform:translateY(-2px);text-decoration:none;color:#172033;}
+.pw-card{background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:0;overflow:hidden;
+    transition:box-shadow 0.15s,border-color 0.15s;text-decoration:none;color:#172033;display:block;}
+.pw-card:hover{box-shadow:0 2px 8px rgba(0,0,0,0.08);border-color:#0EA5E9;text-decoration:none;color:#172033;}
 .pw-card-top{height:110px;background-size:cover;background-position:center;position:relative;}
-.pw-card-top::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,23,42,0) 0%,rgba(15,23,42,0.15) 100%);}
 .pw-card-body{padding:20px 22px;}
 .pw-card h3{font-size:16px;font-weight:700;color:#172033;margin:0 0 6px;}
 .pw-card p{font-size:13px;color:#64748B;margin:0 0 12px;line-height:1.6;}
@@ -42,10 +37,10 @@
 
 /* Module list */
 .mod-list{display:flex;flex-direction:column;gap:12px;}
-.mod-row{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:16px 20px;
-    display:flex;align-items:center;gap:16px;transition:border-color 0.15s,transform 0.15s;}
-.mod-row:hover{border-color:#0EA5E9;transform:translateY(-1px);}
-.mod-ico{width:48px;height:48px;border-radius:10px;flex-shrink:0;background-size:cover;background-position:center;}
+.mod-row{background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:16px 20px;
+    display:flex;align-items:center;gap:16px;transition:border-color 0.15s;}
+.mod-row:hover{border-color:#0EA5E9;}
+.mod-ico{width:48px;height:48px;border-radius:8px;flex-shrink:0;background-size:cover;background-position:center;}
 
 @media(max-width:768px){
     .learn-hero{padding:32px 20px;margin:-16px -16px 0;}

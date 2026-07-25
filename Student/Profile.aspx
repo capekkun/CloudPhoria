@@ -25,7 +25,7 @@
             <h3 class="cp-card-title">Account Information</h3>
             <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
                 <div style="width:60px;height:60px;border-radius:50%;
-                            background:linear-gradient(135deg,var(--cp-indigo),var(--cp-primary));
+                            background-color:var(--cp-indigo);
                             display:flex;align-items:center;justify-content:center;
                             font-size:20px;font-weight:700;color:#fff;">
                     <asp:Literal ID="litInitials" runat="server" />

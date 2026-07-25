@@ -44,16 +44,16 @@
 .teams-msg{display:flex;gap:12px;align-items:flex-start;}
 .teams-msg-mine{flex-direction:row-reverse;}
 .teams-msg-avatar{width:36px;height:36px;border-radius:50%;
-    background:linear-gradient(135deg,#6366F1,#8B5CF6);
+    background-color:#6366F1;
     display:flex;align-items:center;justify-content:center;
     font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
-.teams-msg-avatar-instructor{background:linear-gradient(135deg,#F59E0B,#EF4444);}
+.teams-msg-avatar-instructor{background-color:#F59E0B;}
 .teams-msg-content{max-width:65%;}
 .teams-msg-name{font-size:12px;font-weight:600;color:#374151;margin-bottom:4px;}
 .teams-msg-mine .teams-msg-name{text-align:right;color:#6366F1;}
-.teams-msg-bubble{background:#F3F4F6;border-radius:0 12px 12px 12px;padding:10px 14px;
+.teams-msg-bubble{background:#F3F4F6;border-radius:0 8px 8px 8px;padding:10px 14px;
     font-size:13px;line-height:1.6;color:#1F2937;word-break:break-word;}
-.teams-msg-mine .teams-msg-bubble{background:#6366F1;color:#fff;border-radius:12px 0 12px 12px;}
+.teams-msg-mine .teams-msg-bubble{background:#6366F1;color:#fff;border-radius:8px 0 8px 8px;}
 .teams-msg-time{font-size:11px;color:#9CA3AF;margin-top:4px;}
 .teams-msg-mine .teams-msg-time{text-align:right;}
 .teams-chat-empty{flex:1;display:flex;align-items:center;justify-content:center;
@@ -62,19 +62,19 @@
 .teams-chat-input{display:flex;gap:10px;padding:16px 24px;border-top:1px solid #E5E7EB;
     background:#FAFBFC;}
 .teams-chat-input input[type=text]{flex:1;padding:12px 16px;border:1px solid #E5E7EB;
-    border-radius:10px;font-size:13px;outline:none;transition:border-color 0.15s;
+    border-radius:8px;font-size:13px;outline:none;transition:border-color 0.15s;
     font-family:inherit;}
-.teams-chat-input input[type=text]:focus{border-color:#6366F1;box-shadow:0 0 0 3px rgba(99,102,241,0.1);}
-.teams-chat-send{padding:12px 24px;background:#6366F1;color:#fff;border:none;border-radius:10px;
+.teams-chat-input input[type=text]:focus{border-color:#6366F1;}
+.teams-chat-send{padding:12px 24px;background:#6366F1;color:#fff;border:none;border-radius:8px;
     font-size:13px;font-weight:600;cursor:pointer;transition:background 0.15s;font-family:inherit;}
 .teams-chat-send:hover{background:#4F46E5;}
 
 /* Files Panel */
 .teams-file-list{padding:20px 24px;display:flex;flex-direction:column;gap:10px;}
 .teams-file-item{display:flex;align-items:center;gap:14px;padding:14px 18px;background:#F9FAFB;
-    border:1px solid #E5E7EB;border-radius:10px;transition:border-color 0.15s;}
+    border:1px solid #E5E7EB;border-radius:8px;transition:border-color 0.15s;}
 .teams-file-item:hover{border-color:#6366F1;}
-.teams-file-icon{width:42px;height:42px;border-radius:8px;background:linear-gradient(135deg,#EEF2FF,#E0E7FF);
+.teams-file-icon{width:42px;height:42px;border-radius:8px;background-color:#EEF2FF;
     display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
 .teams-file-info{flex:1;min-width:0;}
 .teams-file-name{font-size:14px;font-weight:600;color:#111827;white-space:nowrap;
@@ -85,9 +85,9 @@
 
 /* Assignments Panel */
 .teams-asgn-list{padding:20px 24px;display:flex;flex-direction:column;gap:12px;}
-.teams-asgn-card{background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:18px 20px;
+.teams-asgn-card{background:#fff;border:1px solid #E5E7EB;border-radius:8px;padding:18px 20px;
     border-left:4px solid #6366F1;transition:box-shadow 0.15s;}
-.teams-asgn-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.06);}
+.teams-asgn-card:hover{box-shadow:0 1px 4px rgba(0,0,0,0.06);}
 .teams-asgn-title{font-size:15px;font-weight:700;color:#111827;margin:0 0 6px;}
 .teams-asgn-meta{display:flex;gap:16px;font-size:12px;color:#6B7280;}
 .teams-asgn-due{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;
@@ -101,14 +101,14 @@
     border-bottom:1px solid #F3F4F6;}
 .teams-member-item:last-child{border-bottom:none;}
 .teams-member-avatar{width:38px;height:38px;border-radius:50%;
-    background:linear-gradient(135deg,#6366F1,#8B5CF6);
+    background-color:#6366F1;
     display:flex;align-items:center;justify-content:center;
     font-size:12px;font-weight:700;color:#fff;}
-.teams-member-avatar-inst{background:linear-gradient(135deg,#F59E0B,#EF4444);}
+.teams-member-avatar-inst{background-color:#F59E0B;}
 .teams-member-info{flex:1;}
 .teams-member-name{font-size:14px;font-weight:600;color:#111827;}
 .teams-member-role{font-size:12px;color:#6B7280;}
-.teams-member-badge{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;}
+.teams-member-badge{padding:3px 10px;border-radius:8px;font-size:11px;font-weight:600;}
 .teams-member-badge-inst{background:#FEF3C7;color:#92400E;}
 .teams-member-badge-student{background:#EEF2FF;color:#4338CA;}
 

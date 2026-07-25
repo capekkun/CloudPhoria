@@ -34,13 +34,13 @@
     --cp-locked:         #94A3B8;
 
     /* Radius scale */
-    --cp-radius-sm:      8px;
-    --cp-radius-md:      12px;
-    --cp-radius-lg:      18px;
+    --cp-radius-sm:      6px;
+    --cp-radius-md:      8px;
+    --cp-radius-lg:      8px;
 
     /* Shadows */
-    --cp-shadow-sm:      0 2px 8px rgba(15, 23, 42, 0.06);
-    --cp-shadow-md:      0 10px 30px rgba(15, 23, 42, 0.10);
+    --cp-shadow-sm:      0 1px 2px rgba(15, 23, 42, 0.06);
+    --cp-shadow-md:      0 2px 4px rgba(15, 23, 42, 0.08);
 
     /* Sidebar dimensions */
     --cp-sidebar-width:  260px;
@@ -129,7 +129,7 @@ html, body {
 .cp-sidebar-logo {
     width: 32px;
     height: 32px;
-    background: linear-gradient(135deg, var(--cp-primary) 0%, var(--cp-indigo) 100%);
+    background-color: var(--cp-primary);
     border-radius: var(--cp-radius-sm);
     display: flex;
     align-items: center;
@@ -263,7 +263,7 @@ html, body {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--cp-indigo) 0%, var(--cp-primary) 100%);
+    background-color: var(--cp-indigo);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -464,7 +464,7 @@ html, body {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--cp-indigo) 0%, var(--cp-primary) 100%);
+    background-color: var(--cp-indigo);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -539,58 +539,16 @@ html, body {
     overflow-y: auto;
     padding: var(--cp-space-lg) var(--cp-space-xl);
     position: relative;
-
-    /* Adventurous sky gradient background */
-    background:
-        /* Distant mountains silhouette */
-        linear-gradient(175deg,
-            transparent 60%,
-            rgba(99,102,241,0.06) 60%,
-            rgba(99,102,241,0.04) 70%,
-            transparent 70%),
-        linear-gradient(170deg,
-            transparent 65%,
-            rgba(14,165,233,0.05) 65%,
-            rgba(14,165,233,0.03) 75%,
-            transparent 75%),
-        /* Sky gradient — bright blue top fading to warm light */
-        linear-gradient(180deg,
-            #E8F4FD 0%,
-            #F0F7FF 15%,
-            #F4F7FB 40%,
-            #FDF8F0 80%,
-            #F9F0E8 100%);
+    background-color: var(--cp-page-bg);
 }
 
 /* Page header */
 .cp-page-header {
-    margin-bottom: var(--cp-space-xl);
-    padding: 24px 28px;
-    background: linear-gradient(135deg, rgba(14,165,233,0.07) 0%, rgba(99,102,241,0.05) 100%);
-    border: 1px solid rgba(14,165,233,0.12);
-    border-radius: var(--cp-radius-lg);
-    position: relative;
-    overflow: hidden;
-}
-.cp-page-header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--cp-primary), var(--cp-indigo), var(--cp-primary));
-    border-radius: 3px 3px 0 0;
-}
-.cp-page-header::after {
-    content: '☁';
-    position: absolute;
-    top: -12px;
-    right: 24px;
-    font-size: 80px;
-    opacity: 0.05;
-    pointer-events: none;
-    line-height: 1;
+    margin-bottom: var(--cp-space-lg);
+    padding: 18px 20px;
+    background-color: var(--cp-surface);
+    border: 1px solid var(--cp-border);
+    border-radius: var(--cp-radius-md);
 }
 .cp-page-header h2 {
     font-size: 22px;
@@ -627,28 +585,12 @@ html, body {
    8. Cards
    ------------------------------------------------------------- */
 .cp-card {
-    background: linear-gradient(135deg, #FFFFFF 0%, #FAFCFF 100%);
+    background-color: var(--cp-surface);
     border: 1px solid var(--cp-border);
     border-radius: var(--cp-radius-md);
     box-shadow: var(--cp-shadow-sm);
-    padding: var(--cp-space-lg);
+    padding: var(--cp-space-md);
     margin-bottom: var(--cp-space-md);
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.15s, box-shadow 0.15s;
-}
-.cp-card:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--cp-shadow-md);
-}
-.cp-card::before {
-    content: '';
-    position: absolute;
-    top: -30px; right: -30px;
-    width: 80px; height: 80px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(14,165,233,0.04) 0%, transparent 70%);
-    pointer-events: none;
 }
 .cp-card-title {
     font-size: 15px;
@@ -668,57 +610,25 @@ html, body {
     border: 1px solid var(--cp-border);
     border-radius: var(--cp-radius-md);
     box-shadow: var(--cp-shadow-sm);
-    padding: var(--cp-space-lg);
+    padding: var(--cp-space-md);
     display: flex;
     align-items: flex-start;
     gap: var(--cp-space-md);
     border-left: 3px solid transparent;
-    transition: transform 0.15s, box-shadow 0.15s;
-    position: relative;
-    overflow: hidden;
-}
-.cp-stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--cp-shadow-md);
 }
 .cp-stat-card:nth-child(1) { border-left-color: var(--cp-warning); }
 .cp-stat-card:nth-child(2) { border-left-color: var(--cp-primary); }
 .cp-stat-card:nth-child(3) { border-left-color: var(--cp-success); }
 .cp-stat-card:nth-child(4) { border-left-color: var(--cp-indigo); }
-.cp-stat-card::before {
-    content: '';
-    position: absolute;
-    top: -30px;
-    right: -30px;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(14,165,233,0.05) 0%, transparent 70%);
-    pointer-events: none;
-}
 .cp-stat-icon {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     border-radius: var(--cp-radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
+    font-size: 20px;
     flex-shrink: 0;
-    position: relative;
-    overflow: hidden;
-}
-.cp-stat-icon::after {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%;
-    width: 200%; height: 200%;
-    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
-    animation: iconShine 3s ease-in-out infinite;
-}
-@keyframes iconShine {
-    0%   { transform: translateX(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) rotate(45deg); }
 }
 .cp-stat-icon.blue   { background: rgba(14,165,233,0.12); color: var(--cp-primary); }
 .cp-stat-icon.indigo { background: rgba(99,102,241,0.12); color: var(--cp-indigo); }
@@ -740,24 +650,21 @@ html, body {
 
 /* Module / content card */
 .cp-module-card {
-    background: linear-gradient(135deg, #FFFFFF 0%, rgba(14,165,233,0.02) 100%);
+    background-color: var(--cp-surface);
     border: 1px solid var(--cp-border);
     border-left: 3px solid var(--cp-primary);
     border-radius: var(--cp-radius-md);
-    box-shadow: var(--cp-shadow-sm);
-    padding: var(--cp-space-md) var(--cp-space-lg);
-    transition: box-shadow 0.15s, border-color 0.15s, transform 0.15s;
+    padding: var(--cp-space-md);
+    transition: border-color 0.15s;
     text-decoration: none;
     display: block;
     color: var(--cp-text);
     margin-bottom: var(--cp-space-sm);
 }
 .cp-module-card:hover {
-    box-shadow: 0 8px 24px rgba(14,165,233,0.1);
     border-left-color: var(--cp-indigo);
     text-decoration: none;
     color: var(--cp-text);
-    transform: translateY(-1px);
 }
 
 /* Locked state for content cards */
@@ -790,7 +697,7 @@ html, body {
 }
 .cp-btn:focus-visible {
     outline: 2px solid var(--cp-primary);
-    outline-offset: 2px;
+    outline-offset: 1px;
 }
 
 .cp-btn-primary {
@@ -881,7 +788,7 @@ html, body {
     display: inline-flex;
     align-items: center;
     padding: 2px 8px;
-    border-radius: 20px;
+    border-radius: 4px;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.02em;
@@ -900,7 +807,7 @@ html, body {
     align-items: center;
     gap: 5px;
     padding: 4px 12px;
-    border-radius: 20px;
+    border-radius: 4px;
     font-size: 12px;
     font-weight: 600;
 }
@@ -931,21 +838,8 @@ html, body {
 .cp-progress-bar {
     height: 100%;
     border-radius: 4px;
-    background: linear-gradient(90deg, var(--cp-primary) 0%, var(--cp-indigo) 100%);
+    background-color: var(--cp-primary);
     transition: width 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-.cp-progress-bar::after {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%; width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    animation: progressShimmer 2s linear infinite;
-}
-@keyframes progressShimmer {
-    0%   { left: -100%; }
-    100% { left: 100%; }
 }
 .cp-progress-bar.success { background: var(--cp-success); }
 .cp-progress-bar.warning { background: var(--cp-warning); }
@@ -964,28 +858,23 @@ html, body {
    ------------------------------------------------------------- */
 .cp-empty-state {
     text-align: center;
-    padding: var(--cp-space-2xl) var(--cp-space-xl);
+    padding: var(--cp-space-xl) var(--cp-space-lg);
     color: var(--cp-text-muted);
-    background: linear-gradient(135deg, rgba(14,165,233,0.03) 0%, rgba(99,102,241,0.03) 100%);
-    border: 1px dashed rgba(14,165,233,0.2);
-    border-radius: var(--cp-radius-lg);
+    background-color: var(--cp-surface);
+    border: 1px dashed var(--cp-border);
+    border-radius: var(--cp-radius-md);
 }
 .cp-empty-state-icon {
-    width: 72px;
-    height: 72px;
-    margin: 0 auto 16px;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(14,165,233,0.1), rgba(99,102,241,0.1));
+    background-color: var(--cp-page-bg);
     border-radius: 50%;
-    font-size: 32px;
-    border: 2px solid rgba(14,165,233,0.15);
-    animation: emptyBob 3s ease-in-out infinite;
-}
-@keyframes emptyBob {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-8px); }
+    font-size: 26px;
+    border: 1px solid var(--cp-border);
 }
 .cp-empty-state h3 {
     font-size: 16px;
@@ -1192,27 +1081,9 @@ html, body {
     border: 1px solid rgba(245,158,11,0.25);
     color: #B45309;
     padding: 3px 10px;
-    border-radius: 20px;
+    border-radius: 4px;
     font-size: 12px;
     font-weight: 700;
-    position: relative;
-    overflow: hidden;
-    animation: xpPulse 2s ease-in-out infinite;
-}
-.cp-xp-chip::before {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%; width: 200%; height: 200%;
-    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.25) 50%, transparent 70%);
-    animation: chipShine 3s ease-in-out infinite;
-}
-@keyframes xpPulse {
-    0%,100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); }
-    50%     { box-shadow: 0 0 8px 2px rgba(245,158,11,0.12); }
-}
-@keyframes chipShine {
-    0%   { transform: translateX(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) rotate(45deg); }
 }
 
 /* -------------------------------------------------------------
@@ -1385,8 +1256,8 @@ html, body {
 .cp-footer-logo {
     width: 28px;
     height: 28px;
-    background: linear-gradient(135deg, var(--cp-primary), var(--cp-indigo));
-    border-radius: 7px;
+    background-color: var(--cp-primary);
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1447,7 +1318,7 @@ html, body {
     background: rgba(14, 165, 233, 0.1);
     color: var(--cp-primary);
     border: 1px solid rgba(14, 165, 233, 0.2);
-    border-radius: 20px;
+    border-radius: 4px;
     font-size: 11px;
     font-weight: 700;
     padding: 2px 10px;
@@ -1475,323 +1346,7 @@ html, body {
 }
 
 
-/* -------------------------------------------------------------
-   Gamified Page Background — subtle grid pattern + gradient glow
-   Makes pages feel alive instead of plain white
-   ------------------------------------------------------------- */
-.cp-page {
-    background:
-        linear-gradient(180deg, #F4F7FB 0%, #EDF2FC 40%, #F4F7FB 100%),
-        linear-gradient(rgba(14,165,233,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(14,165,233,0.02) 1px, transparent 1px);
-    background-size: 100% 100%, 40px 40px, 40px 40px;
-    position: relative;
-}
-
-/* Decorative floating orbs (pseudo-elements on page) */
-.cp-page::before {
-    content: '';
-    position: fixed;
-    top: 120px;
-    right: -60px;
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(14,165,233,0.06) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-}
-.cp-page::after {
-    content: '';
-    position: fixed;
-    bottom: 80px;
-    left: -40px;
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(99,102,241,0.05) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-}
-
-/* Ensure page content sits above decorative elements */
-.cp-page > * {
-    position: relative;
-    z-index: 1;
-}
-
-/* Gamified stat card enhancements */
-.cp-stat-card {
-    border-left: 3px solid transparent;
-    transition: transform 0.15s, box-shadow 0.15s;
-}
-.cp-stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--cp-shadow-md);
-}
-.cp-stat-card:nth-child(1) { border-left-color: var(--cp-warning); }
-.cp-stat-card:nth-child(2) { border-left-color: var(--cp-primary); }
-.cp-stat-card:nth-child(3) { border-left-color: var(--cp-success); }
-.cp-stat-card:nth-child(4) { border-left-color: var(--cp-indigo); }
-
-/* Module card hover glow */
-.cp-module-card {
-    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
-}
-.cp-module-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(14,165,233,0.1);
-    border-color: rgba(14,165,233,0.3);
-}
-
-/* XP chip pulse animation */
-.cp-xp-chip {
-    animation: xpPulse 2s ease-in-out infinite;
-}
-@keyframes xpPulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); }
-    50%      { box-shadow: 0 0 8px 2px rgba(245,158,11,0.15); }
-}
-
-/* Badge card celebration shine */
-.cp-stat-icon {
-    position: relative;
-    overflow: hidden;
-}
-.cp-stat-icon::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(
-        45deg,
-        transparent 30%,
-        rgba(255,255,255,0.15) 50%,
-        transparent 70%
-    );
-    animation: iconShine 3s ease-in-out infinite;
-}
-@keyframes iconShine {
-    0%   { transform: translateX(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) rotate(45deg); }
-}
-
-/* Empty state illustration enhancement */
-.cp-empty-state-icon {
-    animation: emptyBob 3s ease-in-out infinite;
-}
-@keyframes emptyBob {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-8px); }
-}
-
-/* Progress bar shimmer */
-.cp-progress-bar {
-    position: relative;
-    overflow: hidden;
-}
-.cp-progress-bar::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255,255,255,0.3),
-        transparent
-    );
-    animation: progressShimmer 2s linear infinite;
-}
-@keyframes progressShimmer {
-    0%   { left: -100%; }
-    100% { left: 100%; }
-}
-
-/* Card hover lift globally */
-.cp-card {
-    transition: transform 0.15s, box-shadow 0.15s;
-}
-.cp-card:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--cp-shadow-md);
-}
-
 /* Table row hover highlight */
 .cp-table tbody tr {
     transition: background 0.12s;
-}
-
-
-/* =============================================================
-   GAMIFIED VISUAL ENHANCEMENTS
-   Makes every page feel alive, engaging, and cloud-themed.
-   ============================================================= */
-
-/* Page header with gradient accent and decorative cloud */
-.cp-page-header {
-    position: relative;
-    padding: 24px 28px;
-    background: linear-gradient(135deg, rgba(14,165,233,0.06) 0%, rgba(99,102,241,0.04) 100%);
-    border: 1px solid rgba(14,165,233,0.12);
-    border-radius: var(--cp-radius-lg);
-    overflow: hidden;
-}
-.cp-page-header::before {
-    content: '☁';
-    position: absolute;
-    top: -10px;
-    right: 20px;
-    font-size: 80px;
-    opacity: 0.06;
-    pointer-events: none;
-    line-height: 1;
-}
-.cp-page-header::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--cp-primary), var(--cp-indigo), var(--cp-primary));
-    border-radius: 3px 3px 0 0;
-}
-
-/* Section titles with left accent bar */
-.cp-page h3 {
-    position: relative;
-    padding-left: 14px;
-}
-.cp-page h3::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 2px;
-    bottom: 2px;
-    width: 3px;
-    background: linear-gradient(180deg, var(--cp-primary), var(--cp-indigo));
-    border-radius: 3px;
-}
-
-/* Stat card icons — larger and more engaging */
-.cp-stat-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    font-size: 22px;
-}
-
-/* Module card with left colour accent */
-.cp-module-card {
-    border-left: 3px solid var(--cp-primary);
-    background: linear-gradient(135deg, #FFFFFF 0%, rgba(14,165,233,0.02) 100%);
-}
-.cp-module-card:hover {
-    border-left-color: var(--cp-indigo);
-}
-
-/* Card with cloud decoration */
-.cp-card {
-    position: relative;
-    overflow: hidden;
-}
-.cp-card::before {
-    content: '';
-    position: absolute;
-    top: -40px;
-    right: -40px;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(14,165,233,0.04) 0%, transparent 70%);
-    pointer-events: none;
-}
-
-/* Empty state — more visual with gradient ring */
-.cp-empty-state {
-    padding: var(--cp-space-2xl) var(--cp-space-xl);
-    background: linear-gradient(135deg, rgba(14,165,233,0.03) 0%, rgba(99,102,241,0.03) 100%);
-    border: 1px dashed rgba(14,165,233,0.15);
-    border-radius: var(--cp-radius-lg);
-}
-.cp-empty-state-icon {
-    width: 72px;
-    height: 72px;
-    margin: 0 auto 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, rgba(14,165,233,0.1), rgba(99,102,241,0.1));
-    border-radius: 50%;
-    font-size: 32px;
-    border: 2px solid rgba(14,165,233,0.15);
-}
-
-/* Alert cards — more visual */
-.cp-alert {
-    border-left: 4px solid currentColor;
-    background-size: 100% 100%, 20px 20px;
-}
-
-/* Table header with gradient */
-.cp-table th {
-    background: linear-gradient(135deg, #F8FAFC 0%, #F0F4FA 100%);
-}
-
-/* XP chip glow */
-.cp-xp-chip {
-    position: relative;
-    overflow: hidden;
-}
-.cp-xp-chip::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
-    animation: chipShine 3s ease-in-out infinite;
-}
-@keyframes chipShine {
-    0%   { transform: translateX(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) rotate(45deg); }
-}
-
-/* Badge cards — celebratory */
-.cp-badge-blue  { position: relative; overflow: hidden; }
-.cp-badge-green { position: relative; overflow: hidden; }
-
-/* Progress wrap enhanced */
-.cp-progress-wrap {
-    height: 8px;
-    border-radius: 4px;
-    background: linear-gradient(90deg, #E2E8F0, #F1F5F9);
-}
-
-/* Nav link icons — slightly larger */
-.cp-nav-icon {
-    font-size: 16px;
-    width: 22px;
-}
-
-/* Footer — subtle gradient */
-.cp-footer {
-    background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
-}
-
-/* Global hover lift for interactive elements */
-.cp-btn:hover {
-    transform: translateY(-1px);
-}
-
-/* Responsive: on smaller screens reduce decorative elements */
-@media screen and (max-width: 600px) {
-    .cp-page-header::before { display: none; }
-    .cp-stat-icon { width: 40px; height: 40px; font-size: 18px; }
 }

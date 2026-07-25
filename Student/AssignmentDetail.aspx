@@ -4,13 +4,13 @@
 
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-.asgn-hero{background:linear-gradient(135deg,#0F172A,#1E293B);padding:28px 32px;color:#fff;
+.asgn-hero{background-color:#0F172A;padding:28px 32px;color:#fff;
     border-radius:0;margin:-24px -32px 24px;position:relative;}
 .asgn-hero a{color:#38BDF8;font-size:13px;text-decoration:none;}
 .asgn-hero h1{font-size:24px;font-weight:800;margin:10px 0 6px;}
 .asgn-hero p{font-size:13px;color:rgba(255,255,255,0.5);margin:0;}
 .asgn-meta{display:flex;gap:16px;margin-top:10px;font-size:12px;color:rgba(255,255,255,0.4);}
-.asgn-q{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:20px;margin-bottom:14px;}
+.asgn-q{background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:20px;margin-bottom:14px;}
 .asgn-q-num{font-size:11px;font-weight:700;color:#6366F1;text-transform:uppercase;margin-bottom:6px;}
 .asgn-q-text{font-size:15px;font-weight:600;color:#172033;margin-bottom:14px;line-height:1.5;}
 .asgn-q-type{font-size:11px;color:#64748B;margin-bottom:10px;}

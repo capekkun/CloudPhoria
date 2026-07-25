@@ -4,7 +4,7 @@
 
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-.up-page{background:linear-gradient(180deg,#0F172A 0%,#1E293B 100%);
+.up-page{background-color:#0F172A;
     margin:-24px -32px;padding:60px 32px;min-height:calc(100vh - 72px);}
 .up-title{text-align:center;color:#fff;margin-bottom:48px;}
 .up-title h1{font-size:32px;font-weight:800;margin:0 0 8px;}
@@ -12,14 +12,13 @@
 
 /* Plan cards */
 .up-cards{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:800px;margin:0 auto;}
-.up-card{background:#1E293B;border:1px solid rgba(255,255,255,0.08);border-radius:16px;
-    padding:36px 32px;position:relative;transition:transform 0.2s,border-color 0.2s;}
-.up-card:hover{transform:translateY(-4px);}
-.up-card-pro{border-color:#6366F1;background:linear-gradient(135deg,#1E293B,#312E81 120%);}
+.up-card{background:#1E293B;border:1px solid rgba(255,255,255,0.08);border-radius:8px;
+    padding:36px 32px;position:relative;transition:border-color 0.2s;}
+.up-card-pro{border-color:#6366F1;background-color:#1E293B;}
 .up-card-pro::before{content:'RECOMMENDED';position:absolute;top:-12px;left:50%;
-    transform:translateX(-50%);background:linear-gradient(90deg,#6366F1,#8B5CF6);
+    transform:translateX(-50%);background-color:#6366F1;
     color:#fff;font-size:10px;font-weight:700;letter-spacing:0.1em;
-    padding:4px 16px;border-radius:12px;}
+    padding:4px 16px;border-radius:8px;}
 
 .up-plan-name{font-size:14px;font-weight:600;color:rgba(255,255,255,0.6);margin:0 0 4px;
     text-transform:uppercase;letter-spacing:0.05em;}
@@ -38,14 +37,14 @@
 .up-cross{color:#64748B;font-size:14px;flex-shrink:0;}
 
 /* Buttons */
-.up-btn{display:block;width:100%;padding:14px;text-align:center;border-radius:10px;
-    font-size:15px;font-weight:700;cursor:pointer;transition:all 0.15s;
+.up-btn{display:block;width:100%;padding:14px;text-align:center;border-radius:8px;
+    font-size:15px;font-weight:700;cursor:pointer;transition:background 0.15s;
     text-decoration:none;border:none;font-family:inherit;}
 .up-btn-free{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.5);
     border:1px solid rgba(255,255,255,0.1);}
-.up-btn-pro{background:linear-gradient(90deg,#6366F1,#8B5CF6);color:#fff;
-    box-shadow:0 8px 24px rgba(99,102,241,0.3);}
-.up-btn-pro:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(99,102,241,0.4);color:#fff;text-decoration:none;}
+.up-btn-pro{background-color:#6366F1;color:#fff;
+    box-shadow:0 2px 8px rgba(99,102,241,0.2);}
+.up-btn-pro:hover{background-color:#4F46E5;color:#fff;text-decoration:none;}
 .up-btn-current{background:rgba(34,197,94,0.15);color:#22C55E;border:1px solid rgba(34,197,94,0.3);
     cursor:default;}
 
@@ -53,8 +52,8 @@
 .up-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);
     z-index:10000;align-items:center;justify-content:center;padding:24px;}
 .up-modal-overlay.show{display:flex;}
-.up-modal{background:#fff;border-radius:16px;max-width:480px;width:100%;padding:36px;
-    position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+.up-modal{background:#fff;border-radius:8px;max-width:480px;width:100%;padding:36px;
+    position:relative;box-shadow:0 2px 12px rgba(0,0,0,0.1);}
 .up-modal-close{position:absolute;top:16px;right:16px;background:none;border:none;
     font-size:20px;color:#64748B;cursor:pointer;}
 .up-modal h2{font-size:22px;font-weight:700;color:#172033;margin:0 0 8px;}
@@ -67,7 +66,7 @@
 .up-modal-input:focus{outline:none;border-color:#6366F1;box-shadow:0 0 0 3px rgba(99,102,241,0.1);}
 .up-modal-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .up-modal-btn{display:block;width:100%;padding:14px;background:#6366F1;color:#fff;
-    border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;
+    border:none;border-radius:6px;font-size:15px;font-weight:700;cursor:pointer;
     margin-top:20px;font-family:inherit;transition:background 0.15s;}
 .up-modal-btn:hover{background:#4F46E5;}
 .up-modal-secure{text-align:center;font-size:12px;color:#94A3B8;margin-top:12px;}

@@ -7,18 +7,18 @@
 .pw-hero{background-color:#0F172A;background-size:cover;background-position:center;
     padding:40px 32px;color:#fff;border-radius:0;margin:-24px -32px 24px;position:relative;overflow:hidden;}
 .pw-hero::before{content:'';position:absolute;inset:0;
-    background:linear-gradient(135deg,rgba(15,23,42,0.88) 0%,rgba(30,41,59,0.78) 60%,rgba(15,23,42,0.92) 100%);
+    background-color:rgba(15,23,42,0.88);
     pointer-events:none;}
 .pw-hero a{color:#38BDF8;font-size:13px;text-decoration:none;position:relative;z-index:2;}
 .pw-hero h1{font-size:34px;font-weight:800;margin:12px 0 10px;position:relative;z-index:2;}
 .pw-hero p{font-size:14px;color:rgba(255,255,255,0.65);max-width:640px;line-height:1.7;margin:0 0 20px;position:relative;z-index:2;}
 .pw-hero-meta{display:flex;gap:20px;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,0.5);position:relative;z-index:2;margin-bottom:20px;}
 .pw-hero-meta span{display:flex;align-items:center;gap:5px;}
-.pw-enroll-btn{display:inline-block;padding:12px 28px;background:linear-gradient(90deg,#0EA5E9,#6366F1);
+.pw-enroll-btn{display:inline-block;padding:12px 28px;background-color:#0EA5E9;
     color:#fff;font-size:14px;font-weight:600;border-radius:8px;text-decoration:none;
-    transition:opacity 0.15s,transform 0.15s;position:relative;z-index:2;border:none;cursor:pointer;}
-.pw-enroll-btn:hover{opacity:0.9;transform:translateY(-1px);color:#fff;text-decoration:none;}
-.pw-enroll-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+    transition:opacity 0.15s;position:relative;z-index:2;border:none;cursor:pointer;}
+.pw-enroll-btn:hover{opacity:0.9;color:#fff;text-decoration:none;}
+.pw-enroll-btn:disabled{opacity:0.5;cursor:not-allowed;}
 
 /* Sections */
 .pw-section{margin-bottom:28px;}
@@ -26,11 +26,11 @@
 
 /* Module cards */
 .pw-mod-list{display:flex;flex-direction:column;gap:12px;}
-.pw-mod-card{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:18px 20px;
-    display:flex;align-items:center;gap:16px;transition:border-color 0.15s,transform 0.15s;
+.pw-mod-card{background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:18px 20px;
+    display:flex;align-items:center;gap:16px;transition:border-color 0.15s;
     text-decoration:none;color:inherit;}
-.pw-mod-card:hover{border-color:#0EA5E9;transform:translateY(-1px);text-decoration:none;color:inherit;}
-.pw-mod-num{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#0EA5E9,#6366F1);
+.pw-mod-card:hover{border-color:#0EA5E9;text-decoration:none;color:inherit;}
+.pw-mod-num{width:40px;height:40px;border-radius:50%;background-color:#0EA5E9;
     display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;}
 .pw-mod-info{flex:1;min-width:0;}
 .pw-mod-name{font-size:14px;font-weight:600;color:#172033;}
@@ -38,25 +38,23 @@
 .pw-mod-badge{font-size:11px;}
 
 /* Certification preview */
-.pw-cert-card{background:linear-gradient(135deg,#F0F9FF,#EEF2FF);border:2px solid #0EA5E9;
-    border-radius:14px;padding:28px;text-align:center;position:relative;overflow:hidden;}
-.pw-cert-card::before{content:'';position:absolute;inset:0;
-    background:radial-gradient(circle at 50% 0%,rgba(14,165,233,0.08),transparent 60%);pointer-events:none;}
+.pw-cert-card{background-color:#F0F9FF;border:2px solid #0EA5E9;
+    border-radius:8px;padding:28px;text-align:center;position:relative;overflow:hidden;}
 .pw-cert-image{max-width:220px;width:100%;height:auto;margin:0 auto 16px;display:block;position:relative;z-index:1;border-radius:8px;}
 .pw-cert-name{font-size:18px;font-weight:700;color:#172033;margin:0 0 8px;position:relative;z-index:1;}
 .pw-cert-desc{font-size:13px;color:#64748B;max-width:400px;margin:0 auto;line-height:1.6;position:relative;z-index:1;}
 
 /* Exam info */
-.pw-exam-card{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:20px;
+.pw-exam-card{background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:20px;
     border-left:4px solid #6366F1;}
 .pw-exam-card h3{font-size:15px;font-weight:700;margin:0 0 10px;color:#172033;}
 .pw-exam-details{display:flex;gap:20px;flex-wrap:wrap;font-size:13px;color:#64748B;}
 
 /* Progress */
-.pw-progress-card{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:20px;}
+.pw-progress-card{background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:20px;}
 .pw-progress-label{display:flex;justify-content:space-between;font-size:13px;color:#64748B;margin-bottom:8px;}
 .pw-progress-bar-wrap{background:#E2E8F0;border-radius:6px;height:10px;overflow:hidden;}
-.pw-progress-bar-fill{background:linear-gradient(90deg,#0EA5E9,#6366F1);height:100%;border-radius:6px;transition:width 0.3s;}
+.pw-progress-bar-fill{background-color:#0EA5E9;height:100%;border-radius:6px;transition:width 0.3s;}
 
 @media(max-width:768px){
     .pw-hero{padding:28px 20px;margin:-16px -16px 16px;}
@@ -89,7 +87,7 @@
         </span>
     </asp:Panel>
     <asp:Panel ID="pnlUpgradeNeeded" runat="server" Visible="false">
-        <a href="/Register.aspx" class="pw-enroll-btn" style="background:linear-gradient(90deg,#F59E0B,#EF4444);text-decoration:none;">
+        <a href="/Register.aspx" class="pw-enroll-btn" style="background-color:#F59E0B;text-decoration:none;">
             Register / Upgrade to Enroll
         </a>
     </asp:Panel>
@@ -167,7 +165,7 @@
                 <asp:Repeater ID="rptModuleExams" runat="server">
                     <ItemTemplate>
                         <div class="pw-mod-card" style="cursor:default;">
-                            <div class="pw-mod-num" style="background:linear-gradient(135deg,#6366F1,#8B5CF6);font-size:16px;">
+                            <div class="pw-mod-num" style="background-color:#6366F1;font-size:16px;">
                                 <%# Container.ItemIndex + 1 %>
                             </div>
                             <div class="pw-mod-info">

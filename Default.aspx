@@ -35,32 +35,6 @@
             overflow: hidden;
         }
 
-        /* Background grid pattern */
-        .lp-page::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(14,165,233,0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(14,165,233,0.04) 1px, transparent 1px);
-            background-size: 60px 60px;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* Bottom glow */
-        .lp-page::after {
-            content: '';
-            position: absolute;
-            bottom: -120px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 900px;
-            height: 400px;
-            background: radial-gradient(ellipse at center, rgba(99,102,241,0.18) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
 
         /* =========================================================
            TOP NAVIGATION
@@ -90,8 +64,8 @@
         .lp-brand-icon {
             width: 36px;
             height: 36px;
-            background: linear-gradient(135deg, #0EA5E9 0%, #6366F1 100%);
-            border-radius: 9px;
+            background-color: #0EA5E9;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -244,7 +218,6 @@
             background: #0284C7;
             border-color: #0284C7;
             color: #FFFFFF;
-            transform: translateY(-1px);
         }
         .lp-cta-outline {
             padding: 13px 28px;
@@ -295,26 +268,6 @@
             width: 380px;
             height: 380px;
             position: relative;
-            filter: drop-shadow(0 0 60px rgba(14,165,233,0.25));
-            animation: float 4s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50%       { transform: translateY(-18px); }
-        }
-
-        /* Glow behind the character */
-        .lp-hero-visual::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 320px;
-            height: 320px;
-            background: radial-gradient(circle, rgba(14,165,233,0.15) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
         }
 
         /* =========================================================
@@ -579,8 +532,8 @@
         </div>
         <div style="text-align:center;margin-top:32px;">
             <a href="Register.aspx" style="display:inline-block;padding:14px 32px;
-                background:linear-gradient(90deg,#0EA5E9,#6366F1);color:#fff;font-size:15px;
-                font-weight:700;border-radius:10px;text-decoration:none;">
+                background-color:#0EA5E9;color:#fff;font-size:15px;
+                font-weight:700;border-radius:8px;text-decoration:none;">
                 Join for Free to Start Learning
             </a>
         </div>

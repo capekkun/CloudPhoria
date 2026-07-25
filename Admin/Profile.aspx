@@ -28,7 +28,7 @@
             <div class="cp-card" style="text-align:center;padding:32px 24px;">
                 <%-- Avatar --%>
                 <div style="width:72px;height:72px;border-radius:50%;
-                            background:linear-gradient(135deg,var(--cp-indigo),var(--cp-primary));
+                            background-color:var(--cp-indigo);
                             display:flex;align-items:center;justify-content:center;
                             font-size:26px;font-weight:700;color:#fff;
                             margin:0 auto 16px;border:3px solid var(--cp-border);">
