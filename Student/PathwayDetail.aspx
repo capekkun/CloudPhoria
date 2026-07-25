@@ -26,7 +26,7 @@
 
 /* Module cards */
 .pw-mod-list{display:flex;flex-direction:column;gap:12px;}
-.pw-mod-card{background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:18px 20px;
+.pw-mod-card{background:#fff;border:1px solid #CBD5E1;border-radius:8px;padding:18px 20px;
     display:flex;align-items:center;gap:16px;transition:border-color 0.15s;
     text-decoration:none;color:inherit;}
 .pw-mod-card:hover{border-color:#0EA5E9;text-decoration:none;color:inherit;}
@@ -45,15 +45,15 @@
 .pw-cert-desc{font-size:13px;color:#64748B;max-width:400px;margin:0 auto;line-height:1.6;position:relative;z-index:1;}
 
 /* Exam info */
-.pw-exam-card{background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:20px;
+.pw-exam-card{background:#fff;border:1px solid #CBD5E1;border-radius:8px;padding:20px;
     border-left:4px solid #6366F1;}
 .pw-exam-card h3{font-size:15px;font-weight:700;margin:0 0 10px;color:#172033;}
 .pw-exam-details{display:flex;gap:20px;flex-wrap:wrap;font-size:13px;color:#64748B;}
 
 /* Progress */
-.pw-progress-card{background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:20px;}
+.pw-progress-card{background:#fff;border:1px solid #CBD5E1;border-radius:8px;padding:20px;}
 .pw-progress-label{display:flex;justify-content:space-between;font-size:13px;color:#64748B;margin-bottom:8px;}
-.pw-progress-bar-wrap{background:#E2E8F0;border-radius:6px;height:10px;overflow:hidden;}
+.pw-progress-bar-wrap{background:#CBD5E1;border-radius:6px;height:10px;overflow:hidden;}
 .pw-progress-bar-fill{background-color:#0EA5E9;height:100%;border-radius:6px;transition:width 0.3s;}
 
 @media(max-width:768px){

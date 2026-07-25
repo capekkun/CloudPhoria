@@ -62,7 +62,7 @@
 .up-modal-field{margin-bottom:16px;}
 .up-modal-label{display:block;font-size:13px;font-weight:500;color:#172033;margin-bottom:6px;}
 .up-modal-input{display:block;width:100%;padding:12px 14px;font-size:14px;
-    border:1.5px solid #E2E8F0;border-radius:8px;font-family:inherit;box-sizing:border-box;}
+    border:1.5px solid #CBD5E1;border-radius:8px;font-family:inherit;box-sizing:border-box;}
 .up-modal-input:focus{outline:none;border-color:#6366F1;box-shadow:0 0 0 3px rgba(99,102,241,0.1);}
 .up-modal-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .up-modal-btn{display:block;width:100%;padding:14px;background:#6366F1;color:#fff;

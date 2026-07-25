@@ -527,6 +527,27 @@ namespace CloudPhoria.Student
                             }
                         }
 
+                        // Award the module's badge on first pass (respects the
+                        // UNIQUE (StudentID, BadgeID) constraint — one badge per
+                        // student per module, never awarded twice).
+                        if (isPassed)
+                        {
+                            using (SqlCommand cmd = new SqlCommand(
+                                @"INSERT INTO UserBadges (StudentID, BadgeID, AwardedAt)
+                                  SELECT @SID, b.BadgeID, GETDATE()
+                                  FROM Badges b
+                                  WHERE b.ModuleID = @MID
+                                    AND NOT EXISTS (
+                                        SELECT 1 FROM UserBadges ub
+                                        WHERE ub.StudentID = @SID AND ub.BadgeID = b.BadgeID
+                                    )", conn, tx))
+                            {
+                                cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
+                                cmd.Parameters.Add("@MID", SqlDbType.Int).Value = moduleID;
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+
                         tx.Commit();
                     }
                 }

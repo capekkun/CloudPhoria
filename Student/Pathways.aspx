@@ -14,7 +14,7 @@
 .learn-stat-lbl{font-size:12px;color:rgba(255,255,255,0.45);margin-top:2px;display:block;}
 
 /* Tabs */
-.learn-tabs{display:flex;gap:0;border-bottom:2px solid #E2E8F0;margin:24px -32px 24px;padding:0 32px;background:#fff;}
+.learn-tabs{display:flex;gap:0;border-bottom:2px solid #CBD5E1;margin:24px -32px 24px;padding:0 32px;background:#fff;}
 .learn-tab{padding:14px 20px;font-size:13.5px;font-weight:500;color:#64748B;cursor:pointer;
     border-bottom:2.5px solid transparent;margin-bottom:-2px;text-decoration:none;transition:color 0.15s;}
 .learn-tab:hover{color:#172033;text-decoration:none;}
@@ -26,7 +26,7 @@
 
 /* Pathway grid cards */
 .pw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;}
-.pw-card{background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:0;overflow:hidden;
+.pw-card{background:#fff;border:1px solid #CBD5E1;border-radius:8px;padding:0;overflow:hidden;
     transition:box-shadow 0.15s,border-color 0.15s;text-decoration:none;color:#172033;display:block;}
 .pw-card:hover{box-shadow:0 2px 8px rgba(0,0,0,0.08);border-color:#0EA5E9;text-decoration:none;color:#172033;}
 .pw-card-top{height:110px;background-size:cover;background-position:center;position:relative;}
@@ -37,7 +37,7 @@
 
 /* Module list */
 .mod-list{display:flex;flex-direction:column;gap:12px;}
-.mod-row{background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:16px 20px;
+.mod-row{background:#fff;border:1px solid #CBD5E1;border-radius:8px;padding:16px 20px;
     display:flex;align-items:center;gap:16px;transition:border-color 0.15s;}
 .mod-row:hover{border-color:#0EA5E9;}
 .mod-ico{width:48px;height:48px;border-radius:8px;flex-shrink:0;background-size:cover;background-position:center;}

@@ -31,7 +31,7 @@
 
 /* Main Content Area */
 .teams-main{display:flex;flex-direction:column;overflow:hidden;background:#fff;}
-.teams-main-header{padding:16px 24px;border-bottom:1px solid #E5E7EB;background:#fff;
+.teams-main-header{padding:16px 24px;border-bottom:1px solid #CBD5E1;background:#fff;
     display:flex;align-items:center;justify-content:space-between;}
 .teams-main-header h3{font-size:16px;font-weight:700;color:#111827;margin:0;
     display:flex;align-items:center;gap:8px;}
@@ -59,9 +59,9 @@
 .teams-chat-empty{flex:1;display:flex;align-items:center;justify-content:center;
     flex-direction:column;color:#9CA3AF;text-align:center;padding:40px;}
 .teams-chat-empty span{font-size:52px;margin-bottom:12px;display:block;}
-.teams-chat-input{display:flex;gap:10px;padding:16px 24px;border-top:1px solid #E5E7EB;
+.teams-chat-input{display:flex;gap:10px;padding:16px 24px;border-top:1px solid #CBD5E1;
     background:#FAFBFC;}
-.teams-chat-input input[type=text]{flex:1;padding:12px 16px;border:1px solid #E5E7EB;
+.teams-chat-input input[type=text]{flex:1;padding:12px 16px;border:1px solid #CBD5E1;
     border-radius:8px;font-size:13px;outline:none;transition:border-color 0.15s;
     font-family:inherit;}
 .teams-chat-input input[type=text]:focus{border-color:#6366F1;}
@@ -72,7 +72,7 @@
 /* Files Panel */
 .teams-file-list{padding:20px 24px;display:flex;flex-direction:column;gap:10px;}
 .teams-file-item{display:flex;align-items:center;gap:14px;padding:14px 18px;background:#F9FAFB;
-    border:1px solid #E5E7EB;border-radius:8px;transition:border-color 0.15s;}
+    border:1px solid #CBD5E1;border-radius:8px;transition:border-color 0.15s;}
 .teams-file-item:hover{border-color:#6366F1;}
 .teams-file-icon{width:42px;height:42px;border-radius:8px;background-color:#EEF2FF;
     display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
@@ -85,7 +85,7 @@
 
 /* Assignments Panel */
 .teams-asgn-list{padding:20px 24px;display:flex;flex-direction:column;gap:12px;}
-.teams-asgn-card{background:#fff;border:1px solid #E5E7EB;border-radius:8px;padding:18px 20px;
+.teams-asgn-card{background:#fff;border:1px solid #CBD5E1;border-radius:8px;padding:18px 20px;
     border-left:4px solid #6366F1;transition:box-shadow 0.15s;}
 .teams-asgn-card:hover{box-shadow:0 1px 4px rgba(0,0,0,0.06);}
 .teams-asgn-title{font-size:15px;font-weight:700;color:#111827;margin:0 0 6px;}

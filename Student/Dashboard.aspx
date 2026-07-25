@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Dashboard" Language="C#" MasterPageFile="~/Site.Master"
+<%@ Page Title="Dashboard" Language="C#" MasterPageFile="~/Site.Master"
     AutoEventWireup="true" CodeBehind="Dashboard.aspx.cs"
     Inherits="CloudPhoria.Student.Dashboard" %>
 
