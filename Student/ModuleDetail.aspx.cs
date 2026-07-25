@@ -4,6 +4,7 @@ using System.Data;
 using System.Web;
 using System.Web.UI;
 using Microsoft.Data.SqlClient;
+using CloudPhoria;
 
 namespace CloudPhoria.Student
 {
@@ -57,6 +58,8 @@ namespace CloudPhoria.Student
                                 litDiffColour.Text = DiffCol(rdr["DifficultyLevel"].ToString());
                                 litXP.Text         = rdr["XPReward"].ToString();
                                 isFoundation       = Convert.ToBoolean(rdr["IsFoundation"]);
+                                modHeroBg.Style["background-image"] =
+                                    "url('" + Utils.GetPathwayBgImage(rdr["PathwayName"].ToString()) + "')";
                             }
                             else
                             {
@@ -150,7 +153,7 @@ namespace CloudPhoria.Student
                         {
                             case "Completed":
                                 row["StatusClass"] = "st-ico-done";
-                                row["StatusIcon"]  = "&#x2713;";
+                                row["StatusIcon"]  = "";
                                 row["StatusText"]  = "Completed";
                                 row["BadgeColour"] = "green";
                                 completed++;
@@ -163,7 +166,7 @@ namespace CloudPhoria.Student
                                 break;
                             default:
                                 row["StatusClass"] = "st-ico-locked";
-                                row["StatusIcon"]  = "&#x1F4D6;";
+                                row["StatusIcon"]  = "";
                                 row["StatusText"]  = "Not Started";
                                 row["BadgeColour"] = "grey";
                                 break;

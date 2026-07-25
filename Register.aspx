@@ -12,34 +12,34 @@
         html, body { height:100%; margin:0; padding:0; background:#0F172A;
             font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif; }
         .cp-reg-wrapper { min-height:100vh; display:flex; align-items:center; justify-content:center;
-            padding:24px 16px; background:linear-gradient(135deg,#0F172A 0%,#172033 60%,#0F172A 100%); }
-        .cp-reg-box { background:#fff; border-radius:18px; box-shadow:0 20px 60px rgba(0,0,0,0.35);
+            padding:24px 16px; background-color:#0F172A; }
+        .cp-reg-box { background:#fff; border-radius:8px; box-shadow:0 2px 12px rgba(0,0,0,0.1);
             width:100%; max-width:520px; overflow:hidden; }
-        .cp-reg-accent { height:4px; background:linear-gradient(90deg,#0EA5E9,#6366F1); }
+        .cp-reg-accent { height:4px; background-color:#0EA5E9; }
         .cp-reg-body { padding:36px 36px 32px; }
         .cp-reg-brand { display:flex; align-items:center; gap:10px; margin-bottom:24px; text-decoration:none; }
-        .cp-reg-logo { width:38px; height:38px; background:linear-gradient(135deg,#0EA5E9,#6366F1);
-            border-radius:10px; display:flex; align-items:center; justify-content:center;
+        .cp-reg-logo { width:38px; height:38px; background-color:#0EA5E9;
+            border-radius:6px; display:flex; align-items:center; justify-content:center;
             font-size:16px; font-weight:800; color:#fff; }
         .cp-reg-heading { font-size:22px; font-weight:700; color:#172033; margin:0 0 4px; }
         .cp-reg-sub { font-size:14px; color:#64748B; margin:0 0 24px; }
         .cp-reg-field { margin-bottom:16px; }
         .cp-reg-label { display:block; font-size:13px; font-weight:500; color:#172033; margin-bottom:5px; }
         .cp-reg-input { display:block; width:100%; padding:10px 14px; font-size:14px; color:#172033;
-            background:#F4F7FB; border:1.5px solid #E2E8F0; border-radius:9px;
+            background:#F4F7FB; border:1.5px solid #CBD5E1; border-radius:8px;
             transition:border-color 0.15s; font-family:inherit; box-sizing:border-box; }
         .cp-reg-input:focus { outline:none; border-color:#0EA5E9; background:#fff;
             box-shadow:0 0 0 3px rgba(14,165,233,0.12); }
         .cp-reg-select { display:block; width:100%; padding:10px 14px; font-size:14px;
-            background:#F4F7FB; border:1.5px solid #E2E8F0; border-radius:9px; font-family:inherit; box-sizing:border-box; }
+            background:#F4F7FB; border:1.5px solid #CBD5E1; border-radius:8px; font-family:inherit; box-sizing:border-box; }
         .cp-reg-btn { display:block; width:100%; padding:12px; background:#0EA5E9; color:#fff;
-            border:none; border-radius:9px; font-size:15px; font-weight:600; cursor:pointer;
+            border:none; border-radius:6px; font-size:15px; font-weight:600; cursor:pointer;
             transition:background 0.15s; font-family:inherit; margin-top:8px; }
         .cp-reg-btn:hover { background:#0284C7; }
         .cp-reg-footer { text-align:center; margin-top:18px; font-size:13px; color:#64748B; }
         .cp-reg-footer a { color:#0EA5E9; text-decoration:none; font-weight:500; }
         .cp-reg-alert { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25);
-            border-radius:9px; padding:11px 14px; font-size:13px; color:#DC2626; margin-bottom:16px; }
+            border-radius:8px; padding:11px 14px; font-size:13px; color:#DC2626; margin-bottom:16px; }
         .cp-reg-alert-success { background:rgba(34,197,94,0.08); border-color:rgba(34,197,94,0.25); color:#16A34A; }
         .cp-reg-error { font-size:12px; color:#EF4444; margin-top:4px; display:block; }
         .cp-reg-note { font-size:12px; color:#64748B; margin-top:6px; font-style:italic; }

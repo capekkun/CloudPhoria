@@ -1,8 +1,23 @@
-﻿<%@ Page Title="Dashboard" Language="C#" MasterPageFile="~/Site.Master"
+<%@ Page Title="Dashboard" Language="C#" MasterPageFile="~/Site.Master"
     AutoEventWireup="true" CodeBehind="Dashboard.aspx.cs"
     Inherits="CloudPhoria.Instructor.Dashboard" %>
 
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
+<style>
+a.cp-stat-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+a.cp-stat-card-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+    text-decoration: none;
+    color: inherit;
+}
+</style>
 </asp:Content>
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
@@ -16,7 +31,7 @@
             </div>
             <asp:Panel ID="pnlHeaderActions" runat="server" Visible="false">
                 <a href="Classrooms.aspx" class="cp-btn cp-btn-primary">
-                    &#x1F3EB; My Classrooms
+                    My Classrooms
                 </a>
             </asp:Panel>
         </div>
@@ -35,7 +50,7 @@
 
     <asp:Panel ID="pnlRejectedNotice" runat="server" Visible="false">
         <div class="cp-alert cp-alert-danger" style="margin-bottom:24px;">
-            <span style="font-size:18px;">&#x274C;</span>
+            <span style="font-size:18px;"></span>
             <div>
                 <strong>Licence Rejected</strong><br />
                 Your instructor application was not approved. Please contact an administrator for further guidance.
@@ -43,37 +58,37 @@
         </div>
     </asp:Panel>
 
-    <%-- Stat cards — only shown when approved --%>
+    <%-- Stat cards � only shown when approved --%>
     <asp:Panel ID="pnlStats" runat="server" Visible="false">
         <div class="cp-grid-4 cp-mb-lg">
-            <div class="cp-stat-card">
-                <div class="cp-stat-icon indigo" aria-hidden="true">&#x1F3EB;</div>
+            <a href="Classrooms.aspx" class="cp-stat-card cp-stat-card-link" aria-label="Go to My Classrooms">
+                <div class="cp-stat-icon indigo" aria-hidden="true"></div>
                 <div>
                     <div class="cp-stat-value"><asp:Literal ID="litClassroomCount" runat="server" Text="0" /></div>
                     <div class="cp-stat-label">My Classrooms</div>
                 </div>
-            </div>
-            <div class="cp-stat-card">
-                <div class="cp-stat-icon blue" aria-hidden="true">&#x1F4D6;</div>
+            </a>
+            <a href="Modules.aspx" class="cp-stat-card cp-stat-card-link" aria-label="Go to Modules">
+                <div class="cp-stat-icon blue" aria-hidden="true"></div>
                 <div>
                     <div class="cp-stat-value"><asp:Literal ID="litModuleCount" runat="server" Text="0" /></div>
                     <div class="cp-stat-label">Modules Created</div>
                 </div>
-            </div>
-            <div class="cp-stat-card">
-                <div class="cp-stat-icon green" aria-hidden="true">&#x1F393;</div>
+            </a>
+            <a href="Classrooms.aspx" class="cp-stat-card cp-stat-card-link" aria-label="Go to Classrooms to see students">
+                <div class="cp-stat-icon green" aria-hidden="true"></div>
                 <div>
                     <div class="cp-stat-value"><asp:Literal ID="litStudentCount" runat="server" Text="0" /></div>
                     <div class="cp-stat-label">Total Students</div>
                 </div>
-            </div>
-            <div class="cp-stat-card">
-                <div class="cp-stat-icon amber" aria-hidden="true">&#x1F4DD;</div>
+            </a>
+            <a href="Assignments.aspx" class="cp-stat-card cp-stat-card-link" aria-label="Go to Assignments">
+                <div class="cp-stat-icon amber" aria-hidden="true"></div>
                 <div>
                     <div class="cp-stat-value"><asp:Literal ID="litPendingAssignments" runat="server" Text="0" /></div>
                     <div class="cp-stat-label">Pending Submissions</div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <%-- Two-column layout --%>
@@ -108,7 +123,6 @@
 
                 <asp:Panel ID="pnlNoClassrooms" runat="server" Visible="false">
                     <div class="cp-empty-state">
-                        <span class="cp-empty-state-icon" aria-hidden="true">&#x1F3EB;</span>
                         <h3>No classrooms yet</h3>
                         <p>Create your first classroom to get started.</p>
                         <a href="Classrooms.aspx" class="cp-btn cp-btn-primary">Create Classroom</a>
@@ -146,7 +160,6 @@
 
                 <asp:Panel ID="pnlNoSubmissions" runat="server" Visible="false">
                     <div class="cp-empty-state">
-                        <span class="cp-empty-state-icon" aria-hidden="true">&#x2705;</span>
                         <h3>No pending submissions</h3>
                         <p>All assignment submissions have been reviewed.</p>
                     </div>
@@ -165,7 +178,7 @@
                     <ItemTemplate>
                         <div style="display:flex;align-items:center;gap:12px;
                                     padding:12px 16px;border-bottom:1px solid var(--cp-border);">
-                            <span style="font-size:16px;" aria-hidden="true">&#x1F514;</span>
+                            <span style="font-size:16px;" aria-hidden="true"></span>
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:13px;color:var(--cp-text);">
                                     <%# HttpUtility.HtmlEncode(Eval("Message").ToString()) %>

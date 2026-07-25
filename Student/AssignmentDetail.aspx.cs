@@ -178,7 +178,7 @@ namespace CloudPhoria.Student
                                     bool isSelected = existingAnswer == oRow["OptionText"].ToString();
                                     sb.AppendFormat("<div class='asgn-opt{0}' style='pointer-events:none;'>{1}{2}</div>",
                                         isSelected ? " selected" : "",
-                                        isSelected ? "&#x2713; " : "",
+                                        isSelected ? "" : "",
                                         oText);
                                 }
                             }
@@ -217,7 +217,7 @@ namespace CloudPhoria.Student
                         pnlSubmitBtn.Visible = true;
                     else
                     {
-                        litSuccess.Text = "&#x2713; You have already submitted this assignment.";
+                        litSuccess.Text = "You have already submitted this assignment.";
                         pnlSuccess.Visible = true;
                     }
                 }

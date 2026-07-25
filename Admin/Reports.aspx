@@ -10,7 +10,7 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x1F4CA; Reports &amp; Moderation</h2>
+                <h2>Reports &amp; Moderation</h2>
                 <p>Review user-submitted reports and take appropriate moderation actions.</p>
             </div>
         </div>
@@ -22,19 +22,19 @@
 
     <div class="cp-grid-4 cp-mb-lg">
         <div class="cp-stat-card">
-            <div class="cp-stat-icon red">&#x1F6A8;</div>
+            <div class="cp-stat-icon red"></div>
             <div><div class="cp-stat-value"><asp:Literal ID="litOpenCount" runat="server" Text="0" /></div><div class="cp-stat-label">Open</div></div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon amber">&#x1F441;</div>
+            <div class="cp-stat-icon amber"></div>
             <div><div class="cp-stat-value"><asp:Literal ID="litReviewedCount" runat="server" Text="0" /></div><div class="cp-stat-label">Reviewed</div></div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon green">&#x2714;</div>
+            <div class="cp-stat-icon green"></div>
             <div><div class="cp-stat-value"><asp:Literal ID="litActionCount" runat="server" Text="0" /></div><div class="cp-stat-label">Action Taken</div></div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon blue">&#x1F6AB;</div>
+            <div class="cp-stat-icon blue"></div>
             <div><div class="cp-stat-value"><asp:Literal ID="litDismissedCount" runat="server" Text="0" /></div><div class="cp-stat-label">Dismissed</div></div>
         </div>
     </div>
@@ -101,7 +101,6 @@
 
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x1F4CA;</span>
             <h3>No reports found</h3>
             <p>No reports match the selected status filter.</p>
         </div>

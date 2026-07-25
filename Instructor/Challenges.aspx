@@ -10,7 +10,7 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x26A1; Challenges</h2>
+                <h2>Challenges</h2>
                 <p>Create time-boxed challenges for your students to earn XP.</p>
             </div>
             <button type="button" class="cp-btn cp-btn-primary" onclick="showModal('createModal')">
@@ -20,11 +20,11 @@
     </div>
 
     <asp:Panel ID="pnlSuccess" runat="server" Visible="false">
-        <div class="cp-alert cp-alert-success"><span>&#x2714;</span>
+        <div class="cp-alert cp-alert-success"><span></span>
             <asp:Literal ID="litSuccess" runat="server" /></div>
     </asp:Panel>
     <asp:Panel ID="pnlError" runat="server" Visible="false">
-        <div class="cp-alert cp-alert-danger"><span>&#x26A0;</span>
+        <div class="cp-alert cp-alert-danger"><span></span>
             <asp:Literal ID="litError" runat="server" /></div>
     </asp:Panel>
 
@@ -75,7 +75,6 @@
 
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x26A1;</span>
             <h3>No challenges yet</h3>
             <p>Create a challenge to motivate your students with bonus XP.</p>
             <button type="button" class="cp-btn cp-btn-primary" onclick="showModal('createModal')">
@@ -88,7 +87,7 @@
     <asp:Panel ID="pnlManageQuestions" runat="server" Visible="false">
         <div class="cp-page-header-row" style="margin-bottom:16px;">
             <div>
-                <h2>&#x2753; Questions &mdash; <asp:Literal ID="litManageChTitle" runat="server" /></h2>
+                <h2>Questions &mdash; <asp:Literal ID="litManageChTitle" runat="server" /></h2>
                 <p>Add multiple-choice questions students will answer when they join this challenge.</p>
             </div>
             <a href="Challenges.aspx" class="cp-btn cp-btn-ghost">&#x2190; Back to Challenges</a>
@@ -117,16 +116,29 @@
                 </div>
             </div>
 
-            <label class="cp-label">Answer Options <span class="required">*</span> (at least 2, select the correct one)</label>
+            <label class="cp-label">Answer Options <span class="required">*</span> (fill in all 4 options)</label>
             <asp:Repeater ID="rptChOptions" runat="server">
                 <ItemTemplate>
                     <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
-                        <asp:RadioButton ID="rbChCorrect" runat="server" GroupName="ChCorrectOption" />
+                        <span style="font-size:12px;font-weight:600;color:var(--cp-text-muted);
+                                     width:60px;flex-shrink:0;">Option <%# Container.DataItem %>:</span>
                         <asp:TextBox ID="txtChOption" runat="server" CssClass="cp-input"
-                                     MaxLength="300" placeholder='<%# "Option " + Container.DataItem %>' />
+                                     MaxLength="300" placeholder='<%# "Enter option " + Container.DataItem %>' />
                     </div>
                 </ItemTemplate>
             </asp:Repeater>
+
+            <div class="cp-form-group" style="margin-top:10px;">
+                <label class="cp-label" for="<%= ddlCorrectOption.ClientID %>">
+                    Correct Answer <span class="required">*</span>
+                </label>
+                <asp:DropDownList ID="ddlCorrectOption" runat="server" CssClass="cp-select" style="max-width:200px;">
+                    <asp:ListItem Value="1">Option 1</asp:ListItem>
+                    <asp:ListItem Value="2">Option 2</asp:ListItem>
+                    <asp:ListItem Value="3">Option 3</asp:ListItem>
+                    <asp:ListItem Value="4">Option 4</asp:ListItem>
+                </asp:DropDownList>
+            </div>
 
             <asp:Button ID="btnAddChQuestion" runat="server" Text="+ Add Question"
                         CssClass="cp-btn cp-btn-primary" style="margin-top:8px;"
@@ -169,7 +181,7 @@
     <%-- Create Challenge Modal --%>
     <div id="createModal" class="cp-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="createChTitle">
         <div class="cp-modal">
-            <button class="cp-modal-close" type="button" onclick="hideModal('createModal')" aria-label="Close">&#x2715;</button>
+            <button class="cp-modal-close" type="button" onclick="hideModal('createModal')" aria-label="Close"></button>
             <h2 class="cp-modal-title" id="createChTitle">New Challenge</h2>
 
             <div class="cp-form-group">

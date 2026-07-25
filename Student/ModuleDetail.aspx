@@ -4,22 +4,21 @@
 
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-.mod-hero{background:linear-gradient(135deg,#0F172A 0%,#1E293B 60%,#0F172A 100%);
+.mod-hero{background-color:#0F172A;background-size:cover;background-position:center;
     padding:32px;color:#fff;border-radius:0;margin:-24px -32px 24px;position:relative;overflow:hidden;}
 .mod-hero::before{content:'';position:absolute;inset:0;
-    background-image:linear-gradient(rgba(14,165,233,0.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(14,165,233,0.03) 1px,transparent 1px);
-    background-size:40px 40px;pointer-events:none;}
-.mod-hero a{color:#38BDF8;font-size:13px;text-decoration:none;position:relative;z-index:1;}
-.mod-hero h1{font-size:32px;font-weight:800;margin:12px 0 8px;position:relative;z-index:1;}
-.mod-hero p{font-size:14px;color:rgba(255,255,255,0.6);max-width:600px;line-height:1.7;margin:0 0 16px;position:relative;z-index:1;}
-.mod-meta{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,0.5);position:relative;z-index:1;}
+    background-color:rgba(15,23,42,0.85);
+    pointer-events:none;}
+.mod-hero a{color:#38BDF8;font-size:13px;text-decoration:none;position:relative;z-index:2;}
+.mod-hero h1{font-size:32px;font-weight:800;margin:12px 0 8px;position:relative;z-index:2;}
+.mod-hero p{font-size:14px;color:rgba(255,255,255,0.6);max-width:600px;line-height:1.7;margin:0 0 16px;position:relative;z-index:2;}
+.mod-meta{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,0.5);position:relative;z-index:2;}
 .mod-meta span{display:flex;align-items:center;gap:4px;}
 
 /* Subtopic list */
 .st-list{display:flex;flex-direction:column;gap:0;}
 .st-item{display:flex;align-items:flex-start;gap:16px;padding:18px 20px;
-    border-bottom:1px solid #E2E8F0;transition:background 0.12s;}
+    border-bottom:1px solid #CBD5E1;transition:background 0.12s;}
 .st-item:hover{background:#F8FAFC;}
 .st-item:last-child{border-bottom:none;}
 .st-ico{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;
@@ -36,16 +35,16 @@
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
 
 <%-- Dark hero --%>
-<div class="mod-hero">
+<div class="mod-hero" id="modHeroBg" runat="server">
     <a href="Pathways.aspx">&#x2190; Back to Learning Pathways</a>
     <h1><asp:Literal ID="litModuleName" runat="server" /></h1>
     <p><asp:Literal ID="litModuleDesc" runat="server" /></p>
     <div class="mod-meta">
-        <span>&#x1F4DA; <asp:Literal ID="litPathway" runat="server" /></span>
+        <span><asp:Literal ID="litPathway" runat="server" /></span>
         <span style="color:<asp:Literal ID='litDiffColour' runat='server' />;font-weight:600;">
             <asp:Literal ID="litDifficulty" runat="server" /></span>
-        <span>&#x26A1; +<asp:Literal ID="litXP" runat="server" /> XP</span>
-        <span>&#x1F4D6; <asp:Literal ID="litSubCount" runat="server" /> subtopics</span>
+        <span>+<asp:Literal ID="litXP" runat="server" /> XP</span>
+        <span><asp:Literal ID="litSubCount" runat="server" /> subtopics</span>
     </div>
 </div>
 
@@ -68,7 +67,7 @@
 
 <%-- Subtopics list --%>
 <div class="cp-card" style="padding:0;overflow:hidden;">
-    <div style="padding:16px 20px;border-bottom:1px solid #E2E8F0;">
+    <div style="padding:16px 20px;border-bottom:1px solid #CBD5E1;">
         <h3 style="margin:0;font-size:16px;font-weight:700;color:#172033;">Subtopics</h3>
     </div>
     <asp:Panel ID="pnlSubtopics" runat="server" Visible="false">

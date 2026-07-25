@@ -8,6 +8,7 @@ namespace CloudPhoria.Instructor
 {
     public partial class Classrooms
     {
+        // ── Section 1 — Classroom cards ─────────────────────────────
         protected global::System.Web.UI.WebControls.Panel pnlSuccess;
         protected global::System.Web.UI.WebControls.Literal litSuccess;
         protected global::System.Web.UI.WebControls.Panel pnlError;
@@ -15,16 +16,29 @@ namespace CloudPhoria.Instructor
         protected global::System.Web.UI.WebControls.Panel pnlClassrooms;
         protected global::System.Web.UI.WebControls.Repeater rptClassrooms;
         protected global::System.Web.UI.WebControls.Panel pnlEmpty;
-        protected global::System.Web.UI.WebControls.Panel pnlStudents;
-        protected global::System.Web.UI.WebControls.Literal litSelectedClassroom;
-        protected global::System.Web.UI.WebControls.Repeater rptStudents;
-        protected global::System.Web.UI.WebControls.Panel pnlClassroomMaterialsSection;
-        protected global::System.Web.UI.WebControls.Panel pnlClassroomMaterials;
-        protected global::System.Web.UI.WebControls.Repeater rptClassroomMaterials;
-        protected global::System.Web.UI.WebControls.Panel pnlNoMaterials;
-        protected global::System.Web.UI.WebControls.FileUpload fuClassroomMaterial;
-        protected global::System.Web.UI.WebControls.TextBox txtMaterialDescription;
-        protected global::System.Web.UI.WebControls.Button btnUploadMaterial;
+
+        // ── Section 2 — Chat room ────────────────────────────────────
+        protected global::System.Web.UI.WebControls.Panel pnlChatRoom;
+        protected global::System.Web.UI.WebControls.Literal litChatRoomName;
+        protected global::System.Web.UI.WebControls.Literal litSidebarName;
+        protected global::System.Web.UI.WebControls.LinkButton btnCloseChat;
+        protected global::System.Web.UI.WebControls.HiddenField hfChatClassroomID;
+
+        // Chat tab
+        protected global::System.Web.UI.WebControls.Literal litMessages;
+        protected global::System.Web.UI.WebControls.TextBox txtMessage;
+        protected global::System.Web.UI.WebControls.Button btnSend;
+
+        // Files tab
+        protected global::System.Web.UI.WebControls.Literal litFiles;
+
+        // Assignments tab
+        protected global::System.Web.UI.WebControls.Literal litAssignments;
+
+        // Members tab
+        protected global::System.Web.UI.WebControls.Literal litMembers;
+
+        // ── Create Classroom Modal ────────────────────────────────────
         protected global::System.Web.UI.WebControls.TextBox txtClassName;
         protected global::System.Web.UI.WebControls.TextBox txtInviteCode;
         protected global::System.Web.UI.WebControls.Button btnCreate;

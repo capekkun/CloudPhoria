@@ -33,9 +33,6 @@
                     <div style="display:flex;align-items:center;gap:12px;
                                 padding:14px 18px;border-bottom:1px solid var(--cp-border);
                                 background:<%# Convert.ToBoolean(Eval("IsRead")) ? "transparent" : "rgba(14,165,233,0.04)" %>;">
-                        <span style="font-size:18px;flex-shrink:0;" aria-hidden="true">
-                            <%# GetNotifIcon(Eval("NotificationType")) %>
-                        </span>
                         <div style="flex:1;min-width:0;">
                             <div style="font-size:13px;color:var(--cp-text);<%# Convert.ToBoolean(Eval("IsRead")) ? "" : "font-weight:600;" %>">
                                 <%# HttpUtility.HtmlEncode(Eval("Message").ToString()) %>
@@ -54,7 +51,6 @@
 
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x1F514;</span>
             <h3>No notifications</h3>
             <p>You're all caught up! New notifications will appear here.</p>
         </div>

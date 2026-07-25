@@ -10,7 +10,7 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x1F3AE; Fun Room Reviews</h2>
+                <h2>Fun Room Reviews</h2>
                 <p>Review community-submitted Fun Rooms before they appear publicly on the platform.</p>
             </div>
         </div>
@@ -78,7 +78,7 @@
                                 CommandName="Approve"
                                 CommandArgument='<%# Eval("FunRoomID") %>'
                                 CssClass="cp-btn cp-btn-sm cp-btn-success">
-                                &#x2714; Approve
+                                Approve
                             </asp:LinkButton>
                             <asp:LinkButton runat="server"
                                 Visible='<%# Eval("Status").ToString() != "Rejected" %>'
@@ -86,7 +86,7 @@
                                 CommandArgument='<%# Eval("FunRoomID") %>'
                                 CssClass="cp-btn cp-btn-sm cp-btn-danger"
                                 OnClientClick="return confirm('Reject this Fun Room? The creator will be notified.');">
-                                &#x2718; Reject
+                                Reject
                             </asp:LinkButton>
                             <asp:LinkButton runat="server"
                                 Visible='<%# Eval("Status").ToString() != "Pending" %>'
@@ -104,7 +104,6 @@
 
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x1F3AE;</span>
             <h3>No fun rooms found</h3>
             <p>There are no fun rooms matching the selected status.</p>
         </div>

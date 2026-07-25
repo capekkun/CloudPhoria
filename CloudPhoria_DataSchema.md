@@ -107,7 +107,7 @@ All stored file/image paths in the sample data follow this convention:
 
 ## 5. Table Summary
 
-52 tables, grouped by feature area.
+**57 tables**, grouped by feature area. (Corrected count — an earlier version of this document said 52; a live-database check found 5 tables that exist in SQL Server but were missing from this list: `ChallengeQuestions`, `ChallengeQuestionOptions`, `ClassroomMessages`, `FunRoomQuestions`, `FunRoomQuestionOptions`. All 5 are now included below. See `CloudPhoria_ERD_UsedTables.md` for the verified used-vs-unused breakdown of all 57.)
 
 | # | Table | Purpose |
 |---:|---|---|
@@ -120,49 +120,54 @@ All stored file/image paths in the sample data follow this convention:
 | 7 | `Classrooms` | Instructor-owned classroom with an invite code. |
 | 8 | `ClassroomEnrollments` | Students enrolled into a classroom. |
 | 9 | `ClassroomMaterials` | Files instructors upload for a classroom. |
-| 10 | `ClassroomAssignments` | Assignments set by an instructor in a classroom. |
-| 11 | `AssignmentQuestions` | Questions inside a classroom assignment (Objective/Subjective). |
-| 12 | `AssignmentQuestionOptions` | MCQ-style options for Objective assignment questions. |
-| 13 | `AssignmentSubmissions` | Student answers to assignment questions. |
-| 14 | `Pathways` | Top-level learning tracks (e.g. Cloud Fundamentals, DevOps Engineer). |
-| 15 | `Modules` | Units of learning inside a pathway; supports prerequisites and a visual roadmap position. |
-| 16 | `SubTopics` | Lesson content inside a module. |
-| 17 | `LearningMaterials` | Instructor-uploaded files attached to a subtopic. |
-| 18 | `Questions` | Inline "TryHackMe-style" subtopic questions (MCQ/Regex/StringMatch). |
-| 19 | `AnswerOptions` | Options for MCQ subtopic questions. |
-| 20 | `PracticeQuestions` | Module-level practice/mock questions (unlimited attempts). |
-| 21 | `PracticeQuestionOptions` | Options for practice questions. |
-| 22 | `PracticeAttempts` | A practice session, by student or guest session. |
-| 23 | `PracticeAnswers` | Answers given during a practice attempt. |
-| 24 | `ExamQuestions` | Module final-exam questions. |
-| 25 | `ExamQuestionOptions` | Options for exam questions. |
-| 26 | `ExamAttempts` | A timed exam attempt with score/pass result. |
-| 27 | `ExamAnswers` | Answers given during an exam attempt. |
-| 28 | `SubTopicProgress` | Per-student completion status of a subtopic. |
-| 29 | `ModuleProgress` | Per-student completion status of a module. |
-| 30 | `Badges` | Badge earned on completing a specific module. |
-| 31 | `UserBadges` | Badges a student has actually earned. |
-| 32 | `Certifications` | One certification per non-foundation pathway. |
-| 33 | `UserCertifications` | Certifications issued to a student. |
-| 34 | `XPTransactions` | XP ledger — every XP-earning event, across all sources. |
-| 35 | `GuestModuleAccess` | Tracks anonymous/guest access to modules (no login). |
-| 36 | `Challenges` | Time-boxed challenges, instructor- or admin-created. |
-| 37 | `ChallengeParticipation` | Student scores in a challenge. |
-| 38 | `FunRooms` | Community-authored content rooms with an approval workflow. |
-| 39 | `DiscussionThreads` | Forum threads, optionally tied to a subtopic or module. |
-| 40 | `DiscussionReplies` | Replies inside a discussion thread. |
-| 41 | `ConsultationSlots` | Instructor-defined bookable time slots. |
-| 42 | `ConsultationBookings` | Student bookings against a slot. |
-| 43 | `Feedback` | Instructor feedback/grade on a student's assignment submission. |
-| 44 | `Reports` | User-submitted reports on other users/content, for moderation. |
-| 45 | `AuditLogs` | System/admin action audit trail. |
-| 46 | `Notifications` | In-app notifications sent to a user. |
-| 47 | `BossFightRooms` | Admin-only gamified battle stage (distinct from `FunRooms`). |
-| 48 | `Bosses` | The single boss tied to a Boss Fight room. |
-| 49 | `BossFightQuestions` | Combat questions used to damage the boss. |
-| 50 | `BossFightQuestionOptions` | Options for boss fight questions. |
-| 51 | `BattleSessions` | One student's playthrough of a Boss Fight room. |
-| 52 | `BattleSessionAnswers` | Turn-by-turn answer log within a battle session. |
+| 10 | `ClassroomMessages` | Classroom chat messages between instructor and students. |
+| 11 | `ClassroomAssignments` | Assignments set by an instructor in a classroom. |
+| 12 | `AssignmentQuestions` | Questions inside a classroom assignment (Objective/Subjective). |
+| 13 | `AssignmentQuestionOptions` | MCQ-style options for Objective assignment questions. |
+| 14 | `AssignmentSubmissions` | Student answers to assignment questions. |
+| 15 | `Pathways` | Top-level learning tracks (e.g. Cloud Fundamentals, DevOps Engineer). |
+| 16 | `Modules` | Units of learning inside a pathway; supports prerequisites and a visual roadmap position. |
+| 17 | `SubTopics` | Lesson content inside a module. |
+| 18 | `LearningMaterials` | Instructor-uploaded files attached to a subtopic. |
+| 19 | `Questions` | Inline "TryHackMe-style" subtopic questions (MCQ/Regex/StringMatch). |
+| 20 | `AnswerOptions` | Options for MCQ subtopic questions. |
+| 21 | `PracticeQuestions` | Module-level practice/mock questions (unlimited attempts). |
+| 22 | `PracticeQuestionOptions` | Options for practice questions. |
+| 23 | `PracticeAttempts` | A practice session, by student or guest session. |
+| 24 | `PracticeAnswers` | Answers given during a practice attempt. |
+| 25 | `ExamQuestions` | Module final-exam questions. |
+| 26 | `ExamQuestionOptions` | Options for exam questions. |
+| 27 | `ExamAttempts` | A timed exam attempt with score/pass result. |
+| 28 | `ExamAnswers` | Answers given during an exam attempt. |
+| 29 | `SubTopicProgress` | Per-student completion status of a subtopic. |
+| 30 | `ModuleProgress` | Per-student completion status of a module. |
+| 31 | `Badges` | Badge earned on completing a specific module. |
+| 32 | `UserBadges` | Badges a student has actually earned. |
+| 33 | `Certifications` | One certification per non-foundation pathway. |
+| 34 | `UserCertifications` | Certifications issued to a student. |
+| 35 | `XPTransactions` | XP ledger — every XP-earning event, across all sources. |
+| 36 | `GuestModuleAccess` | Tracks anonymous/guest access to modules (no login). |
+| 37 | `Challenges` | Time-boxed challenges, instructor- or admin-created. |
+| 38 | `ChallengeQuestions` | Questions inside a time-boxed challenge. |
+| 39 | `ChallengeQuestionOptions` | Options for challenge questions. |
+| 40 | `ChallengeParticipation` | Student scores in a challenge. |
+| 41 | `FunRooms` | Community-authored content rooms with an approval workflow. |
+| 42 | `FunRoomQuestions` | Questions inside a community Fun Room (seeded, not currently used by any page). |
+| 43 | `FunRoomQuestionOptions` | Options for Fun Room questions (seeded, not currently used by any page). |
+| 44 | `DiscussionThreads` | Forum threads, optionally tied to a subtopic or module. |
+| 45 | `DiscussionReplies` | Replies inside a discussion thread. |
+| 46 | `ConsultationSlots` | Instructor-defined bookable time slots. |
+| 47 | `ConsultationBookings` | Student bookings against a slot. |
+| 48 | `Feedback` | Instructor feedback/grade on a student's assignment submission. |
+| 49 | `Reports` | User-submitted reports on other users/content, for moderation. |
+| 50 | `AuditLogs` | System/admin action audit trail. |
+| 51 | `Notifications` | In-app notifications sent to a user. |
+| 52 | `BossFightRooms` | Admin-only gamified battle stage (distinct from `FunRooms`). |
+| 53 | `Bosses` | The single boss tied to a Boss Fight room. |
+| 54 | `BossFightQuestions` | Combat questions used to damage the boss. |
+| 55 | `BossFightQuestionOptions` | Options for boss fight questions. |
+| 56 | `BattleSessions` | One student's playthrough of a Boss Fight room. |
+| 57 | `BattleSessionAnswers` | Turn-by-turn answer log within a battle session. |
 
 ---
 

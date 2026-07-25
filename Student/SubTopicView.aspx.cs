@@ -286,14 +286,15 @@ namespace CloudPhoria.Student
                         if (moduleID > 0)
                         {
                             using (SqlCommand cmd = new SqlCommand(
-                                @"DECLARE @Total INT, @Done INT;
+                                @"DECLARE @Total INT, @Done INT, @SubXP INT;
                                   SELECT @Total = COUNT(*) FROM SubTopics WHERE ModuleID=@MID AND IsPublished=1;
-                                  SELECT @Done = COUNT(*) FROM SubTopicProgress stp
+                                  SELECT @Done = COUNT(*), @SubXP = ISNULL(SUM(stp.XPEarned), 0)
+                                      FROM SubTopicProgress stp
                                       INNER JOIN SubTopics st ON st.SubTopicID = stp.SubTopicID
                                       WHERE st.ModuleID=@MID AND stp.StudentID=@SID AND stp.Status='Completed';
                                   IF @Total > 0 AND @Total = @Done
                                   BEGIN
-                                      UPDATE ModuleProgress SET Status='Completed'
+                                      UPDATE ModuleProgress SET Status='Completed', XPEarned=@SubXP, CompletedAt=GETDATE()
                                       WHERE ModuleID=@MID AND StudentID=@SID;
                                   END", conn, tran))
                             {

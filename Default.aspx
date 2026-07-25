@@ -1,11 +1,11 @@
-ï»¿<%@ Page Title="CloudPhoria â€“ Master the Cloud" Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="CloudPhoria._Default" %>
+<%@ Page Title="CloudPhoria – Master the Cloud" Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="CloudPhoria._Default" %>
 
 <!DOCTYPE html>
 <html lang="en">
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CloudPhoria â€“ Master the Cloud</title>
+    <title>CloudPhoria – Master the Cloud</title>
     <link href="Content/bootstrap.css" rel="stylesheet" type="text/css" />
     <style>
         /* =========================================================
@@ -35,32 +35,6 @@
             overflow: hidden;
         }
 
-        /* Background grid pattern */
-        .lp-page::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(14,165,233,0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(14,165,233,0.04) 1px, transparent 1px);
-            background-size: 60px 60px;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* Bottom glow */
-        .lp-page::after {
-            content: '';
-            position: absolute;
-            bottom: -120px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 900px;
-            height: 400px;
-            background: radial-gradient(ellipse at center, rgba(99,102,241,0.18) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
 
         /* =========================================================
            TOP NAVIGATION
@@ -90,8 +64,8 @@
         .lp-brand-icon {
             width: 36px;
             height: 36px;
-            background: linear-gradient(135deg, #0EA5E9 0%, #6366F1 100%);
-            border-radius: 9px;
+            background-color: #0EA5E9;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -244,7 +218,6 @@
             background: #0284C7;
             border-color: #0284C7;
             color: #FFFFFF;
-            transform: translateY(-1px);
         }
         .lp-cta-outline {
             padding: 13px 28px;
@@ -295,26 +268,6 @@
             width: 380px;
             height: 380px;
             position: relative;
-            filter: drop-shadow(0 0 60px rgba(14,165,233,0.25));
-            animation: float 4s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50%       { transform: translateY(-18px); }
-        }
-
-        /* Glow behind the character */
-        .lp-hero-visual::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 320px;
-            height: 320px;
-            background: radial-gradient(circle, rgba(14,165,233,0.15) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
         }
 
         /* =========================================================
@@ -378,29 +331,29 @@
             <div class="lp-brand-icon" style="display:none;" aria-hidden="true">CP</div>
         </a>
 
-        <%-- Centre navigation links â€” mirror TryHackMe's category nav --%>
+        <%-- Centre navigation links — mirror TryHackMe's category nav --%>
         <ul class="lp-nav-links" role="list">
             <li>
                 <a href="Student/Pathways.aspx">
-                    <span class="nav-icon" aria-hidden="true">&#x2601;&#xFE0F;</span>
+                    <span class="nav-icon" aria-hidden="true"></span>
                     Pathways
                 </a>
             </li>
             <li>
                 <a href="Student/BossFights.aspx">
-                    <span class="nav-icon" aria-hidden="true">&#x1F480;</span>
+                    <span class="nav-icon" aria-hidden="true"></span>
                     Boss Fights
                 </a>
             </li>
             <li>
                 <a href="Student/Challenges.aspx">
-                    <span class="nav-icon" aria-hidden="true">&#x26A1;</span>
+                    <span class="nav-icon" aria-hidden="true"></span>
                     Challenges
                 </a>
             </li>
             <li>
                 <a href="Student/Upgrade.aspx">
-                    <span class="nav-icon" aria-hidden="true">&#x1F4B0;</span>
+                    <span class="nav-icon" aria-hidden="true"></span>
                     Pricing
                 </a>
             </li>
@@ -408,7 +361,6 @@
 
         <%-- Right actions --%>
         <div class="lp-nav-actions">
-            <a class="lp-btn-ghost" href="#browse" style="color:rgba(255,255,255,0.6);">Browse Pathways</a>
             <a class="lp-btn-ghost" href="LogIn.aspx">Log In</a>
             <a class="lp-btn-green" href="Register.aspx">Join for Free</a>
         </div>
@@ -416,7 +368,7 @@
     </nav>
 
     <%-- =====================================================
-         HERO â€” split layout: text left, visual right
+         HERO — split layout: text left, visual right
          ===================================================== --%>
     <section class="lp-hero" aria-labelledby="heroHeadline">
 
@@ -441,19 +393,19 @@
 
             <div class="lp-checklist" role="list">
                 <div class="lp-checklist-item" role="listitem">
-                    <span class="check" aria-hidden="true">&#x2713;</span>
+                    <span class="check" aria-hidden="true"></span>
                     Beginner-friendly
                 </div>
                 <div class="lp-checklist-item" role="listitem">
-                    <span class="check" aria-hidden="true">&#x2713;</span>
+                    <span class="check" aria-hidden="true"></span>
                     Guided pathways
                 </div>
                 <div class="lp-checklist-item" role="listitem">
-                    <span class="check" aria-hidden="true">&#x2713;</span>
+                    <span class="check" aria-hidden="true"></span>
                     XP &amp; badges
                 </div>
                 <div class="lp-checklist-item" role="listitem">
-                    <span class="check" aria-hidden="true">&#x2713;</span>
+                    <span class="check" aria-hidden="true"></span>
                     Boss fights &amp; challenges
                 </div>
             </div>
@@ -543,7 +495,7 @@
                 <rect x="50" y="108" width="54" height="24" rx="12" fill="#22C55E" opacity="0.85"/>
                 <text x="77" y="124" text-anchor="middle"
                       font-family="sans-serif" font-size="11" font-weight="700"
-                      fill="#0B1120">&#x1F3C5; Badge</text>
+                      fill="#0B1120">Badge</text>
 
                 <!-- Gradient definitions -->
                 <defs>
@@ -566,11 +518,11 @@
     </section>
 
     <%-- =====================================================
-         GUEST BROWSE â€” Read-only pathway/module preview
+         GUEST BROWSE — Read-only pathway/module preview
          ===================================================== --%>
     <section id="browse" style="position:relative;z-index:1;padding:60px 32px;max-width:1100px;margin:0 auto;">
         <h2 style="font-size:28px;font-weight:800;text-align:center;margin:0 0 8px;">
-            &#x1F4DA; Explore Learning Pathways
+            Explore Learning Pathways
         </h2>
         <p style="text-align:center;color:rgba(255,255,255,0.5);font-size:14px;margin:0 0 32px;">
             Preview our pathways and modules. Create a free account to start learning.
@@ -580,9 +532,9 @@
         </div>
         <div style="text-align:center;margin-top:32px;">
             <a href="Register.aspx" style="display:inline-block;padding:14px 32px;
-                background:linear-gradient(90deg,#0EA5E9,#6366F1);color:#fff;font-size:15px;
-                font-weight:700;border-radius:10px;text-decoration:none;">
-                Join for Free to Start Learning &#x1F680;
+                background-color:#0EA5E9;color:#fff;font-size:15px;
+                font-weight:700;border-radius:8px;text-decoration:none;">
+                Join for Free to Start Learning
             </a>
         </div>
     </section>

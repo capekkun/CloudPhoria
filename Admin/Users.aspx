@@ -11,7 +11,7 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x1F465; Manage Users</h2>
+                <h2>Manage Users</h2>
                 <p>Search, filter, and manage all CloudPhoria accounts.</p>
             </div>
         </div>
@@ -28,7 +28,7 @@
             <div style="flex:1;min-width:180px;">
                 <label class="cp-label">Search</label>
                 <div class="cp-search-wrap">
-                    <span class="cp-search-icon" aria-hidden="true">&#x1F50D;</span>
+                    <span class="cp-search-icon" aria-hidden="true"></span>
                     <asp:TextBox ID="txtSearch" runat="server" CssClass="cp-input"
                         placeholder="Name or email…" MaxLength="100" />
                 </div>
@@ -147,7 +147,6 @@
 
     <asp:Panel ID="pnlNoUsers" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x1F465;</span>
             <h3>No users found</h3>
             <p>Try adjusting your search or filter criteria.</p>
         </div>

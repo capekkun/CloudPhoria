@@ -6,32 +6,46 @@
 <style>
     .boss-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px; }
     .boss-card {
-        background:#111827;
+        background-color:#111827;
+        background-size:cover;
+        background-position:center;
         border:1px solid rgba(255,255,255,0.08);
-        border-radius:14px;
+        border-radius:8px;
         padding:20px;
         color:#fff;
         position:relative;
         overflow:hidden;
-        transition:border-color 0.15s, transform 0.15s;
+        transition:border-color 0.15s;
     }
-    .boss-card:hover { border-color:rgba(220,38,38,0.4); transform:translateY(-2px); }
-    .boss-card-glow {
-        position:absolute; top:-30px; right:-30px;
-        width:100px; height:100px; border-radius:50%;
-        background:radial-gradient(circle, rgba(220,38,38,0.15) 0%, transparent 70%);
+    .boss-card:hover { border-color:rgba(220,38,38,0.4); }
+    .boss-card-scrim {
+        position:absolute; inset:0;
+        background-color:rgba(17,24,39,0.55);
         pointer-events:none;
+    }
+    .boss-card-icon {
+        width:56px; height:56px; border-radius:8px; object-fit:cover;
+        border:1px solid rgba(255,255,255,0.15); flex-shrink:0;
+        position:relative; z-index:1;
+    }
+    .boss-start-icon {
+        width:96px; height:96px; border-radius:8px; object-fit:cover;
+        border:2px solid rgba(255,255,255,0.15); display:block; margin:0 auto 16px;
+    }
+    .boss-battle-icon {
+        width:40px; height:40px; border-radius:8px; object-fit:cover;
+        border:1px solid rgba(255,255,255,0.15); vertical-align:middle; margin-right:10px;
     }
     .boss-diff-easy       { color:#22C55E; }
     .boss-diff-medium     { color:#F59E0B; }
     .boss-diff-hard       { color:#EF4444; }
     .boss-diff-legendary  { color:#A855F7; }
     .boss-hp-bar-wrap { background:rgba(255,255,255,0.08); border-radius:4px; height:6px; margin:10px 0; }
-    .boss-hp-bar      { height:100%; border-radius:4px; background:linear-gradient(90deg,#EF4444,#F97316); }
+    .boss-hp-bar      { height:100%; border-radius:4px; background-color:#EF4444; }
 
     /* ================= BATTLE ARENA (drag & drop) ================= */
-    .battle-arena { background:linear-gradient(180deg,#0B0F1A 0%,#1A0A2E 40%,#0B0F1A 100%);
-        border-radius:18px; padding:32px; color:#fff; position:relative; overflow:hidden;
+    .battle-arena { background-color:#0B0F1A;
+        border-radius:8px; padding:32px; color:#fff; position:relative; overflow:hidden;
         border:1px solid rgba(220,38,38,0.15); }
     .battle-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
     .battle-boss-name { font-size:20px; font-weight:800; }
@@ -39,21 +53,21 @@
 
     .battle-hp-row { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:24px; }
     .battle-hp-box { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);
-        border-radius:12px; padding:14px 18px; }
+        border-radius:8px; padding:14px 18px; }
     .battle-hp-lbl { font-size:11px; font-weight:700; color:rgba(255,255,255,0.5); text-transform:uppercase;
         margin-bottom:6px; }
     .battle-hp-val { font-size:18px; font-weight:800; margin-bottom:8px; }
     .battle-hp-bar-wrap { height:10px; border-radius:5px; background:rgba(255,255,255,0.08); overflow:hidden; }
-    .battle-hp-bar-boss { height:100%; background:linear-gradient(90deg,#EF4444,#F97316); border-radius:5px; transition:width .5s; }
-    .battle-hp-bar-player { height:100%; background:linear-gradient(90deg,#0EA5E9,#22C55E); border-radius:5px; transition:width .5s; }
+    .battle-hp-bar-boss { height:100%; background-color:#EF4444; border-radius:5px; transition:width .5s; }
+    .battle-hp-bar-player { height:100%; background-color:#0EA5E9; border-radius:5px; transition:width .5s; }
 
     .battle-q-text { font-size:17px; font-weight:600; text-align:center; margin:0 0 24px; line-height:1.5; }
 
     /* Drop zone */
-    .drop-zone { border:3px dashed rgba(99,102,241,0.4); border-radius:14px; min-height:76px;
+    .drop-zone { border:3px dashed rgba(99,102,241,0.4); border-radius:8px; min-height:76px;
         display:flex; align-items:center; justify-content:center; margin:0 auto 28px; max-width:460px;
         background:rgba(99,102,241,0.05); transition:all 0.2s; font-size:13px; color:rgba(255,255,255,0.4); }
-    .drop-zone.drag-over { border-color:#6366F1; background:rgba(99,102,241,0.15); transform:scale(1.02); }
+    .drop-zone.drag-over { border-color:#6366F1; background:rgba(99,102,241,0.15); }
     .drop-zone.filled { border-style:solid; border-color:#6366F1; background:rgba(99,102,241,0.1); }
     .drop-zone .dropped-chip { padding:10px 20px; background:#6366F1; color:#fff; border-radius:8px;
         font-weight:700; font-size:14px; }
@@ -61,18 +75,18 @@
     /* Draggable options */
     .drag-options { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; max-width:520px; margin:0 auto; }
     .drag-opt { padding:16px 18px; background:rgba(255,255,255,0.06); border:2px solid rgba(255,255,255,0.12);
-        border-radius:10px; font-size:14px; font-weight:600; cursor:grab; text-align:center;
+        border-radius:8px; font-size:14px; font-weight:600; cursor:grab; text-align:center;
         transition:all 0.15s; user-select:none; }
-    .drag-opt:hover { border-color:#6366F1; background:rgba(99,102,241,0.15); transform:translateY(-2px); }
+    .drag-opt:hover { border-color:#6366F1; background:rgba(99,102,241,0.15); }
     .drag-opt.dragging { opacity:0.3; }
     .drag-opt.used { opacity:0.15; pointer-events:none; }
     .drag-opt.correct-flash { border-color:#22C55E !important; background:rgba(34,197,94,0.25) !important; }
     .drag-opt.wrong-flash { border-color:#EF4444 !important; background:rgba(239,68,68,0.25) !important; }
 
     .battle-submit-row { text-align:center; margin-top:20px; }
-    .battle-start-btn { display:inline-block; padding:16px 44px; background:linear-gradient(135deg,#DC2626,#7C3AED);
-        color:#fff; border-radius:12px; font-size:16px; font-weight:800; border:none; cursor:pointer;
-        box-shadow:0 8px 30px rgba(220,38,38,0.3); text-transform:uppercase; letter-spacing:0.04em; }
+    .battle-start-btn { display:inline-block; padding:16px 44px; background-color:#DC2626;
+        color:#fff; border-radius:8px; font-size:16px; font-weight:800; border:none; cursor:pointer;
+        box-shadow:0 2px 6px rgba(220,38,38,0.2); text-transform:uppercase; letter-spacing:0.04em; }
     .battle-turn-msg { text-align:center; padding:20px; }
     .battle-turn-msg .icon { font-size:40px; margin-bottom:8px; display:block; }
 
@@ -101,32 +115,37 @@
         <div class="boss-grid">
             <asp:Repeater ID="rptRooms" runat="server">
                 <ItemTemplate>
-                    <div class="boss-card">
-                        <div class="boss-card-glow" aria-hidden="true"></div>
-                        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
-                            <h3 style="font-size:15px;font-weight:700;margin:0;color:#fff;">
-                                <%# HttpUtility.HtmlEncode(Eval("Title").ToString()) %>
-                            </h3>
-                            <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;"
-                                  class="boss-diff-<%# Eval("DifficultyLevel").ToString().ToLower() %>">
-                                <%# HttpUtility.HtmlEncode(Eval("DifficultyLevel").ToString()) %>
-                            </span>
+                    <div class="boss-card" style='background-image:url(<%# GetBossIconPath(Eval("IconPath")).Replace("-icon.png","-bg.png") %>);'>
+                        <div class="boss-card-scrim" aria-hidden="true"></div>
+                        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;position:relative;z-index:1;">
+                            <img class="boss-card-icon" src='<%# GetBossIconPath(Eval("IconPath")) %>' alt="" onerror="this.style.display='none';" />
+                            <div style="flex:1;min-width:0;">
+                                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                                    <h3 style="font-size:15px;font-weight:700;margin:0;color:#fff;">
+                                        <%# HttpUtility.HtmlEncode(Eval("Title").ToString()) %>
+                                    </h3>
+                                    <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;"
+                                          class="boss-diff-<%# Eval("DifficultyLevel").ToString().ToLower() %>">
+                                        <%# HttpUtility.HtmlEncode(Eval("DifficultyLevel").ToString()) %>
+                                    </span>
+                                </div>
+                                <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;">
+                                    Boss: <strong style="color:#fff;"><%# HttpUtility.HtmlEncode(Eval("BossName").ToString()) %></strong>
+                                </div>
+                            </div>
                         </div>
-                        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:8px;">
-                            Boss: <strong style="color:#fff;"><%# HttpUtility.HtmlEncode(Eval("BossName").ToString()) %></strong>
-                        </div>
-                        <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:4px;">
+                        <div style="position:relative;z-index:1;font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:4px;">
                             Boss HP: <%# Eval("MaxHP") %>
                         </div>
-                        <div class="boss-hp-bar-wrap">
+                        <div class="boss-hp-bar-wrap" style="position:relative;z-index:1;">
                             <div class="boss-hp-bar" style="width:100%;"></div>
                         </div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;">
+                        <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;margin-top:14px;">
                             <span class="cp-xp-chip">+<%# Eval("XPReward") %> XP on win</span>
                             <%# Convert.ToBoolean(Eval("HasWon"))
-                                ? "<span class='cp-badge cp-badge-green'>&#x2713; Defeated</span>"
+                                ? "<span class='cp-badge cp-badge-green'>Defeated</span>"
                                 : Session["UserID"] != null
-                                    ? "<a href='BossFights.aspx?roomID=" + Eval("RoomID") + "' class='cp-btn cp-btn-danger cp-btn-sm'>&#x1F5F1; Enter Battle</a>"
+                                    ? "<a href='BossFights.aspx?roomID=" + Eval("RoomID") + "' class='cp-btn cp-btn-danger cp-btn-sm'>Enter Battle</a>"
                                     : "<a href='/Register.aspx' class='cp-btn cp-btn-outline cp-btn-sm'>Register to Battle</a>" %>
                         </div>
                     </div>
@@ -141,30 +160,34 @@
 
             <asp:Panel ID="pnlBattleStart" runat="server">
                 <div style="text-align:center;padding:20px 0;">
+                    <asp:Image ID="imgStartBossIcon" runat="server" CssClass="boss-start-icon" Visible="false" AlternateText="" />
                     <h2 style="font-size:24px;font-weight:800;margin:0 0 8px;">
-                        &#x2694;&#xFE0F; <asp:Literal ID="litStartBossName" runat="server" />
+                        <asp:Literal ID="litStartBossName" runat="server" />
                     </h2>
                     <p style="color:rgba(255,255,255,0.5);font-size:14px;margin:0 0 24px;">
                         Drag the correct answer into the drop zone to deal damage. Wrong answers let the boss attack you!
                     </p>
-                    <asp:Button ID="btnStartBattle" runat="server" Text="&#x1F5F1; Start Battle" CssClass="battle-start-btn" OnClick="btnStartBattle_Click" />
+                    <asp:Button ID="btnStartBattle" runat="server" Text="Start Battle" CssClass="battle-start-btn" OnClick="btnStartBattle_Click" />
                 </div>
             </asp:Panel>
 
             <asp:Panel ID="pnlBattleActive" runat="server" Visible="false">
                 <div class="battle-header">
-                    <span class="battle-boss-name">&#x1F480; <asp:Literal ID="litBattleBossName" runat="server" /></span>
+                    <span class="battle-boss-name">
+                        <asp:Image ID="imgBattleBossIcon" runat="server" CssClass="boss-battle-icon" Visible="false" AlternateText="" />
+                        <asp:Literal ID="litBattleBossName" runat="server" />
+                    </span>
                     <span class="battle-timer" id="battleTimer">--</span>
                 </div>
 
                 <div class="battle-hp-row">
                     <div class="battle-hp-box">
-                        <div class="battle-hp-lbl">&#x1F480; Boss HP</div>
+                        <div class="battle-hp-lbl">Boss HP</div>
                         <div class="battle-hp-val"><asp:Literal ID="litBossHP" runat="server" /> / <asp:Literal ID="litBossMaxHP" runat="server" /></div>
                         <div class="battle-hp-bar-wrap"><div class="battle-hp-bar-boss" id="bossHPBar" runat="server" style="width:100%;"></div></div>
                     </div>
                     <div class="battle-hp-box">
-                        <div class="battle-hp-lbl">&#x1F6E1; Your HP</div>
+                        <div class="battle-hp-lbl">Your HP</div>
                         <div class="battle-hp-val"><asp:Literal ID="litPlayerHP" runat="server" /> / <asp:Literal ID="litPlayerMaxHP" runat="server" /></div>
                         <div class="battle-hp-bar-wrap"><div class="battle-hp-bar-player" id="playerHPBar" runat="server" style="width:100%;"></div></div>
                     </div>
@@ -286,7 +309,6 @@
 
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x1F480;</span>
             <h3>No boss fights available</h3>
             <p>Admins publish new boss fight rooms regularly. Check back soon.</p>
         </div>

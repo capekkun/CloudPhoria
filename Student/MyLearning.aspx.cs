@@ -137,6 +137,22 @@ namespace CloudPhoria.Student
             }
         }
 
+        protected void rptInProgress_ItemDataBound(object sender, System.Web.UI.WebControls.RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType != System.Web.UI.WebControls.ListItemType.Item &&
+                e.Item.ItemType != System.Web.UI.WebControls.ListItemType.AlternatingItem)
+                return;
+
+            DataRowView row = (DataRowView)e.Item.DataItem;
+
+            var lblDifficulty = (System.Web.UI.WebControls.Label)e.Item.FindControl("lblDifficulty");
+            lblDifficulty.Text = HttpUtility.HtmlEncode(row["DifficultyLevel"].ToString());
+            lblDifficulty.ForeColor = System.Drawing.ColorTranslator.FromHtml(row["DiffColour"].ToString());
+
+            var pnlProgressFill = (System.Web.UI.WebControls.Panel)e.Item.FindControl("pnlProgressFill");
+            pnlProgressFill.Style["width"] = row["ProgressPct"].ToString() + "%";
+        }
+
         private string DiffColour(string diff)
         {
             switch (diff)
@@ -146,6 +162,14 @@ namespace CloudPhoria.Student
                 case "Hard":   return "#EF4444";
                 default:       return "#64748B";
             }
+        }
+
+        protected string FormatCompletedDate(object completedAt)
+        {
+            if (completedAt == null || completedAt == DBNull.Value)
+                return "recently";
+
+            return Convert.ToDateTime(completedAt).ToString("dd MMM yyyy");
         }
     }
 }

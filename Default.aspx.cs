@@ -48,7 +48,7 @@ namespace CloudPhoria
                         da.Fill(dt);
 
                     var sb = new System.Text.StringBuilder();
-                    string[] icons = { "&#x2601;", "&#x1F527;", "&#x1F6E1;", "&#x1F4BB;", "&#x1F4CA;", "&#x1F916;", "&#x1F310;" };
+                    string[] icons = { "", "", "", "", "", "", "" };
 
                     int idx = 0;
                     foreach (DataRow row in dt.Rows)
@@ -69,7 +69,7 @@ namespace CloudPhoria
                             "<h3 style='font-size:16px;font-weight:700;margin:0 0 6px;color:#fff;'>{1}</h3>" +
                             "<p style='font-size:13px;color:rgba(255,255,255,0.5);margin:0 0 12px;line-height:1.5;'>{2}</p>" +
                             "<div style='font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:12px;'>" +
-                            "&#x1F4D6; {3} modules {4}</div>",
+                            "{3} modules {4}</div>",
                             icon, name, desc, moduleCount,
                             isFree ? "<span style='background:rgba(34,197,94,0.15);color:#22C55E;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600;margin-left:8px;'>Free</span>"
                                    : "<span style='background:rgba(99,102,241,0.15);color:#A78BFA;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600;margin-left:8px;'>Pro</span>");

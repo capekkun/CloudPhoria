@@ -557,6 +557,24 @@ namespace CloudPhoria.Instructor
             catch { /* non-critical */ }
         }
 
+        private static void SendNotification(SqlConnection conn, int userID,
+            string message, string notificationType)
+        {
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(
+                    @"INSERT INTO Notifications (UserID, Message, NotificationType, IsRead, CreatedAt)
+                      VALUES (@UID, @Msg, @Type, 0, GETDATE())", conn))
+                {
+                    cmd.Parameters.Add("@UID",  SqlDbType.Int).Value           = userID;
+                    cmd.Parameters.Add("@Msg",  SqlDbType.NVarChar, 500).Value = message;
+                    cmd.Parameters.Add("@Type", SqlDbType.NVarChar, 100).Value = notificationType;
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (SqlException) { /* non-critical */ }
+        }
+
         private void ShowSuccess(string msg)
         {
             litSuccess.Text    = HttpUtility.HtmlEncode(msg);

@@ -4,6 +4,7 @@ using System.Data;
 using System.Web;
 using System.Web.UI;
 using Microsoft.Data.SqlClient;
+using CloudPhoria;
 
 namespace CloudPhoria.Student
 {
@@ -45,7 +46,7 @@ namespace CloudPhoria.Student
 
                     // Badges.
                     string badgeSql = @"
-                        SELECT b.BadgeName, ub.AwardedAt
+                        SELECT b.BadgeName, b.IconPath, ub.AwardedAt
                         FROM UserBadges ub
                         INNER JOIN Badges b ON b.BadgeID = ub.BadgeID
                         WHERE ub.StudentID = @SID
@@ -69,9 +70,10 @@ namespace CloudPhoria.Student
 
                     // Certifications.
                     string certSql = @"
-                        SELECT c.CertificateName, uc.IssuedAt
+                        SELECT c.CertificateName, uc.IssuedAt, p.PathwayName
                         FROM UserCertifications uc
                         INNER JOIN Certifications c ON c.CertificationID = uc.CertificationID
+                        INNER JOIN Pathways p ON p.PathwayID = c.PathwayID
                         WHERE uc.StudentID = @SID
                         ORDER BY uc.IssuedAt DESC";
 
@@ -81,6 +83,10 @@ namespace CloudPhoria.Student
                         cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
                         using (SqlDataAdapter da = new SqlDataAdapter(cmd)) da.Fill(dtCerts);
                     }
+
+                    dtCerts.Columns.Add("CertImage", typeof(string));
+                    foreach (DataRow row in dtCerts.Rows)
+                        row["CertImage"] = Utils.GetCertificationImage(row["PathwayName"].ToString());
 
                     litCertCount.Text = dtCerts.Rows.Count.ToString();
                     if (dtCerts.Rows.Count > 0)

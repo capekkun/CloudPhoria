@@ -4,12 +4,12 @@ using System.Data;
 using System.Web;
 using System.Web.UI;
 using Microsoft.Data.SqlClient;
+using CloudPhoria;
 
 namespace CloudPhoria.Student
 {
     public partial class Pathways : System.Web.UI.Page
     {
-        private static readonly string[] Icons = {"&#x2601;","&#x1F527;","&#x1F6E1;","&#x1F4BB;","&#x1F4CA;","&#x1F916;","&#x1F310;"};
         private static readonly string[] Accents = {
             "linear-gradient(90deg,#0EA5E9,#6366F1)","linear-gradient(90deg,#6366F1,#8B5CF6)",
             "linear-gradient(90deg,#0EA5E9,#06B6D4)","linear-gradient(90deg,#F59E0B,#F97316)",
@@ -78,7 +78,7 @@ namespace CloudPhoria.Student
 
                     dtP.Columns.Add("IsLocked", typeof(bool));
                     dtP.Columns.Add("AccentColour", typeof(string));
-                    dtP.Columns.Add("Icon", typeof(string));
+                    dtP.Columns.Add("BgImage", typeof(string));
                     dtP.Columns.Add("ShortDesc", typeof(string));
 
                     int idx = 0;
@@ -87,7 +87,7 @@ namespace CloudPhoria.Student
                         bool isF = Convert.ToBoolean(row["IsFoundation"]);
                         row["IsLocked"] = isFoundationOnly && !isF;
                         row["AccentColour"] = Accents[idx % Accents.Length];
-                        row["Icon"] = Icons[idx % Icons.Length];
+                        row["BgImage"] = GetPathwayBgImage(row["PathwayName"].ToString());
                         string desc = row["Description"] != DBNull.Value ? row["Description"].ToString() : "";
                         row["ShortDesc"] = desc.Length > 100 ? desc.Substring(0,100) + "..." : desc;
                         idx++;
@@ -109,13 +109,13 @@ namespace CloudPhoria.Student
 
                     dtM.Columns.Add("DiffColour", typeof(string));
                     dtM.Columns.Add("IconBg", typeof(string));
-                    dtM.Columns.Add("ModIcon", typeof(string));
+                    dtM.Columns.Add("ModImage", typeof(string));
                     foreach (DataRow row in dtM.Rows)
                     {
                         row["DiffColour"] = DiffCol(row["DifficultyLevel"].ToString());
                         int pid = Convert.ToInt32(row["PathwayID"]);
                         row["IconBg"] = IconBgs[pid % IconBgs.Length];
-                        row["ModIcon"] = "&#x1F4D6;";
+                        row["ModImage"] = GetPathwayBgImage(row["PathwayName"].ToString());
                     }
 
                     if (dtM.Rows.Count > 0)
@@ -141,6 +141,10 @@ namespace CloudPhoria.Student
                         using (SqlDataAdapter da = new SqlDataAdapter(cmd)) da.Fill(dtProg);
                     }
 
+                    dtProg.Columns.Add("ModImage", typeof(string));
+                    foreach (DataRow row in dtProg.Rows)
+                        row["ModImage"] = GetPathwayBgImage(row["PathwayName"].ToString());
+
                     if (dtProg.Rows.Count > 0)
                     { rptProgress.DataSource = dtProg; rptProgress.DataBind(); pnlProgress.Visible = true; }
                     else { pnlNoProgress.Visible = true; }
@@ -156,6 +160,11 @@ namespace CloudPhoria.Student
         private string DiffCol(string d)
         {
             switch(d){ case "Easy":return "#22C55E"; case "Medium":return "#F59E0B"; case "Hard":return "#EF4444"; default:return "#64748B"; }
+        }
+
+        protected static string GetPathwayBgImage(string pathwayName)
+        {
+            return Utils.GetPathwayBgImage(pathwayName);
         }
     }
 }

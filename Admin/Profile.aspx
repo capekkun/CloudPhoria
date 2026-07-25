@@ -10,7 +10,7 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x1F464; My Profile</h2>
+                <h2>My Profile</h2>
                 <p>View and update your admin account details.</p>
             </div>
         </div>
@@ -28,7 +28,7 @@
             <div class="cp-card" style="text-align:center;padding:32px 24px;">
                 <%-- Avatar --%>
                 <div style="width:72px;height:72px;border-radius:50%;
-                            background:linear-gradient(135deg,var(--cp-indigo),var(--cp-primary));
+                            background-color:var(--cp-indigo);
                             display:flex;align-items:center;justify-content:center;
                             font-size:26px;font-weight:700;color:#fff;
                             margin:0 auto 16px;border:3px solid var(--cp-border);">
@@ -39,7 +39,7 @@
                 </div>
                 <div style="margin-top:8px;">
                     <span class="cp-badge cp-badge-red" style="font-size:12px;padding:4px 12px;">
-                        &#x1F6E1; Administrator
+                        Administrator
                     </span>
                 </div>
                 <div style="font-size:13px;color:var(--cp-text-muted);margin-top:12px;">

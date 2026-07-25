@@ -383,13 +383,13 @@ namespace CloudPhoria.Student
 
                 if (isCorrect)
                 {
-                    litQuizResultIcon.Text = "&#x2705;";
+                    litQuizResultIcon.Text = "";
                     litQuizResultTitle.Text = "Correct!";
                     litQuizResultDesc.Text = "+" + points + " points";
                 }
                 else
                 {
-                    litQuizResultIcon.Text = "&#x274C;";
+                    litQuizResultIcon.Text = "";
                     litQuizResultTitle.Text = selectedOptionID == 0 ? "Time's up!" : "Not quite.";
                     litQuizResultDesc.Text = "No points this round.";
                 }

@@ -125,11 +125,12 @@ namespace CloudPhoria.Instructor
                     c.ClassroomID,
                     c.ClassroomName,
                     c.InviteCode,
+                    c.CreatedAt,
                     COUNT(ce.StudentID) AS StudentCount
                 FROM Classrooms c
                 LEFT JOIN ClassroomEnrollments ce ON ce.ClassroomID = c.ClassroomID
                 WHERE c.InstructorID = @ID
-                GROUP BY c.ClassroomID, c.ClassroomName, c.InviteCode
+                GROUP BY c.ClassroomID, c.ClassroomName, c.InviteCode, c.CreatedAt
                 ORDER BY c.CreatedAt DESC";
 
             DataTable dt = new DataTable();

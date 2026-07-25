@@ -13,9 +13,11 @@ namespace CloudPhoria.Student
         // Battle arena
         protected global::System.Web.UI.WebControls.Panel pnlBattle;
         protected global::System.Web.UI.WebControls.Panel pnlBattleStart;
+        protected global::System.Web.UI.WebControls.Image imgStartBossIcon;
         protected global::System.Web.UI.WebControls.Literal litStartBossName;
         protected global::System.Web.UI.WebControls.Button btnStartBattle;
         protected global::System.Web.UI.WebControls.Panel pnlBattleActive;
+        protected global::System.Web.UI.WebControls.Image imgBattleBossIcon;
         protected global::System.Web.UI.WebControls.Literal litBattleBossName;
         protected global::System.Web.UI.WebControls.Literal litBossHP;
         protected global::System.Web.UI.WebControls.Literal litBossMaxHP;

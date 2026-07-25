@@ -14,6 +14,17 @@ namespace CloudPhoria.Student
             get { return ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString; }
         }
 
+        // Boss icon/background images are uploaded as a matching pair, e.g.
+        // "/uploads/bosses/firewall-beast-icon.png" and "...-bg.png".
+        // IconPath is stored in the database (Bosses.IconPath); the background
+        // path is derived from it by convention, avoiding a second DB column.
+        // Used by the rooms grid repeater markup to render each room's icon.
+        protected static string GetBossIconPath(object iconPath)
+        {
+            string path = iconPath != null && iconPath != DBNull.Value ? iconPath.ToString() : "";
+            return HttpUtility.HtmlAttributeEncode(path);
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             bool isGuest = (Session["UserID"] == null || Session["Role"] == null ||
@@ -44,7 +55,7 @@ namespace CloudPhoria.Student
 
                     string roomsSql = @"
                         SELECT bfr.RoomID, bfr.Title, bfr.DifficultyLevel, bfr.XPReward,
-                               b.BossName, b.MaxHP,
+                               b.BossName, b.MaxHP, b.IconPath,
                                CASE WHEN EXISTS (
                                    SELECT 1 FROM BattleSessions bs
                                    WHERE bs.RoomID    = bfr.RoomID
@@ -108,7 +119,7 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
                     using (SqlCommand cmd = new SqlCommand(
-                        @"SELECT bfr.Title, bfr.XPReward, b.BossName, b.MaxHP, b.AttackStrength
+                        @"SELECT bfr.Title, bfr.XPReward, b.BossName, b.MaxHP, b.AttackStrength, b.IconPath
                           FROM BossFightRooms bfr
                           INNER JOIN Bosses b ON b.RoomID = bfr.RoomID
                           WHERE bfr.RoomID = @RID AND bfr.IsPublished = 1", conn))
@@ -123,6 +134,22 @@ namespace CloudPhoria.Student
                                 ViewState["AttackStr"] = Convert.ToInt32(rdr["AttackStrength"]);
                                 ViewState["XPReward"] = Convert.ToInt32(rdr["XPReward"]);
                                 ViewState["PlayerMaxHP"] = 100;
+
+                                string iconPath = rdr["IconPath"] != DBNull.Value ? rdr["IconPath"].ToString() : "";
+                                ViewState["BossIconPath"] = iconPath;
+
+                                if (!string.IsNullOrEmpty(iconPath))
+                                {
+                                    imgStartBossIcon.ImageUrl = iconPath;
+                                    imgStartBossIcon.Visible = true;
+
+                                    string bgPath = iconPath.Replace("-icon.png", "-bg.png");
+                                    pnlBattle.Style["background-image"] =
+                                        "linear-gradient(180deg,rgba(11,15,26,0.75) 0%,rgba(26,10,46,0.75) 40%,rgba(11,15,26,0.85) 100%), url('" +
+                                        HttpUtility.HtmlAttributeEncode(bgPath) + "')";
+                                    pnlBattle.Style["background-size"] = "cover";
+                                    pnlBattle.Style["background-position"] = "center";
+                                }
                             }
                             else
                             {
@@ -171,6 +198,8 @@ namespace CloudPhoria.Student
                 ViewState["PlayerCurrentHP"] = playerMax;
 
                 litBattleBossName.Text = litStartBossName.Text;
+                imgBattleBossIcon.ImageUrl = imgStartBossIcon.ImageUrl;
+                imgBattleBossIcon.Visible = imgStartBossIcon.Visible;
 
                 pnlBattleStart.Visible = false;
                 pnlBattleActive.Visible = true;
@@ -355,13 +384,13 @@ namespace CloudPhoria.Student
 
                 if (isCorrect)
                 {
-                    litTurnIcon.Text = "&#x2694;&#xFE0F;";
+                    litTurnIcon.Text = "";
                     litTurnTitle.Text = "Direct Hit!";
                     litTurnDesc.Text = "You dealt " + damage + " damage to the boss!";
                 }
                 else
                 {
-                    litTurnIcon.Text = "&#x1F4A5;";
+                    litTurnIcon.Text = "";
                     litTurnTitle.Text = "The Boss Attacks!";
                     litTurnDesc.Text = "Wrong drop! The boss dealt " + attackStr + " damage to you!";
                 }
@@ -436,7 +465,7 @@ namespace CloudPhoria.Student
 
             if (won)
             {
-                litResultIcon.Text = "&#x1F3C6;";
+                litResultIcon.Text = "";
                 litResultTitle.Text = "Victory!";
                 litResultSub.Text = "You defeated the boss! The cloud realm is safer.";
                 litResultXP.Text = xpReward.ToString();
@@ -444,7 +473,7 @@ namespace CloudPhoria.Student
             }
             else
             {
-                litResultIcon.Text = "&#x1F4A0;";
+                litResultIcon.Text = "";
                 litResultTitle.Text = "Defeated";
                 litResultSub.Text = "The boss was too strong this time. Train more and try again!";
             }

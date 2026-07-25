@@ -10,7 +10,7 @@
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
-                <h2>&#x2753; Subtopic Questions</h2>
+                <h2>Subtopic Questions</h2>
                 <p>Questions for subtopics assigned to you. Only Admin can create, edit, or delete questions.</p>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -31,7 +31,7 @@
 
     <%-- Feedback --%>
     <asp:Panel ID="pnlError" runat="server" Visible="false">
-        <div class="cp-alert cp-alert-danger"><span>&#x26A0;</span>
+        <div class="cp-alert cp-alert-danger"><span></span>
             <asp:Literal ID="litError" runat="server" /></div>
     </asp:Panel>
 
@@ -75,7 +75,6 @@
 
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="cp-empty-state">
-            <span class="cp-empty-state-icon" aria-hidden="true">&#x2753;</span>
             <h3>No questions yet</h3>
             <p>Ask an Admin to add questions to your assigned subtopics.</p>
         </div>

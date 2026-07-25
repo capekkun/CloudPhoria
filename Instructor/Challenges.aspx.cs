@@ -48,10 +48,8 @@ namespace CloudPhoria.Instructor
 
                 LoadChallenges();
             }
-            else
-            {
-                BindOptionRows();
-            }
+            // Do NOT rebind rptChOptions on postback — rebinding destroys
+            // the typed option text values before btnAddChQuestion_Click can read them.
         }
 
         private void BindOptionRows()
@@ -155,20 +153,13 @@ namespace CloudPhoria.Instructor
                         }
                     }
 
-                    // Collect options first so we can validate before inserting anything.
+                    // Collect options — all 4 text boxes.
                     List<string> optionTexts = new List<string>();
-                    int correctIndex = -1;
-                    int i = 0;
                     foreach (RepeaterItem item in rptChOptions.Items)
                     {
                         TextBox txtOpt = (TextBox)item.FindControl("txtChOption");
-                        RadioButton rbCorrect = (RadioButton)item.FindControl("rbChCorrect");
                         if (txtOpt != null && !string.IsNullOrWhiteSpace(txtOpt.Text))
-                        {
                             optionTexts.Add(txtOpt.Text.Trim());
-                            if (rbCorrect != null && rbCorrect.Checked) correctIndex = optionTexts.Count - 1;
-                        }
-                        i++;
                     }
 
                     if (optionTexts.Count < 2)
@@ -176,9 +167,17 @@ namespace CloudPhoria.Instructor
                         ShowError("Provide at least 2 answer options.");
                         return;
                     }
-                    if (correctIndex == -1)
+
+                    // Correct answer index from dropdown (1-based → 0-based).
+                    int correctIndex = 0;
+                    int selectedVal;
+                    if (int.TryParse(ddlCorrectOption.SelectedValue, out selectedVal))
+                        correctIndex = selectedVal - 1;
+
+                    // Make sure the selected correct option actually has text.
+                    if (correctIndex >= optionTexts.Count)
                     {
-                        ShowError("Select which option is correct.");
+                        ShowError("The selected correct option has no text. Please fill it in.");
                         return;
                     }
 
@@ -221,6 +220,7 @@ namespace CloudPhoria.Instructor
                 txtChQText.Text = string.Empty;
                 txtChQPoints.Text = "10";
                 txtChQTime.Text = "30";
+                // Rebind options only after successful save so the form resets.
                 BindOptionRows();
 
                 ShowSuccess("Question added to challenge.");
