@@ -4,7 +4,7 @@
 >
 > **Correction note:** an earlier draft of this file was based on `CloudPhoria_DataSchema.md`'s documented "52 tables" list, which is actually out of date — the real database has **57 tables**. Five tables exist in the live database but were missing from the doc: `ChallengeQuestions`, `ChallengeQuestionOptions`, `ClassroomMessages`, `FunRoomQuestions`, `FunRoomQuestionOptions`. This file now reflects the real database, not the stale doc.
 
-**Result: 46 of 57 tables are actually used in code. 11 are unused/dead.**
+**Result: 47 of 57 tables are actually used in code. 10 are unused/dead.**
 
 ---
 
@@ -54,9 +54,9 @@ Row counts pulled live via `SELECT SUM(p.rows) FROM sys.partitions ...` (read-on
 | 38 | `ChallengeQuestions` | 24 | ✅ Used (missing from old doc) |
 | 39 | `ChallengeQuestionOptions` | 96 | ✅ Used (missing from old doc) |
 | 40 | `ChallengeParticipation` | 1 | ✅ Used |
-| 41 | `FunRooms` | 5 | ❌ Unused |
-| 42 | `FunRoomQuestions` | 25 | ❌ Unused (missing from old doc) |
-| 43 | `FunRoomQuestionOptions` | 100 | ❌ Unused (missing from old doc) |
+| 41 | `FunRooms` | 5 | ✅ Used (`Admin/Dashboard.aspx.cs`, `Admin/FunRoomReviews.aspx.cs`) |
+| 42 | `FunRoomQuestions` | 25 | ❌ Unused — no page reads question content inside a Fun Room |
+| 43 | `FunRoomQuestionOptions` | 100 | ❌ Unused — no page reads question content inside a Fun Room |
 | 44 | `DiscussionThreads` | 0 | ❌ Unused |
 | 45 | `DiscussionReplies` | 0 | ❌ Unused |
 | 46 | `ConsultationSlots` | 15 | ❌ Unused |
@@ -78,21 +78,22 @@ Row counts pulled live via `SELECT SUM(p.rows) FROM sys.partitions ...` (read-on
 
 | Table | Rows | Feature |
 |---|---:|---|
-| `PracticeQuestionOptions` | 1120 | Practice quiz system (seeded but never taken) |
-| `PracticeAttempts` | 0 | Practice quiz system |
-| `PracticeAnswers` | 0 | Practice quiz system |
-| `GuestModuleAccess` | 0 | Guest tracking (handled via session checks instead) |
-| `FunRooms` | 5 | Community rooms (seeded but no page uses it) |
-| `FunRoomQuestions` | 25 | Community rooms |
-| `FunRoomQuestionOptions` | 100 | Community rooms |
-| `DiscussionThreads` | 0 | Forum feature (never implemented) |
-| `DiscussionReplies` | 0 | Forum feature |
-| `ConsultationSlots` | 15 | Consultation booking (removed feature) |
-| `ConsultationBookings` | 6 | Consultation booking (removed feature) |
+| `PracticeQuestionOptions` | 1120 | Practice quiz — seeded but no quiz-taking page exists |
+| `PracticeAttempts` | 0 | Practice quiz — no code reads or writes this |
+| `PracticeAnswers` | 0 | Practice quiz — no code reads or writes this |
+| `GuestModuleAccess` | 0 | Guest tracking — replaced by in-code session flag checks |
+| `FunRoomQuestions` | 25 | Fun Room questions — admin can approve rooms but no page displays their questions |
+| `FunRoomQuestionOptions` | 100 | Fun Room questions — same reason as above |
+| `DiscussionThreads` | 0 | Forum feature — designed but never implemented |
+| `DiscussionReplies` | 0 | Forum feature — designed but never implemented |
+| `ConsultationSlots` | 15 | Consultation booking — feature was built then removed |
+| `ConsultationBookings` | 6 | Consultation booking — feature was built then removed |
 
-`PracticeQuestions` (280 rows) is borderline — seeded and technically touched by one `UPDATE` in `Admin/Courses.aspx.cs`, but no page lets a student actually take a practice quiz. Your call whether to count it as used.
+Note: `FunRooms` itself **is** used — `Admin/Dashboard.aspx.cs` counts pending rooms and `Admin/FunRoomReviews.aspx.cs` handles approve/reject. Only the question sub-tables are unused.
 
-Notice several unused tables still have seed data (`PracticeQuestionOptions` 1120 rows, `FunRoomQuestionOptions` 100 rows, `ConsultationSlots` 15 rows) — that's leftover from database seed scripts in `Database/`, not evidence the feature works. Row count alone doesn't prove a table is "used" by the app; always cross-check against actual code.
+`PracticeQuestions` (280 rows) is borderline — touched by one `UPDATE` in `Admin/Courses.aspx.cs`, but no page lets a student actually take a practice quiz.
+
+Row count alone doesn't prove a table is used. `PracticeQuestionOptions` has 1,120 seeded rows and `ConsultationSlots` has 15 — all leftover from seed scripts, not evidence the feature works.
 
 ---
 
@@ -125,10 +126,10 @@ Notice several unused tables still have seed data (`PracticeQuestionOptions` 112
 ### Classrooms (8)
 `Classrooms`, `ClassroomEnrollments`, `ClassroomMaterials`, `ClassroomMessages`, `ClassroomAssignments`, `AssignmentQuestions`, `AssignmentQuestionOptions`, `AssignmentSubmissions`
 
-### Moderation & Admin (4)
-`Feedback`, `Reports`, `AuditLogs`, `Notifications`
+### Moderation & Admin (5)
+`FunRooms`, `Feedback`, `Reports`, `AuditLogs`, `Notifications`
 
-**Total: 4+2+6+4+2+5+4+6+8+4 = 45, plus borderline `PracticeQuestions` = 46.** ✓ matches summary above.
+**Total: 4+2+6+4+2+5+4+6+8+5 = 46, plus borderline `PracticeQuestions` = 47.** ✓
 
 ---
 
