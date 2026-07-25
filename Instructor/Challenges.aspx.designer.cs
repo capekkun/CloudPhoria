@@ -27,6 +27,7 @@ namespace CloudPhoria.Instructor
         protected global::System.Web.UI.WebControls.TextBox txtChQPoints;
         protected global::System.Web.UI.WebControls.TextBox txtChQTime;
         protected global::System.Web.UI.WebControls.Repeater rptChOptions;
+        protected global::System.Web.UI.WebControls.DropDownList ddlCorrectOption;
         protected global::System.Web.UI.WebControls.Button btnAddChQuestion;
         protected global::System.Web.UI.WebControls.Panel pnlChQuestionsList;
         protected global::System.Web.UI.WebControls.Repeater rptChQuestions;
