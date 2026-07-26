@@ -96,45 +96,5 @@ namespace CloudPhoria
             }
             catch (SqlException) { /* don't let notification failures break the caller */ }
         }
-
-        /// <summary>
-        /// Returns the background image path for a pathway based on its name.
-        /// </summary>
-        public static string GetPathwayBgImage(string pathwayName)
-        {
-            if (string.IsNullOrEmpty(pathwayName)) return "/uploads/modules/cloud-foundations.png";
-
-            string name = pathwayName.ToLowerInvariant();
-
-            if (name.Contains("security"))         return "/uploads/modules/cloud-security.png";
-            if (name.Contains("network"))          return "/uploads/modules/cloud-networking.png";
-            if (name.Contains("architect"))        return "/uploads/modules/cloud-architecture.png";
-            if (name.Contains("devops"))           return "/uploads/modules/devops-engineering.png";
-            if (name.Contains("data"))             return "/uploads/modules/data-engineering.png";
-            if (name.Contains("serverless") || name.Contains("container"))
-                                                   return "/uploads/modules/serverless-containers.png";
-
-            return "/uploads/modules/cloud-foundations.png";
-        }
-
-        /// <summary>
-        /// Returns the certification image path based on the pathway name.
-        /// </summary>
-        public static string GetCertificationImage(string pathwayName)
-        {
-            if (string.IsNullOrEmpty(pathwayName)) return "/uploads/Certification/cloud-architecture-cert.png";
-
-            string name = pathwayName.ToLowerInvariant();
-
-            if (name.Contains("security"))         return "/uploads/Certification/cloud-security-cert.png";
-            if (name.Contains("network"))          return "/uploads/Certification/cloud-networking-cert.png";
-            if (name.Contains("architect"))        return "/uploads/Certification/cloud-architecture-cert.png";
-            if (name.Contains("devops"))           return "/uploads/Certification/devops-engineering-cert.png";
-            if (name.Contains("data"))             return "/uploads/Certification/data-engineering-cert.png";
-            if (name.Contains("serverless") || name.Contains("container"))
-                                                   return "/uploads/Certification/serverless-containers-cert.png";
-
-            return "/uploads/Certification/cloud-architecture-cert.png";
-        }
     }
 }
