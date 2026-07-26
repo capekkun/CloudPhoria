@@ -511,6 +511,13 @@ namespace CloudPhoria.Instructor
                             due.HasValue ? (object)due.Value : DBNull.Value;
                         assignmentID = Convert.ToInt32(cmd.ExecuteScalar());
                     }
+
+                    InsertObjectiveQuestion(conn, assignmentID, txtAQ1, txtAQ1O1, txtAQ1O2, txtAQ1O3, txtAQ1O4, 1);
+                    InsertObjectiveQuestion(conn, assignmentID, txtAQ2, txtAQ2O1, txtAQ2O2, txtAQ2O3, txtAQ2O4, 2);
+                    InsertSubjectiveQuestion(conn, assignmentID, txtAQ3, 3);
+
+                    Utils.SendNotification(conn, instructorID,
+                        "Assignment \"" + title + "\" created successfully.", "Assignment");
                 }
 
                 txtTitle.Text = txtADesc.Text = txtDueDate.Text = string.Empty;
