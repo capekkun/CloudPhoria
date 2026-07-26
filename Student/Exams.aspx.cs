@@ -51,7 +51,6 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    // Modules with exam questions that the student hasn't passed yet.
                     string availSql = @"
                         SELECT m.ModuleID, m.ModuleName,
                                m.ExamDurationMinutes, m.ExamPassMarkPercent, m.XPReward,
@@ -87,7 +86,6 @@ namespace CloudPhoria.Student
                     }
                     else { pnlNoAvailable.Visible = true; }
 
-                    // Past attempts with a submitted time (completed attempts).
                     string histSql = @"
                         SELECT m.ModuleName, ea.SubmittedAt,
                                ea.ScorePercent, ea.IsPassed, ea.XPAwarded
@@ -119,10 +117,6 @@ namespace CloudPhoria.Student
                 pnlError.Visible = true;
             }
         }
-
-        // -----------------------------------------------------------
-        // ENTER EXAM FLOW
-        // -----------------------------------------------------------
 
         private void LoadExamIntro(int moduleID)
         {
@@ -166,7 +160,6 @@ namespace CloudPhoria.Student
                     litExamIntroPassMark.Text = passMark.ToString();
                     litExamIntroXP.Text = xpReward.ToString();
 
-                    // Already passed?
                     bool alreadyPassed;
                     using (SqlCommand cmd = new SqlCommand(
                         "SELECT COUNT(*) FROM ExamAttempts WHERE StudentID=@SID AND ModuleID=@MID AND IsPassed=1", conn))
@@ -185,7 +178,6 @@ namespace CloudPhoria.Student
                         return;
                     }
 
-                    // Locked (subtopics not all completed)?
                     int subtopicCount, completedCount;
                     using (SqlCommand cmd = new SqlCommand(
                         "SELECT COUNT(*) FROM SubTopics WHERE ModuleID=@MID AND IsPublished=1", conn))
@@ -308,8 +300,8 @@ namespace CloudPhoria.Student
 
         private void LoadCurrentExamQuestion()
         {
-            // Server-side authority: if time has run out, finish now regardless of
-            // how many questions remain — the browser timer is a visual aid only.
+            // Server clock is authoritative — the browser timer is just a visual aid.
+            // If time's actually up, end the exam here no matter how many questions are left.
             if (GetRemainingSeconds() <= 0)
             {
                 FinishExam(true);
@@ -400,8 +392,8 @@ namespace CloudPhoria.Student
 
                     if (selectedOptionID > 0)
                     {
-                        // Prevention of invalid option submissions — the option must
-                        // actually belong to the current question.
+                        // Confirm the option actually belongs to this question — blocks
+                        // a tampered request submitting an option from a different one.
                         using (SqlCommand cmd = new SqlCommand(
                             "SELECT IsCorrect FROM ExamQuestionOptions WHERE OptionID=@OID AND ExamQuestionID=@QID", conn))
                         {
@@ -430,9 +422,8 @@ namespace CloudPhoria.Student
                 int index = (int)ViewState["ExamQIndex"];
                 ViewState["ExamQIndex"] = index + 1;
 
-                // Server-side time check after recording the answer — if the clock
-                // ran out while the student was answering, stop here instead of
-                // showing another question.
+                // Check the clock again after saving the answer — if time ran out
+                // mid-question, stop here instead of loading another one.
                 if (GetRemainingSeconds() <= 0)
                 {
                     FinishExam(true);
@@ -487,9 +478,8 @@ namespace CloudPhoria.Student
 
                         if (isPassed && xpAwarded > 0)
                         {
-                            // Prevention of duplicate XP awards — only award if the
-                            // student has not already passed this module's exam before
-                            // (this attempt just became the first passing one).
+                            // Only award XP if this is the first time passing this
+                            // module's exam — avoid paying out on every retake.
                             int priorPasses;
                             using (SqlCommand cmd = new SqlCommand(
                                 @"SELECT COUNT(*) FROM ExamAttempts
@@ -523,13 +513,12 @@ namespace CloudPhoria.Student
                             }
                             else
                             {
-                                xpAwarded = 0; // Already passed before — do not report XP twice.
+                                xpAwarded = 0; // already passed before, don't show XP again
                             }
                         }
 
-                        // Award the module's badge on first pass (respects the
-                        // UNIQUE (StudentID, BadgeID) constraint — one badge per
-                        // student per module, never awarded twice).
+                        // NOT EXISTS check backs up the UNIQUE (StudentID, BadgeID)
+                        // constraint — badge is awarded once per student per module.
                         if (isPassed)
                         {
                             using (SqlCommand cmd = new SqlCommand(
@@ -548,9 +537,9 @@ namespace CloudPhoria.Student
                             }
                         }
 
-                        // Award the pathway's certification once every published
-                        // module in this module's pathway has been passed (respects
-                        // UNIQUE (StudentID, CertificationID) — never awarded twice).
+                        // Certification unlocks once every published module in the
+                        // pathway has been passed. UNIQUE (StudentID, CertificationID)
+                        // stops it being issued twice.
                         if (isPassed)
                         {
                             using (SqlCommand cmd = new SqlCommand(

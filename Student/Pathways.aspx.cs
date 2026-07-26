@@ -43,7 +43,7 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    // Subscription check (skip for guests — treat as foundation only)
+                    // Guests are treated as foundation-only, no subscription lookup needed
                     if (!isGuest)
                     {
                         using (SqlCommand cmd = new SqlCommand(
@@ -61,13 +61,11 @@ namespace CloudPhoria.Student
                     else if (isFoundationOnly)
                         pnlFreeNotice.Visible = true;
 
-                    // Counts
                     using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM Pathways", conn))
                         litPathwayCount.Text = cmd.ExecuteScalar().ToString();
                     using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM Modules WHERE IsPublished=1", conn))
                         litModuleCount.Text = cmd.ExecuteScalar().ToString();
 
-                    // Pathways
                     DataTable dtP = new DataTable();
                     using (SqlCommand cmd = new SqlCommand(
                         @"SELECT p.PathwayID, p.PathwayName, p.Description, p.IsFoundation,
@@ -97,7 +95,6 @@ namespace CloudPhoria.Student
                     { rptPathways.DataSource = dtP; rptPathways.DataBind(); pnlPathways.Visible = true; }
                     else { pnlEmpty.Visible = true; }
 
-                    // Modules (all published)
                     DataTable dtM = new DataTable();
                     using (SqlCommand cmd = new SqlCommand(
                         @"SELECT m.ModuleID, m.ModuleName, m.DifficultyLevel, m.XPReward,
@@ -121,7 +118,6 @@ namespace CloudPhoria.Student
                     if (dtM.Rows.Count > 0)
                     { rptModules.DataSource = dtM; rptModules.DataBind(); pnlModules.Visible = true; }
 
-                    // Progress
                     DataTable dtProg = new DataTable();
                     using (SqlCommand cmd = new SqlCommand(
                         @"SELECT m.ModuleName, p.PathwayName, mp.Status,

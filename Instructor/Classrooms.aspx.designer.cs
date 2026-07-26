@@ -8,7 +8,7 @@ namespace CloudPhoria.Instructor
 {
     public partial class Classrooms
     {
-        // ── Section 1 — Classroom cards ─────────────────────────────
+        // Section 1 — classroom cards
         protected global::System.Web.UI.WebControls.Panel pnlSuccess;
         protected global::System.Web.UI.WebControls.Literal litSuccess;
         protected global::System.Web.UI.WebControls.Panel pnlError;
@@ -17,7 +17,7 @@ namespace CloudPhoria.Instructor
         protected global::System.Web.UI.WebControls.Repeater rptClassrooms;
         protected global::System.Web.UI.WebControls.Panel pnlEmpty;
 
-        // ── Section 2 — Chat room ────────────────────────────────────
+        // Section 2 — chat room
         protected global::System.Web.UI.WebControls.Panel pnlChatRoom;
         protected global::System.Web.UI.WebControls.Literal litChatRoomName;
         protected global::System.Web.UI.WebControls.Literal litSidebarName;
@@ -38,7 +38,7 @@ namespace CloudPhoria.Instructor
         // Members tab
         protected global::System.Web.UI.WebControls.Literal litMembers;
 
-        // ── Create Classroom Modal ────────────────────────────────────
+        // Create classroom modal
         protected global::System.Web.UI.WebControls.TextBox txtClassName;
         protected global::System.Web.UI.WebControls.TextBox txtInviteCode;
         protected global::System.Web.UI.WebControls.Button btnCreate;

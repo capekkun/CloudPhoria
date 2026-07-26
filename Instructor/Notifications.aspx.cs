@@ -56,7 +56,6 @@ namespace CloudPhoria.Instructor
                     pnlNotifications.Visible = true;
                     pnlEmpty.Visible         = false;
 
-                    // Show "Mark all" only if there are unread notifications.
                     bool hasUnread = false;
                     foreach (DataRow row in dt.Rows)
                         if (!Convert.ToBoolean(row["IsRead"])) { hasUnread = true; break; }
@@ -70,7 +69,6 @@ namespace CloudPhoria.Instructor
             }
             catch (SqlException)
             {
-                // Non-critical — show empty state.
                 pnlEmpty.Visible = true;
             }
         }
@@ -94,7 +92,7 @@ namespace CloudPhoria.Instructor
                 using (SqlConnection conn = new SqlConnection(cs))
                 {
                     conn.Open();
-                    // UserID is included in WHERE to prevent marking another user's notification.
+                    // UserID in the WHERE stops one user marking another's notification.
                     using (SqlCommand cmd = new SqlCommand(
                         "UPDATE Notifications SET IsRead=1 WHERE NotificationID=@NID AND UserID=@UID", conn))
                     {
@@ -109,7 +107,7 @@ namespace CloudPhoria.Instructor
             }
             catch (SqlException)
             {
-                // Silently ignore — the list will reload unchanged.
+                // List reloads unchanged if this fails.
             }
         }
 
@@ -139,7 +137,6 @@ namespace CloudPhoria.Instructor
             }
             catch (SqlException)
             {
-                // Non-critical — ignore.
             }
         }
     }

@@ -19,19 +19,16 @@ namespace CloudPhoria
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Determine current view
             var isMobile = WebFormsFriendlyUrlResolver.IsMobileView(new HttpContextWrapper(Context));
             CurrentView = isMobile ? "Mobile" : "Desktop";
-
-            // Determine alternate view
             AlternateView = isMobile ? "Desktop" : "Mobile";
 
-            // Create switch URL from the route, e.g. ~/__FriendlyUrls_SwitchView/Mobile?ReturnUrl=/Page
+            // Route name comes from Friendly URLs; if it's missing the feature
+            // isn't enabled, so just hide the switcher
             var switchViewRouteName = "AspNet.FriendlyUrls.SwitchView";
             var switchViewRoute = RouteTable.Routes[switchViewRouteName];
             if (switchViewRoute == null)
             {
-                // Friendly URLs is not enabled or the name of the switch view route is out of sync
                 this.Visible = false;
                 return;
             }

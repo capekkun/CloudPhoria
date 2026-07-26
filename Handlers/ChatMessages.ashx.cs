@@ -8,11 +8,7 @@ using Microsoft.Data.SqlClient;
 
 namespace CloudPhoria.Handlers
 {
-    /// <summary>
-    /// Lightweight JSON endpoint for the classroom chat auto-poll.
-    /// Returns new ClassroomMessages after a given MessageID.
-    /// Requires an active session with Instructor or Student role.
-    /// </summary>
+    // Polled by the classroom chat UI - returns messages newer than afterID
     public class ChatMessages : IHttpHandler, IRequiresSessionState
     {
         public bool IsReusable => false;
@@ -22,7 +18,6 @@ namespace CloudPhoria.Handlers
             ctx.Response.ContentType = "application/json";
             ctx.Response.Cache.SetCacheability(HttpCacheability.NoCache);
 
-            // Auth check.
             if (ctx.Session["UserID"] == null || ctx.Session["Role"] == null)
             {
                 ctx.Response.Write("{\"error\":\"unauthorised\"}");
@@ -43,7 +38,6 @@ namespace CloudPhoria.Handlers
 
             try
             {
-                // Verify the caller has access to this classroom.
                 bool hasAccess = false;
                 int  instructorID = 0;
 
@@ -83,7 +77,6 @@ namespace CloudPhoria.Handlers
                         return;
                     }
 
-                    // Fetch new messages since afterID.
                     DataTable dt = new DataTable();
                     using (SqlCommand cmd = new SqlCommand(
                         @"SELECT TOP 50

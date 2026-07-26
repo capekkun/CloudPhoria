@@ -4,7 +4,7 @@
 
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-/* ── Teams-style chat room ───────────────────────── */
+/* Teams-style chat room */
 .inst-teams-wrap {
     display: grid;
     grid-template-columns: 220px 1fr;
@@ -186,7 +186,7 @@
             <asp:Literal ID="litError" runat="server" /></div>
     </asp:Panel>
 
-    <%-- ═══ SECTION 1 — Classroom cards ═══ --%>
+    <%-- Section 1 — classroom cards --%>
     <asp:Panel ID="pnlClassrooms" runat="server" Visible="false">
         <asp:Repeater ID="rptClassrooms" runat="server"
                       OnItemCommand="rptClassrooms_ItemCommand">
@@ -239,7 +239,7 @@
         </div>
     </asp:Panel>
 
-    <%-- ═══ SECTION 2 — Chat room ═══ --%>
+    <%-- Section 2 — chat room --%>
     <asp:Panel ID="pnlChatRoom" runat="server" Visible="false">
 
         <hr style="border:none;border-top:2px solid var(--cp-border);margin:24px 0 16px;" />
@@ -409,7 +409,7 @@
 
 <asp:Content ID="PageScripts" ContentPlaceHolderID="PageScripts" runat="server">
 <script>
-/* ── Modal helpers ─────────────────────────────── */
+/* Modal helpers */
 function showModal(id) {
     document.getElementById(id).classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -424,7 +424,7 @@ document.querySelectorAll('.cp-modal-backdrop').forEach(function(el) {
     });
 });
 
-/* ── Teams panel switcher ──────────────────────── */
+/* Teams panel switcher */
 function instShowPanel(name, btn) {
     document.querySelectorAll('.inst-teams-panel').forEach(function(p) {
         p.classList.remove('active');
@@ -444,13 +444,13 @@ function instShowPanel(name, btn) {
     if (name === 'chat') scrollChat();
 }
 
-/* ── Chat helpers ──────────────────────────────── */
+/* Chat helpers */
 function scrollChat() {
     var el = document.getElementById('instChatScroll');
     if (el) el.scrollTop = el.scrollHeight;
 }
 
-/* ── Auto-poll new messages every 3 s ─────────── */
+/* Auto-poll new messages every 3 s */
 var _lastMsgID  = 0;
 var _pollTimer  = null;
 var _classroomID = 0;

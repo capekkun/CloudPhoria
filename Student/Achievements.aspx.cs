@@ -35,7 +35,6 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    // TotalXP.
                     using (SqlCommand cmd = new SqlCommand(
                         "SELECT TotalXP FROM Students WHERE StudentID = @SID", conn))
                     {
@@ -44,7 +43,6 @@ namespace CloudPhoria.Student
                         litTotalXP.Text = (r != null && r != DBNull.Value) ? r.ToString() : "0";
                     }
 
-                    // Badges.
                     string badgeSql = @"
                         SELECT b.BadgeName, b.IconPath, ub.AwardedAt
                         FROM UserBadges ub
@@ -68,7 +66,6 @@ namespace CloudPhoria.Student
                     }
                     else { pnlNoBadges.Visible = true; }
 
-                    // Certifications.
                     string certSql = @"
                         SELECT c.CertificateName, uc.IssuedAt, p.PathwayName
                         FROM UserCertifications uc
@@ -97,7 +94,6 @@ namespace CloudPhoria.Student
                     }
                     else { pnlNoCerts.Visible = true; }
 
-                    // XP History (last 20).
                     string xpSql = @"
                         SELECT TOP 20 SourceType, XPAmount, CreatedAt
                         FROM XPTransactions

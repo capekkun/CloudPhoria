@@ -29,9 +29,7 @@
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
 
-    <%-- ═══════════════════════════════════════════════════════════
-         PAGE HEADER
-    ═══════════════════════════════════════════════════════════ --%>
+    <%-- Page header --%>
     <div class="cp-page-header">
         <div class="cp-page-header-row">
             <div>
@@ -67,9 +65,7 @@
             <asp:Literal ID="litError" runat="server" /></div>
     </asp:Panel>
 
-    <%-- ═══════════════════════════════════════════════════════════
-         SECTION 1 — ASSIGNMENT LIST
-    ═══════════════════════════════════════════════════════════ --%>
+    <%-- Section 1 — assignment list --%>
     <asp:Panel ID="pnlAssignments" runat="server" Visible="false">
         <asp:Repeater ID="rptAssignments" runat="server"
                       OnItemCommand="rptAssignments_ItemCommand">
@@ -122,9 +118,7 @@
         </div>
     </asp:Panel>
 
-    <%-- ═══════════════════════════════════════════════════════════
-         SECTION 2 — SUBMITTED STUDENTS
-    ═══════════════════════════════════════════════════════════ --%>
+    <%-- Section 2 — submitted students --%>
     <asp:Panel ID="pnlSection2" runat="server" Visible="false">
         <hr class="cp-section-divider" />
 
@@ -198,9 +192,7 @@
         </asp:Panel>
     </asp:Panel>
 
-    <%-- ═══════════════════════════════════════════════════════════
-         SECTION 3 — STUDENT SUBMISSION DETAIL
-    ═══════════════════════════════════════════════════════════ --%>
+    <%-- Section 3 — student submission detail --%>
     <asp:Panel ID="pnlSection3" runat="server" Visible="false">
         <hr class="cp-section-divider" />
 
@@ -305,9 +297,7 @@
         </div>
     </asp:Panel>
 
-    <%-- ═══════════════════════════════════════════════════════════
-         MARK / FEEDBACK MODAL
-    ═══════════════════════════════════════════════════════════ --%>
+    <%-- Mark / feedback modal --%>
     <div id="feedbackModal" class="cp-modal-backdrop" role="dialog"
          aria-modal="true" aria-labelledby="fbTitle">
         <div class="cp-modal">
@@ -347,9 +337,7 @@
         </div>
     </div>
 
-    <%-- ═══════════════════════════════════════════════════════════
-         CREATE ASSIGNMENT MODAL
-    ═══════════════════════════════════════════════════════════ --%>
+    <%-- Create assignment modal --%>
     <div id="createModal" class="cp-modal-backdrop" role="dialog"
          aria-modal="true" aria-labelledby="createATitle">
         <div class="cp-modal" style="max-width:580px;">

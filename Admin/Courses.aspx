@@ -19,7 +19,7 @@
     <div class="cp-alert cp-alert-danger cp-mb-md"><asp:Literal ID="litError" runat="server" /></div>
 </asp:Panel>
 
-<%-- ============== TOP-LEVEL: Pathways + Modules (default view) ============== --%>
+<%-- Top level: pathways + modules (default view) --%>
 <asp:Panel ID="pnlModulesSection" runat="server" Visible="true">
 
 <h3 style="font-size:15px;font-weight:600;margin:0 0 12px;">Pathways</h3>
@@ -135,7 +135,7 @@
 
 </asp:Panel>
 
-<%-- ============== DRILL-DOWN: Manage SubTopics (?moduleID=) ============== --%>
+<%-- Drill-down: manage subtopics (?moduleID=) --%>
 <asp:Panel ID="pnlManageSubTopics" runat="server" Visible="false">
     <div class="cp-page-header-row" style="margin-bottom:16px;">
         <div>
@@ -219,7 +219,7 @@
     </asp:Panel>
 </asp:Panel>
 
-<%-- ============== DRILL-DOWN: Manage Questions (?subTopicID=) ============== --%>
+<%-- Drill-down: manage questions (?subTopicID=) --%>
 <asp:Panel ID="pnlManageQuestions" runat="server" Visible="false">
     <div class="cp-page-header-row" style="margin-bottom:16px;">
         <div>

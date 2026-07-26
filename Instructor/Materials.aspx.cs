@@ -22,7 +22,6 @@ namespace CloudPhoria.Instructor
 
         private const int MaxFileSizeBytes = 40 * 1024 * 1024; // 40 MB
 
-        // ── Page lifecycle ────────────────────────────────────────────────────
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["UserID"] == null || Session["Role"] == null ||
@@ -46,7 +45,6 @@ namespace CloudPhoria.Instructor
             {
                 LoadDropdowns();
 
-                // Pre-select subtopic from query string if supplied.
                 int qsID;
                 if (int.TryParse(Request.QueryString["subTopicID"], out qsID) && qsID > 0)
                 {
@@ -60,7 +58,6 @@ namespace CloudPhoria.Instructor
             }
         }
 
-        // ── Load all dropdowns ────────────────────────────────────────────────
         private void LoadDropdowns()
         {
             int instructorID = Convert.ToInt32(Session["UserID"]);
@@ -70,7 +67,6 @@ namespace CloudPhoria.Instructor
             {
                 conn.Open();
 
-                // Upload modal — subtopic list.
                 DataTable dtST = new DataTable();
                 using (SqlCommand cmd = new SqlCommand(
                     @"SELECT st.SubTopicID,
@@ -91,7 +87,6 @@ namespace CloudPhoria.Instructor
                 ddlSubTopicUpload.Items.Insert(0, new ListItem("-- Select Subtopic --", "0"));
                 pnlSubtopicCard.Visible = dtST.Rows.Count > 0;
 
-                // Upload modal — classroom list.
                 DataTable dtCL = new DataTable();
                 using (SqlCommand cmd = new SqlCommand(
                     "SELECT ClassroomID, ClassroomName FROM Classrooms WHERE InstructorID=@ID ORDER BY ClassroomName",
@@ -109,14 +104,10 @@ namespace CloudPhoria.Instructor
                 pnlClassroomCard.Visible = dtCL.Rows.Count > 0;
             }
 
-            // Populate the context-aware secondary filter based on current type selection.
             PopulateSecondaryFilter(ddlTypeFilter.SelectedValue);
         }
 
-        // Repopulates ddlSecondaryFilter based on the selected type.
-        // "All"       → disabled, single "-- All --" item
-        // "Subtopic"  → list of instructor's subtopics
-        // "Classroom" → list of instructor's classrooms
+        // type: "All" | "Subtopic" | "Classroom"
         private void PopulateSecondaryFilter(string type)
         {
             int instructorID = Convert.ToInt32(Session["UserID"]);
@@ -182,7 +173,6 @@ namespace CloudPhoria.Instructor
             }
         }
 
-        // ── Load unified materials table ──────────────────────────────────────
         private void LoadMaterials()
         {
             int instructorID = Convert.ToInt32(Session["UserID"]);
@@ -261,10 +251,8 @@ namespace CloudPhoria.Instructor
             }
         }
 
-        // ── Filter change handlers ────────────────────────────────────────────
         protected void ddlTypeFilter_Changed(object sender, EventArgs e)
         {
-            // Repopulate secondary filter for the newly selected type, reset to "All".
             PopulateSecondaryFilter(ddlTypeFilter.SelectedValue);
             pnlMaterials.Visible = false;
             pnlEmpty.Visible     = false;
@@ -278,7 +266,6 @@ namespace CloudPhoria.Instructor
             LoadMaterials();
         }
 
-        // ── Upload: Subtopic material ─────────────────────────────────────────
         protected void btnUploadSubtopic_Click(object sender, EventArgs e)
         {
             int instructorID = Convert.ToInt32(Session["UserID"]);
@@ -300,7 +287,6 @@ namespace CloudPhoria.Instructor
                 {
                     conn.Open();
 
-                    // Ownership check.
                     using (SqlCommand chk = new SqlCommand(
                         "SELECT COUNT(*) FROM SubTopics WHERE SubTopicID=@SID AND CreatedByInstructorID=@IID", conn))
                     {
@@ -316,7 +302,6 @@ namespace CloudPhoria.Instructor
                     fuMaterial.PostedFile.SaveAs(Path.Combine(uploadDir, storedName));
                     string webPath = "/uploads/materials/" + storedName;
 
-                    // Use custom display name if provided, otherwise use original file name.
                     string displayName = txtSubtopicDisplayName.Text.Trim();
                     if (string.IsNullOrEmpty(displayName)) displayName = originalName;
 
@@ -340,7 +325,6 @@ namespace CloudPhoria.Instructor
             catch (Exception)    { ShowError("File could not be saved. Please try again."); }
         }
 
-        // ── Upload: Classroom material ────────────────────────────────────────
         protected void btnUploadClassroom_Click(object sender, EventArgs e)
         {
             int instructorID = Convert.ToInt32(Session["UserID"]);
@@ -364,7 +348,6 @@ namespace CloudPhoria.Instructor
                 {
                     conn.Open();
 
-                    // Ownership check.
                     using (SqlCommand chk = new SqlCommand(
                         "SELECT COUNT(*) FROM Classrooms WHERE ClassroomID=@CID AND InstructorID=@IID", conn))
                     {
@@ -380,7 +363,6 @@ namespace CloudPhoria.Instructor
                     fuClassroomMaterial.PostedFile.SaveAs(Path.Combine(uploadDir, storedName));
                     string webPath = "/uploads/classroom/" + classroomID + "/" + storedName;
 
-                    // Use custom display name if provided, otherwise use original file name.
                     string displayName = txtClassroomDisplayName.Text.Trim();
                     if (string.IsNullOrEmpty(displayName)) displayName = originalName;
 
@@ -410,12 +392,11 @@ namespace CloudPhoria.Instructor
             catch (Exception)    { ShowError("File could not be saved. Please try again."); }
         }
 
-        // ── Delete (handles both types) ───────────────────────────────────────
         protected void rptMaterials_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
             if (e.CommandName != "Delete") return;
 
-            // CommandArgument: "RecordID|MaterialType"
+            // "RecordID|MaterialType"
             string[] parts = e.CommandArgument.ToString().Split('|');
             int    recordID    = Convert.ToInt32(parts[0]);
             string matType     = parts.Length > 1 ? parts[1] : "Subtopic";
@@ -436,7 +417,7 @@ namespace CloudPhoria.Instructor
                 using (SqlConnection conn = new SqlConnection(cs))
                 {
                     conn.Open();
-                    // Retrieve file path first so we can delete the physical file.
+                    // Need the path before the row is gone, to clean up the physical file.
                     string filePath = null;
                     using (SqlCommand get = new SqlCommand(
                         "SELECT FilePath FROM LearningMaterials WHERE MaterialID=@ID AND InstructorID=@IID", conn))
@@ -444,7 +425,7 @@ namespace CloudPhoria.Instructor
                         get.Parameters.Add("@ID",  SqlDbType.Int).Value = materialID;
                         get.Parameters.Add("@IID", SqlDbType.Int).Value = instructorID;
                         object r = get.ExecuteScalar();
-                        if (r == null || r == DBNull.Value) return; // Not owned by this instructor.
+                        if (r == null || r == DBNull.Value) return;
                         filePath = r.ToString();
                     }
                     using (SqlCommand del = new SqlCommand(
@@ -455,7 +436,6 @@ namespace CloudPhoria.Instructor
                         del.ExecuteNonQuery();
                     }
 
-                    // Delete the physical file if it exists.
                     if (!string.IsNullOrEmpty(filePath))
                     {
                         try
@@ -465,7 +445,7 @@ namespace CloudPhoria.Instructor
                         }
                         catch
                         {
-                            // Non-critical — DB record already removed.
+                            // DB record is already gone either way.
                         }
                     }
                 }
@@ -517,7 +497,6 @@ namespace CloudPhoria.Instructor
             catch (SqlException) { ShowError("Could not remove material. Please try again."); }
         }
 
-        // ── Private helpers ───────────────────────────────────────────────────
         private bool ValidateUploadedFile(FileUpload fu, out string originalName, out string ext)
         {
             originalName = string.Empty;
@@ -562,7 +541,7 @@ namespace CloudPhoria.Instructor
                 string physical = Server.MapPath("~" + webPath);
                 if (File.Exists(physical)) File.Delete(physical);
             }
-            catch { /* non-critical */ }
+            catch { /* not worth failing the request over */ }
         }
 
         private static void SendNotification(SqlConnection conn, int userID,

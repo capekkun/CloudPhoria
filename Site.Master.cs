@@ -12,7 +12,7 @@ namespace CloudPhoria
     {
         public bool IsPublicPage { get; set; } = false;
 
-        public string PageHeading { set { /* no longer needed — pages set their own title */ } }
+        public string PageHeading { set { /* pages set their own title now, kept for old markup compat */ } }
         public string PageSubtitle { set { } }
 
         protected void Page_Load(object sender, EventArgs e) { }
@@ -23,7 +23,6 @@ namespace CloudPhoria
 
             CheckAuthentication();
 
-            // If guest (no session), skip user-specific loading
             if (Session["UserID"] == null || Session["Role"] == null)
                 return;
 
@@ -51,7 +50,7 @@ namespace CloudPhoria
 
             if (uid == null || role == null)
             {
-                // Guest mode — show guest nav, don't redirect
+                // No session isn't an error here - just show the guest nav
                 pnlGuestNav.Visible = true;
                 pnlGuestActions.Visible = true;
                 return;
@@ -106,7 +105,6 @@ namespace CloudPhoria
                 fullName = Session["FullName"] != null ? Session["FullName"].ToString() : "User";
             }
 
-            // Set display values
             string initials = GetInitials(fullName);
             litTopbarInitials.Text = HttpUtility.HtmlEncode(initials);
             litTopbarName.Text     = HttpUtility.HtmlEncode(fullName);
@@ -120,7 +118,6 @@ namespace CloudPhoria
             else if (role == "Admin")
                 lnkProfile.NavigateUrl = "~/Admin/Profile.aspx";
 
-            // Set role-aware notifications link and achievements visibility in dropdown.
             if (role == "Student")
             {
                 lnkDropNotifications.HRef   = ResolveUrl("~/Student/Notifications.aspx");
@@ -180,7 +177,7 @@ namespace CloudPhoria
                         litTopXP.Text = (r != null && r != DBNull.Value) ? r.ToString() : "0";
                     }
 
-                    // Check if on free plan to show "Go Pro" button
+                    // Only nag free-plan students to upgrade
                     using (SqlCommand cmd = new SqlCommand(
                         @"SELECT TOP 1 sp.CanAccessFoundationOnly FROM UserSubscriptions us
                           INNER JOIN SubscriptionPlans sp ON sp.PlanID=us.PlanID

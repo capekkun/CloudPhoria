@@ -8,9 +8,8 @@ using Microsoft.Data.SqlClient;
 
 namespace CloudPhoria.Instructor
 {
-    // READ-ONLY per the current authority model: only Admin can create, edit,
-    // publish, or delete SubTopics (Admin/Courses.aspx?moduleID=). Instructors
-    // can only view whatever subtopics belong to modules assigned to them.
+    // Read-only: Admin owns SubTopics via Admin/Courses.aspx?moduleID=.
+    // Instructors only see subtopics belonging to modules assigned to them.
     public partial class SubTopics : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
@@ -36,7 +35,6 @@ namespace CloudPhoria.Instructor
             {
                 LoadModuleDropdown();
 
-                // Pre-select module from query string if supplied.
                 int qsModuleID;
                 if (int.TryParse(Request.QueryString["moduleID"], out qsModuleID) && qsModuleID > 0)
                 {

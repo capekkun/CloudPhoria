@@ -155,7 +155,6 @@ namespace CloudPhoria.Admin
                 {
                     conn.Open();
 
-                    // Verify module exists.
                     string verifySQL = "SELECT ModuleName FROM Modules WHERE ModuleID = @MID";
                     string moduleName = "";
                     using (SqlCommand verifyCmd = new SqlCommand(verifySQL, conn))

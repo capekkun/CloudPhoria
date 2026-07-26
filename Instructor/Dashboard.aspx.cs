@@ -34,7 +34,6 @@ namespace CloudPhoria.Instructor
             string fullName = Session["FullName"] != null ? Session["FullName"].ToString() : "Instructor";
             litWelcomeName.Text = HttpUtility.HtmlEncode(fullName.Split(' ')[0]);
 
-            // Determine licence status from session (set by Master Page).
             string licenseStatus = Session["LicenseStatus"] != null
                                    ? Session["LicenseStatus"].ToString()
                                    : "Pending";
@@ -50,7 +49,6 @@ namespace CloudPhoria.Instructor
                 return;
             }
 
-            // Approved — show full dashboard.
             pnlStats.Visible = true;
             pnlHeaderActions.Visible = true;
 
@@ -67,13 +65,12 @@ namespace CloudPhoria.Instructor
             }
             catch (SqlException)
             {
-                // Non-critical — defaults already set.
+                // Defaults already set on the literals, leave dashboard usable.
             }
         }
 
         private void LoadStatCards(SqlConnection conn, int instructorID)
         {
-            // Classroom count.
             using (SqlCommand cmd = new SqlCommand(
                 "SELECT COUNT(*) FROM Classrooms WHERE InstructorID = @ID", conn))
             {
@@ -82,7 +79,6 @@ namespace CloudPhoria.Instructor
                 litClassroomCount.Text = (r != null && r != DBNull.Value) ? r.ToString() : "0";
             }
 
-            // Module count.
             using (SqlCommand cmd = new SqlCommand(
                 "SELECT COUNT(*) FROM Modules WHERE CreatedByInstructorID = @ID", conn))
             {
@@ -91,7 +87,6 @@ namespace CloudPhoria.Instructor
                 litModuleCount.Text = (r != null && r != DBNull.Value) ? r.ToString() : "0";
             }
 
-            // Total distinct students across all classrooms.
             using (SqlCommand cmd = new SqlCommand(
                 @"SELECT COUNT(DISTINCT ce.StudentID)
                   FROM ClassroomEnrollments ce
@@ -103,7 +98,7 @@ namespace CloudPhoria.Instructor
                 litStudentCount.Text = (r != null && r != DBNull.Value) ? r.ToString() : "0";
             }
 
-            // Pending submissions (submissions without feedback).
+            // "Pending" = submissions with no Feedback row yet.
             using (SqlCommand cmd = new SqlCommand(
                 @"SELECT COUNT(*)
                   FROM AssignmentSubmissions asub

@@ -80,7 +80,6 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    // Look up the classroom by invite code.
                     int classroomID = 0;
                     using (SqlCommand cmd = new SqlCommand(
                         "SELECT ClassroomID FROM Classrooms WHERE InviteCode = @Code", conn))
@@ -96,7 +95,6 @@ namespace CloudPhoria.Student
                         classroomID = Convert.ToInt32(r);
                     }
 
-                    // Check already enrolled.
                     using (SqlCommand cmd = new SqlCommand(
                         @"SELECT COUNT(*) FROM ClassroomEnrollments
                           WHERE ClassroomID = @CID AND StudentID = @SID", conn))
@@ -112,7 +110,6 @@ namespace CloudPhoria.Student
                         }
                     }
 
-                    // Enrol.
                     using (SqlCommand cmd = new SqlCommand(
                         @"INSERT INTO ClassroomEnrollments (ClassroomID, StudentID, EnrolledAt)
                           VALUES (@CID, @SID, GETDATE())", conn))

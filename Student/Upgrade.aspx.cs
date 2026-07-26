@@ -18,7 +18,7 @@ namespace CloudPhoria.Student
             {
                 if (isGuest)
                 {
-                    // Guest can see pricing but buttons go to register
+                    // Guests see pricing, but the buttons route to register instead of paying
                     pnlFreeNotCurrent.Visible = true;
                     pnlProUpgrade.Visible = true;
                 }
@@ -59,13 +59,11 @@ namespace CloudPhoria.Student
 
                     if (isFoundationOnly)
                     {
-                        // On Free plan
                         pnlFreeCurrent.Visible = true;
                         pnlProUpgrade.Visible = true;
                     }
                     else
                     {
-                        // On Pro plan
                         pnlFreeNotCurrent.Visible = true;
                         pnlProCurrent.Visible = true;
                     }
@@ -73,7 +71,7 @@ namespace CloudPhoria.Student
             }
             catch (SqlException)
             {
-                // Default to Free if error
+                // If we can't tell the plan, assume Free rather than granting Pro access
                 pnlFreeCurrent.Visible = true;
                 pnlProUpgrade.Visible = true;
             }
@@ -81,13 +79,12 @@ namespace CloudPhoria.Student
 
         protected void btnPay_Click(object sender, EventArgs e)
         {
-            // Guest cannot pay — redirect to register
             if (Session["UserID"] == null || Session["Role"] == null)
             {
                 Response.Redirect("~/Register.aspx");
                 return;
             }
-            // Validate basic card fields
+
             string cardName = txtCardName.Text.Trim();
             string cardNumber = txtCardNumber.Text.Trim().Replace(" ", "");
             string expiry = txtExpiry.Text.Trim();
@@ -96,7 +93,6 @@ namespace CloudPhoria.Student
             if (string.IsNullOrEmpty(cardName) || cardNumber.Length < 13 ||
                 string.IsNullOrEmpty(expiry) || cvv.Length < 3)
             {
-                // Show modal again with error
                 ScriptManager.RegisterStartupScript(this, GetType(), "showModal",
                     "openPaymentModal();alert('Please fill in all payment fields correctly.');", true);
                 return;
@@ -110,8 +106,7 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    // Get Pro plan ID
-                    int proPlanID = 2;
+                    int proPlanID = 2; // fallback if the plans table lookup below returns nothing
                     using (SqlCommand cmd = new SqlCommand(
                         "SELECT PlanID FROM SubscriptionPlans WHERE CanAccessFoundationOnly = 0 ORDER BY PlanID", conn))
                     {
@@ -121,7 +116,6 @@ namespace CloudPhoria.Student
 
                     using (SqlTransaction tran = conn.BeginTransaction())
                     {
-                        // Deactivate existing subscriptions
                         using (SqlCommand cmd = new SqlCommand(
                             "UPDATE UserSubscriptions SET IsActive = 0 WHERE StudentID = @SID", conn, tran))
                         {
@@ -129,7 +123,6 @@ namespace CloudPhoria.Student
                             cmd.ExecuteNonQuery();
                         }
 
-                        // Insert new Pro subscription
                         using (SqlCommand cmd = new SqlCommand(
                             @"INSERT INTO UserSubscriptions (StudentID, PlanID, StartDate, EndDate, IsActive)
                               VALUES (@SID, @PID, GETDATE(), NULL, 1)", conn, tran))
@@ -139,7 +132,6 @@ namespace CloudPhoria.Student
                             cmd.ExecuteNonQuery();
                         }
 
-                        // Create notification
                         using (SqlCommand cmd = new SqlCommand(
                             @"INSERT INTO Notifications (UserID, Message, NotificationType, IsRead, CreatedAt)
                               VALUES (@UID, 'Welcome to Pro! You now have full access to all pathways and features.', 'Subscription', 0, GETDATE())", conn, tran))
@@ -152,7 +144,6 @@ namespace CloudPhoria.Student
                     }
                 }
 
-                // Show success
                 pnlSuccessOverlay.Visible = true;
             }
             catch (SqlException)

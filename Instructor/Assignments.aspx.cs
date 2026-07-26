@@ -10,7 +10,6 @@ namespace CloudPhoria.Instructor
 {
     public partial class Assignments : System.Web.UI.Page
     {
-        // ── Page lifecycle ───────────────────────────────────────────────────
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["UserID"] == null || Session["Role"] == null ||
@@ -37,7 +36,6 @@ namespace CloudPhoria.Instructor
             }
         }
 
-        // ── Dropdowns ────────────────────────────────────────────────────────
         private void LoadClassroomDropdowns()
         {
             int instructorID = Convert.ToInt32(Session["UserID"]);
@@ -70,7 +68,7 @@ namespace CloudPhoria.Instructor
             pnlCreateBtn.Visible = dt.Rows.Count > 0;
         }
 
-        // ── Section 1: assignment list ────────────────────────────────────────
+        // Section 1: assignment list
         private void LoadAssignments()
         {
             int instructorID = Convert.ToInt32(Session["UserID"]);
@@ -125,12 +123,12 @@ namespace CloudPhoria.Instructor
             LoadAssignments();
         }
 
-        // ── Section 1 item commands ───────────────────────────────────────────
+        // Section 1 item commands
         protected void rptAssignments_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
             if (e.CommandName == "ViewStudents")
             {
-                // CommandArgument is "AssignmentID|Title"
+                // "AssignmentID|Title"
                 string[] parts     = e.CommandArgument.ToString().Split(new char[]{'|'}, 2);
                 int assignmentID   = Convert.ToInt32(parts[0]);
                 string assignTitle = parts.Length > 1 ? parts[1] : string.Empty;
@@ -142,7 +140,6 @@ namespace CloudPhoria.Instructor
 
                 LoadStudentList(assignmentID);
 
-                // Keep Section 1 visible, show Section 2, hide Section 3.
                 pnlSection2.Visible = true;
                 pnlSection3.Visible = false;
             }
@@ -152,12 +149,12 @@ namespace CloudPhoria.Instructor
             }
         }
 
-        // ── Section 2: per-student submission summary ─────────────────────────
+        // Section 2: per-student submission summary
         private void LoadStudentList(int assignmentID)
         {
             string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
 
-            // One row per student — pick their earliest submission date.
+            // One row per student, earliest submission wins.
             string sql = @"
                 SELECT   s.StudentID,
                          u.FullName  AS StudentName,
@@ -204,7 +201,7 @@ namespace CloudPhoria.Instructor
         {
             if (e.CommandName != "ViewDetail") return;
 
-            // CommandArgument: "StudentID|StudentName|SubmittedAt"
+            // "StudentID|StudentName|SubmittedAt"
             string[] parts    = e.CommandArgument.ToString().Split(new char[]{'|'}, 3);
             int      studentID    = Convert.ToInt32(parts[0]);
             string   studentName  = parts.Length > 1 ? parts[1] : string.Empty;
@@ -213,13 +210,12 @@ namespace CloudPhoria.Instructor
             int assignmentID;
             int.TryParse(hfSelectedAssignmentID.Value, out assignmentID);
 
-            // Store context for the detail header and feedback save.
+            // Needed later for the feedback save postback.
             hfDetailStudentID.Value   = studentID.ToString();
             hfDetailStudentName.Value = studentName;
             hfDetailSubmittedAt.Value = submittedAt;
             hfAssignmentIDFb.Value    = assignmentID.ToString();
 
-            // Populate info strip literals.
             litDetailStudentName.Text     = HttpUtility.HtmlEncode(studentName);
             litDetailAssignmentTitle.Text = HttpUtility.HtmlEncode(hfSelectedAssignmentTitle.Value);
 
@@ -233,12 +229,11 @@ namespace CloudPhoria.Instructor
             pnlSection3.Visible = true;
         }
 
-        // ── Section 3: per-question detail for one student ────────────────────
+        // Section 3: per-question detail for one student
         private void LoadDetail(int assignmentID, int studentID)
         {
             string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
 
-            // One row per question answered by this student.
             string sql = @"
                 SELECT asub.SubmissionID,
                        aq.QuestionText,
@@ -278,7 +273,7 @@ namespace CloudPhoria.Instructor
         {
             if (e.CommandName != "OpenMark") return;
 
-            // CommandArgument: "SubmissionID|urlEncodedFeedback|urlEncodedGrade"
+            // "SubmissionID|urlEncodedFeedback|urlEncodedGrade"
             string[] parts     = e.CommandArgument.ToString().Split(new char[]{'|'}, 3);
             string submissionID      = parts[0];
             string existingFeedback  = parts.Length > 1 ? parts[1] : string.Empty;
@@ -288,11 +283,10 @@ namespace CloudPhoria.Instructor
             hfExistingFeedback.Value = existingFeedback;
             hfExistingGrade.Value    = existingGrade;
 
-            // Pre-fill the modal text boxes server-side so they render correctly.
+            // Server-side pre-fill so the modal has the right values on render.
             txtFeedback.Text = HttpUtility.UrlDecode(existingFeedback);
             txtGrade.Text    = HttpUtility.UrlDecode(existingGrade);
 
-            // Open modal via JS after postback.
             ScriptManager.RegisterStartupScript(this, GetType(), "openFb",
                 "openFeedbackModal(" +
                 "'" + HttpUtility.JavaScriptStringEncode(existingFeedback) + "'," +
@@ -300,7 +294,7 @@ namespace CloudPhoria.Instructor
                 ");", true);
         }
 
-        // ── Back buttons ──────────────────────────────────────────────────────
+        // Back buttons
         protected void btnBackToAssignments_Click(object sender, EventArgs e)
         {
             pnlSection2.Visible = false;
@@ -313,7 +307,6 @@ namespace CloudPhoria.Instructor
         {
             pnlSection3.Visible = false;
 
-            // Re-show Section 2 with the same student list.
             int assignmentID;
             if (int.TryParse(hfSelectedAssignmentID.Value, out assignmentID) && assignmentID > 0)
             {
@@ -323,7 +316,6 @@ namespace CloudPhoria.Instructor
             }
         }
 
-        // ── Feedback save ─────────────────────────────────────────────────────
         protected void btnSaveFeedback_Click(object sender, EventArgs e)
         {
             if (!Page.IsValid) return;
@@ -350,7 +342,7 @@ namespace CloudPhoria.Instructor
                 {
                     conn.Open();
 
-                    // Verify instructor owns this submission via the assignment.
+                    // Only the owning instructor can grade this submission.
                     int classroomID = 0;
                     using (SqlCommand get = new SqlCommand(
                         @"SELECT ca.ClassroomID
@@ -369,7 +361,6 @@ namespace CloudPhoria.Instructor
                         classroomID = Convert.ToInt32(r);
                     }
 
-                    // Get the student ID.
                     int studentID = 0;
                     using (SqlCommand get2 = new SqlCommand(
                         "SELECT StudentID FROM AssignmentSubmissions WHERE SubmissionID=@SID", conn))
@@ -378,7 +369,6 @@ namespace CloudPhoria.Instructor
                         studentID = Convert.ToInt32(get2.ExecuteScalar());
                     }
 
-                    // Upsert feedback row.
                     bool exists;
                     using (SqlCommand chk = new SqlCommand(
                         "SELECT COUNT(*) FROM Feedback WHERE SubmissionID=@SID", conn))
@@ -420,14 +410,12 @@ namespace CloudPhoria.Instructor
                     }
                 }
 
-                // Clear modal fields.
                 txtFeedback.Text     = string.Empty;
                 txtGrade.Text        = string.Empty;
                 hfSubmissionID.Value = string.Empty;
 
                 ShowSuccess("Feedback saved successfully.");
 
-                // Reload Section 3 so the table reflects the new feedback.
                 int detailStudentID;
                 if (int.TryParse(hfDetailStudentID.Value, out detailStudentID) && detailStudentID > 0 && assignmentID > 0)
                 {
@@ -441,7 +429,6 @@ namespace CloudPhoria.Instructor
                     pnlSection3.Visible = true;
                 }
 
-                // Keep Section 2 visible too.
                 litSection2Title.Text = HttpUtility.HtmlEncode(hfSelectedAssignmentTitle.Value);
                 LoadStudentList(assignmentID);
                 pnlSection2.Visible = true;
@@ -452,7 +439,6 @@ namespace CloudPhoria.Instructor
             }
         }
 
-        // ── Create assignment ─────────────────────────────────────────────────
         protected void btnCreate_Click(object sender, EventArgs e)
         {
             if (!Page.IsValid) return;
@@ -482,7 +468,6 @@ namespace CloudPhoria.Instructor
                 {
                     conn.Open();
 
-                    // Ownership check.
                     using (SqlCommand chk = new SqlCommand(
                         "SELECT COUNT(*) FROM Classrooms WHERE ClassroomID=@CID AND InstructorID=@IID", conn))
                     {
@@ -511,9 +496,18 @@ namespace CloudPhoria.Instructor
                             due.HasValue ? (object)due.Value : DBNull.Value;
                         assignmentID = Convert.ToInt32(cmd.ExecuteScalar());
                     }
+
+                    // These fields used to be collected but never saved, so every
+                    // assignment showed "No questions have been added" to students.
+                    InsertObjectiveQuestion(conn, assignmentID, txtAQ1, txtAQ1O1, txtAQ1O2, txtAQ1O3, txtAQ1O4, 1);
+                    InsertObjectiveQuestion(conn, assignmentID, txtAQ2, txtAQ2O1, txtAQ2O2, txtAQ2O3, txtAQ2O4, 2);
+                    InsertSubjectiveQuestion(conn, assignmentID, txtAQ3, 3);
                 }
 
                 txtTitle.Text = txtADesc.Text = txtDueDate.Text = string.Empty;
+                txtAQ1.Text = txtAQ1O1.Text = txtAQ1O2.Text = txtAQ1O3.Text = txtAQ1O4.Text = string.Empty;
+                txtAQ2.Text = txtAQ2O1.Text = txtAQ2O2.Text = txtAQ2O3.Text = txtAQ2O4.Text = string.Empty;
+                txtAQ3.Text = string.Empty;
                 ShowSuccess("Assignment created successfully.");
                 pnlAssignments.Visible = false;
                 pnlEmpty.Visible       = false;
@@ -522,7 +516,6 @@ namespace CloudPhoria.Instructor
             catch (SqlException) { ShowError("Could not create assignment. Please try again."); }
         }
 
-        // ── Delete assignment ─────────────────────────────────────────────────
         private void DeleteAssignment(int assignmentID)
         {
             int instructorID = Convert.ToInt32(Session["UserID"]);
@@ -552,7 +545,6 @@ namespace CloudPhoria.Instructor
             catch (SqlException) { ShowError("Could not delete assignment. Please try again."); }
         }
 
-        // ── Question helpers ──────────────────────────────────────────────────
         private void InsertObjectiveQuestion(SqlConnection conn, int assignmentID,
             TextBox txtQ, TextBox o1, TextBox o2, TextBox o3, TextBox o4, int order)
         {
@@ -605,7 +597,7 @@ namespace CloudPhoria.Instructor
             }
         }
 
-        // ── Helpers ───────────────────────────────────────────────────────────
+        // Helpers
         private void ShowSuccess(string msg)
         {
             litSuccess.Text    = HttpUtility.HtmlEncode(msg);
