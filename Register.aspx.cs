@@ -40,9 +40,22 @@ namespace CloudPhoria
                 return;
             }
 
-            if (password.Length < 6)
+            // Re-check format server-side — client validators can be bypassed.
+            if (!System.Text.RegularExpressions.Regex.IsMatch(fullName, @"^[A-Za-z]+([ '\-][A-Za-z]+)+$"))
             {
-                ShowError("Password must be at least 6 characters.");
+                ShowError("Please enter your full name (letters and spaces, at least 2 words).");
+                return;
+            }
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
+                ShowError("Please enter a valid email address.");
+                return;
+            }
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch(password, @"^(?=.*[A-Za-z])(?=.*\d).{6,}$"))
+            {
+                ShowError("Password must be at least 6 characters and include a letter and a number.");
                 return;
             }
 
@@ -157,9 +170,10 @@ namespace CloudPhoria
                     }
                 }
             }
-            catch (SqlException ex)
+            catch (SqlException)
             {
-                ShowError("Registration failed. Please try again. (" + ex.Message + ")");
+                // Do not expose database error details to the user.
+                ShowError("Registration failed. Please try again.");
             }
         }
 

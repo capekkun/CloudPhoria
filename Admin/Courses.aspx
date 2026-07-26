@@ -74,6 +74,9 @@
         <div class="cp-form-group">
             <label class="cp-label" for="<%= txtModuleXP.ClientID %>">XP Reward</label>
             <asp:TextBox ID="txtModuleXP" runat="server" CssClass="cp-input" TextMode="Number" Text="100" />
+            <asp:RangeValidator runat="server" ControlToValidate="txtModuleXP" Type="Integer"
+                MinimumValue="0" MaximumValue="10000" Display="Dynamic" CssClass="cp-form-error"
+                ValidationGroup="CreateModule" ErrorMessage="XP Reward must be between 0 and 10000." />
         </div>
     </div>
 
@@ -81,10 +84,16 @@
         <div class="cp-form-group">
             <label class="cp-label" for="<%= txtModuleExamDuration.ClientID %>">Exam Duration (min)</label>
             <asp:TextBox ID="txtModuleExamDuration" runat="server" CssClass="cp-input" TextMode="Number" Text="60" />
+            <asp:RangeValidator runat="server" ControlToValidate="txtModuleExamDuration" Type="Integer"
+                MinimumValue="1" MaximumValue="480" Display="Dynamic" CssClass="cp-form-error"
+                ValidationGroup="CreateModule" ErrorMessage="Exam duration must be between 1 and 480 minutes." />
         </div>
         <div class="cp-form-group">
             <label class="cp-label" for="<%= txtModulePassMark.ClientID %>">Pass Mark (%)</label>
             <asp:TextBox ID="txtModulePassMark" runat="server" CssClass="cp-input" TextMode="Number" Text="70" />
+            <asp:RangeValidator runat="server" ControlToValidate="txtModulePassMark" Type="Integer"
+                MinimumValue="0" MaximumValue="100" Display="Dynamic" CssClass="cp-form-error"
+                ValidationGroup="CreateModule" ErrorMessage="Pass mark must be between 0 and 100." />
         </div>
     </div>
 

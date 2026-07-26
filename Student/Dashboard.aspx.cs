@@ -94,29 +94,35 @@ namespace CloudPhoria.Student
 
         private void LoadInProgressModules(SqlConnection conn, int studentID)
         {
+            // Progress counts the module's exam as one extra "step" alongside its
+            // ProgressPct here is the PATHWAY's overall completion (completed
+            // modules / total modules), same definition PathwayDetail.aspx uses —
+            // not this single module's own subtopic/exam progress. Keeping both
+            // pages on the same definition avoids showing two different numbers
+            // for what looks like the same "progress" at a glance.
             string sql = @"
                 SELECT TOP 5
                     m.ModuleID,
                     m.ModuleName,
                     p.PathwayName,
-                    CASE WHEN total.TotalSubs = 0 THEN 0
-                         ELSE CAST(done.DoneSubs AS INT) * 100 / total.TotalSubs
+                    CASE WHEN pathwayTotal.TotalModules = 0 THEN 0
+                         ELSE pathwayDone.DoneModules * 100 / pathwayTotal.TotalModules
                     END AS ProgressPct
                 FROM ModuleProgress mp
                 INNER JOIN Modules m ON m.ModuleID = mp.ModuleID
                 INNER JOIN Pathways p ON p.PathwayID = m.PathwayID
                 CROSS APPLY (
-                    SELECT COUNT(*) AS TotalSubs
-                    FROM SubTopics st WHERE st.ModuleID = m.ModuleID AND st.IsPublished = 1
-                ) total
+                    SELECT COUNT(*) AS TotalModules
+                    FROM Modules m2 WHERE m2.PathwayID = m.PathwayID AND m2.IsPublished = 1
+                ) pathwayTotal
                 CROSS APPLY (
-                    SELECT COUNT(*) AS DoneSubs
-                    FROM SubTopicProgress stp
-                    INNER JOIN SubTopics st2 ON st2.SubTopicID = stp.SubTopicID
-                    WHERE stp.StudentID = @StudentID
-                      AND st2.ModuleID  = m.ModuleID
-                      AND stp.Status    = 'Completed'
-                ) done
+                    SELECT COUNT(*) AS DoneModules
+                    FROM ModuleProgress mp2
+                    INNER JOIN Modules m3 ON m3.ModuleID = mp2.ModuleID
+                    WHERE mp2.StudentID = @StudentID
+                      AND m3.PathwayID  = m.PathwayID
+                      AND mp2.Status    = 'Completed'
+                ) pathwayDone
                 WHERE mp.StudentID = @StudentID
                   AND mp.Status    = 'InProgress'
                 ORDER BY mp.ProgressID DESC";
