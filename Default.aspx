@@ -1,11 +1,11 @@
-ï»¿<%@ Page Title="CloudPhoria â€“ Master the Cloud" Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="CloudPhoria._Default" %>
+<%@ Page Title="CloudPhoria – Master the Cloud" Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="CloudPhoria._Default" %>
 
 <!DOCTYPE html>
 <html lang="en">
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CloudPhoria â€“ Master the Cloud</title>
+    <title>CloudPhoria – Master the Cloud</title>
     <link href="Content/bootstrap.css" rel="stylesheet" type="text/css" />
     <style>
         /* =========================================================
@@ -331,7 +331,7 @@
             <div class="lp-brand-icon" style="display:none;" aria-hidden="true">CP</div>
         </a>
 
-        <%-- Centre navigation links â€” mirror TryHackMe's category nav --%>
+        <%-- Centre navigation links — mirror TryHackMe's category nav --%>
         <ul class="lp-nav-links" role="list">
             <li>
                 <a href="Student/Pathways.aspx">
@@ -368,7 +368,7 @@
     </nav>
 
     <%-- =====================================================
-         HERO â€” split layout: text left, visual right
+         HERO — split layout: text left, visual right
          ===================================================== --%>
     <section class="lp-hero" aria-labelledby="heroHeadline">
 
@@ -518,7 +518,7 @@
     </section>
 
     <%-- =====================================================
-         GUEST BROWSE â€” Read-only pathway/module preview
+         GUEST BROWSE — Read-only pathway/module preview
          ===================================================== --%>
     <section id="browse" style="position:relative;z-index:1;padding:60px 32px;max-width:1100px;margin:0 auto;">
         <h2 style="font-size:28px;font-weight:800;text-align:center;margin:0 0 8px;">

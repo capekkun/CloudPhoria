@@ -18,7 +18,7 @@
 /* Subtopic list */
 .st-list{display:flex;flex-direction:column;gap:0;}
 .st-item{display:flex;align-items:flex-start;gap:16px;padding:18px 20px;
-    border-bottom:1px solid #E2E8F0;transition:background 0.12s;}
+    border-bottom:1px solid #CBD5E1;transition:background 0.12s;}
 .st-item:hover{background:#F8FAFC;}
 .st-item:last-child{border-bottom:none;}
 .st-ico{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;
@@ -67,7 +67,7 @@
 
 <%-- Subtopics list --%>
 <div class="cp-card" style="padding:0;overflow:hidden;">
-    <div style="padding:16px 20px;border-bottom:1px solid #E2E8F0;">
+    <div style="padding:16px 20px;border-bottom:1px solid #CBD5E1;">
         <h3 style="margin:0;font-size:16px;font-weight:700;color:#172033;">Subtopics</h3>
     </div>
     <asp:Panel ID="pnlSubtopics" runat="server" Visible="false">

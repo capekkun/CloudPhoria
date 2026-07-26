@@ -8,12 +8,12 @@
 .sub-hero a{color:#38BDF8;font-size:13px;text-decoration:none;}
 .sub-hero h1{font-size:26px;font-weight:700;margin:10px 0 6px;color:#fff;}
 .sub-hero-meta{font-size:13px;color:rgba(255,255,255,0.5);display:flex;gap:16px;flex-wrap:wrap;}
-.sub-content{background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:28px 32px;
+.sub-content{background:#fff;border:1px solid #CBD5E1;border-radius:8px;padding:28px 32px;
     font-size:14px;line-height:1.8;color:#172033;margin-bottom:24px;}
 .sub-content h2,.sub-content h3{color:#172033;margin-top:24px;}
 .sub-materials{margin-bottom:24px;}
 .sub-mat-item{display:flex;align-items:center;gap:12px;padding:12px 16px;
-    background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;margin-bottom:8px;}
+    background:#F8FAFC;border:1px solid #CBD5E1;border-radius:8px;margin-bottom:8px;}
 </style>
 </asp:Content>
 

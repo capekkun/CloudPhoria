@@ -24,7 +24,7 @@
     /* Text */
     --cp-text:           #172033;
     --cp-text-muted:     #64748B;
-    --cp-border:         #E2E8F0;
+    --cp-border:         #CBD5E1;
 
     /* Status */
     --cp-success:        #22C55E;
@@ -39,8 +39,8 @@
     --cp-radius-lg:      8px;
 
     /* Shadows */
-    --cp-shadow-sm:      0 1px 2px rgba(15, 23, 42, 0.06);
-    --cp-shadow-md:      0 2px 4px rgba(15, 23, 42, 0.08);
+    --cp-shadow-sm:      0 1px 3px rgba(15, 23, 42, 0.1);
+    --cp-shadow-md:      0 2px 6px rgba(15, 23, 42, 0.12);
 
     /* Sidebar dimensions */
     --cp-sidebar-width:  260px;

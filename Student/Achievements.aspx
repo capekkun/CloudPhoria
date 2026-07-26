@@ -34,7 +34,11 @@
             <asp:Repeater ID="rptBadges" runat="server">
                 <ItemTemplate>
                     <div class="cp-card" style="text-align:center;padding:20px;">
-                        <img src="/uploads/studentdashboard/badges-earned-icon.png" alt="" style="width:40px;height:40px;object-fit:cover;border-radius:8px;margin-bottom:8px;" />
+                        <img src="<%# HttpUtility.HtmlAttributeEncode(
+                                        !string.IsNullOrEmpty(Eval("IconPath").ToString())
+                                            ? Eval("IconPath").ToString()
+                                            : "/uploads/studentdashboard/badges-earned-icon.png") %>"
+                             alt="" style="width:48px;height:48px;object-fit:cover;border-radius:8px;margin-bottom:8px;" />
                         <div style="font-size:13px;font-weight:600;color:var(--cp-text);">
                             <%# HttpUtility.HtmlEncode(Eval("BadgeName").ToString()) %>
                         </div>

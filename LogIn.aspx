@@ -1,11 +1,11 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="LogIn.aspx.cs" Inherits="CloudPhoria.LogIn" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="LogIn.aspx.cs" Inherits="CloudPhoria.LogIn" %>
 
 <!DOCTYPE html>
 <html lang="en">
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Log In – CloudPhoria</title>
+    <title>Log In � CloudPhoria</title>
     <link href="Content/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="Content/Site.css"      rel="stylesheet" type="text/css" />
     <style>
@@ -109,7 +109,7 @@
             font-size: 14px;
             color: #172033;
             background: #F4F7FB;
-            border: 1.5px solid #E2E8F0;
+            border: 1.5px solid #CBD5E1;
             border-radius: 8px;
             transition: border-color 0.15s, box-shadow 0.15s;
             font-family: inherit;

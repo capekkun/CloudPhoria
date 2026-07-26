@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Dashboard" Language="C#" MasterPageFile="~/Site.Master"
+<%@ Page Title="Dashboard" Language="C#" MasterPageFile="~/Site.Master"
     AutoEventWireup="true" CodeBehind="Dashboard.aspx.cs"
     Inherits="CloudPhoria.Instructor.Dashboard" %>
 
@@ -58,7 +58,7 @@ a.cp-stat-card-link:hover {
         </div>
     </asp:Panel>
 
-    <%-- Stat cards — only shown when approved --%>
+    <%-- Stat cards � only shown when approved --%>
     <asp:Panel ID="pnlStats" runat="server" Visible="false">
         <div class="cp-grid-4 cp-mb-lg">
             <a href="Classrooms.aspx" class="cp-stat-card cp-stat-card-link" aria-label="Go to My Classrooms">

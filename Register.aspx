@@ -26,12 +26,12 @@
         .cp-reg-field { margin-bottom:16px; }
         .cp-reg-label { display:block; font-size:13px; font-weight:500; color:#172033; margin-bottom:5px; }
         .cp-reg-input { display:block; width:100%; padding:10px 14px; font-size:14px; color:#172033;
-            background:#F4F7FB; border:1.5px solid #E2E8F0; border-radius:8px;
+            background:#F4F7FB; border:1.5px solid #CBD5E1; border-radius:8px;
             transition:border-color 0.15s; font-family:inherit; box-sizing:border-box; }
         .cp-reg-input:focus { outline:none; border-color:#0EA5E9; background:#fff;
             box-shadow:0 0 0 3px rgba(14,165,233,0.12); }
         .cp-reg-select { display:block; width:100%; padding:10px 14px; font-size:14px;
-            background:#F4F7FB; border:1.5px solid #E2E8F0; border-radius:8px; font-family:inherit; box-sizing:border-box; }
+            background:#F4F7FB; border:1.5px solid #CBD5E1; border-radius:8px; font-family:inherit; box-sizing:border-box; }
         .cp-reg-btn { display:block; width:100%; padding:12px; background:#0EA5E9; color:#fff;
             border:none; border-radius:6px; font-size:15px; font-weight:600; cursor:pointer;
             transition:background 0.15s; font-family:inherit; margin-top:8px; }

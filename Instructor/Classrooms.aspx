@@ -52,7 +52,7 @@
 .inst-teams-panel.active { display: flex; }
 .inst-teams-panel-header {
     padding: 14px 20px;
-    border-bottom: 1px solid #E5E7EB;
+    border-bottom: 1px solid #CBD5E1;
     display: flex; align-items: center; justify-content: space-between;
     background: #fff; flex-shrink: 0;
 }
@@ -93,10 +93,10 @@
 .inst-msg-mine .inst-msg-time { text-align: right; }
 .inst-chat-input {
     display: flex; gap: 8px; padding: 14px 20px;
-    border-top: 1px solid #E5E7EB; background: #FAFBFC; flex-shrink: 0;
+    border-top: 1px solid #CBD5E1; background: #FAFBFC; flex-shrink: 0;
 }
 .inst-chat-input input[type=text] {
-    flex: 1; padding: 10px 14px; border: 1px solid #E5E7EB;
+    flex: 1; padding: 10px 14px; border: 1px solid #CBD5E1;
     border-radius: 8px; font-size: 13px; outline: none;
     font-family: inherit; transition: border-color 0.15s;
 }
@@ -122,7 +122,7 @@
 .inst-file-item {
     display: flex; align-items: center; gap: 12px;
     padding: 12px 16px; background: #F9FAFB;
-    border: 1px solid #E5E7EB; border-radius: 8px;
+    border: 1px solid #CBD5E1; border-radius: 8px;
 }
 .inst-file-icon {
     width: 38px; height: 38px; border-radius: 7px;

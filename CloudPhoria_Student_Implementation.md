@@ -1,323 +1,153 @@
 # CloudPhoria — Implementation Section (Student Module)
 
-> Drafting aid only — not referenced by the project, safe to delete anytime, does not affect the build. This covers the "Implementation" requirement from your assignment brief: CSS for styling, form validation, and SQL queries for database connectivity, for the **Student-side Module Exam feature** (the same feature you just demoed). Every snippet below is copied directly from the real files in this project — `Student/Exams.aspx`, `Student/Exams.aspx.cs`, `LogIn.aspx`, `Register.aspx`, and `Content/Site.css`/`Site.Master` — nothing here is invented. Copy the parts you want into your Word report and adjust the surrounding prose to your own voice.
+> Drafting aid only — safe to delete, doesn't affect the build. Snippets are real, copied from the project. Rewrite in your own voice before submitting.
+
+Brief: *"Provide a detailed explanation of the source code of the major web application features. This includes CSS for web page styling, form validation, and SQL queries for database connectivity."*
+
+This document is organised around exactly those three elements, demonstrated across three major Student features: **Module Exam**, **Boss Fight battle**, and the **Achievement system (Badges & Certifications)**.
 
 ---
 
-## 1. Feature chosen: Module Exam (Student/Exams.aspx)
+## 1. SQL Queries for Database Connectivity
 
-This feature was chosen for the Implementation write-up because it demonstrates all three required elements clearly in one place: form validation (session/role guards, server-side answer validation), CSS (a live countdown timer, progress states), and non-trivial SQL (multi-step transactional writes, duplicate-prevention checks, parameterised queries throughout).
+All access uses **ADO.NET with `Microsoft.Data.SqlClient`**; every query is a parameterised `SqlCommand` — no string concatenation is used to build SQL anywhere in the project.
 
-**What it does:** a logged-in student takes a timed final exam for a module once they've completed all of that module's subtopics. Questions are shown one at a time with shuffled options and a server-authoritative countdown. On completion, the score is calculated, compared against the module's pass mark, and XP is awarded exactly once on a student's first pass.
+### 1.1 Module Exam — eligibility, tamper-resistant timer, transactional finish
 
----
-
-## 2. SQL Queries for Database Connectivity
-
-All database access in this project uses **ADO.NET with `Microsoft.Data.SqlClient`**, and every query is a **parameterised `SqlCommand`** — no string concatenation is ever used to build SQL, which prevents SQL injection. Below are four real snippets from `Student/Exams.aspx.cs` showing the range of query types used.
-
-### 2.1 Checking eligibility before allowing an exam attempt
-
-Before showing the "Start Exam" button, the page runs three separate checks — is it already passed, are all subtopics done, and are there any questions — using parameterised `COUNT(*)` queries and `ExecuteScalar()`:
-
+Eligibility is re-checked server-side on every load, so a student can't reach a locked exam by guessing the URL:
 ```csharp
-// Already passed?
-bool alreadyPassed;
 using (SqlCommand cmd = new SqlCommand(
     "SELECT COUNT(*) FROM ExamAttempts WHERE StudentID=@SID AND ModuleID=@MID AND IsPassed=1", conn))
-{
-    cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
-    cmd.Parameters.Add("@MID", SqlDbType.Int).Value = moduleID;
-    alreadyPassed = Convert.ToInt32(cmd.ExecuteScalar()) > 0;
-}
-
-// Locked (subtopics not all completed)?
-int subtopicCount, completedCount;
-using (SqlCommand cmd = new SqlCommand(
-    "SELECT COUNT(*) FROM SubTopics WHERE ModuleID=@MID AND IsPublished=1", conn))
-{
-    cmd.Parameters.Add("@MID", SqlDbType.Int).Value = moduleID;
-    subtopicCount = Convert.ToInt32(cmd.ExecuteScalar());
-}
-using (SqlCommand cmd = new SqlCommand(
-    @"SELECT COUNT(*) FROM SubTopicProgress stp
-      INNER JOIN SubTopics st ON st.SubTopicID = stp.SubTopicID
-      WHERE st.ModuleID=@MID AND stp.StudentID=@SID AND stp.Status='Completed'", conn))
-{
-    cmd.Parameters.Add("@MID", SqlDbType.Int).Value = moduleID;
-    cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
-    completedCount = Convert.ToInt32(cmd.ExecuteScalar());
-}
+{ alreadyPassed = Convert.ToInt32(cmd.ExecuteScalar()) > 0; }
 ```
 
-**Why this matters:** the exam is only unlocked when `completedCount == subtopicCount` — this is enforced entirely server-side, so a student cannot bypass the requirement by navigating directly to the exam URL.
-
-### 2.2 Starting an attempt and capturing a server-side timestamp
-
-When "Start Exam" is clicked, a new `ExamAttempts` row is inserted, and the server reads back its own generated ID and start time using `OUTPUT INSERTED`:
-
+The countdown is server-authoritative — `StartedAt` is written by `GETDATE()` on the database, and remaining time is recomputed from that stored value on every postback, so editing the browser timer has no effect:
 ```csharp
-using (SqlCommand cmd = new SqlCommand(
-    @"INSERT INTO ExamAttempts (StudentID, ModuleID, StartedAt, IsPassed, XPAwarded)
-      OUTPUT INSERTED.ExamAttemptID, INSERTED.StartedAt
-      VALUES (@SID, @MID, GETDATE(), 0, 0)", conn))
-{
-    cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
-    cmd.Parameters.Add("@MID", SqlDbType.Int).Value = moduleID;
-    using (SqlDataReader rdr = cmd.ExecuteReader())
-    {
-        rdr.Read();
-        attemptID = Convert.ToInt32(rdr["ExamAttemptID"]);
-        startedAt = Convert.ToDateTime(rdr["StartedAt"]);
-    }
-}
+if (GetRemainingSeconds() <= 0) { FinishExam(true); return; } // re-checked after every answer too
 ```
 
-**Why this matters:** `StartedAt` comes from the database server (`GETDATE()`), not from the browser's clock. The remaining time for the countdown is recalculated on every postback from this stored timestamp, so a student cannot cheat the timer by editing client-side JavaScript.
-
-### 2.3 Validating an answer against the correct option, server-side
-
-When a student submits an answer, the app checks correctness by querying the database — the correct answer is never sent to the browser at any point during the exam:
-
+Answer correctness is decided by a database lookup at submission time — the correct option is never sent to or stored in the browser:
 ```csharp
-if (selectedOptionID > 0)
-{
-    // The option must actually belong to the current question —
-    // prevents a tampered request from scoring against a different question.
-    using (SqlCommand cmd = new SqlCommand(
-        "SELECT IsCorrect FROM ExamQuestionOptions WHERE OptionID=@OID AND ExamQuestionID=@QID", conn))
-    {
-        cmd.Parameters.Add("@OID", SqlDbType.Int).Value = selectedOptionID;
-        cmd.Parameters.Add("@QID", SqlDbType.Int).Value = qID;
-        object r = cmd.ExecuteScalar();
-        isCorrect = (r != null && Convert.ToBoolean(r));
-    }
-}
-
-using (SqlCommand cmd = new SqlCommand(
-    @"INSERT INTO ExamAnswers (ExamAttemptID, ExamQuestionID, SelectedOptionID, IsCorrect)
-      VALUES (@AID, @QID, @OID, @Correct)", conn))
-{
-    cmd.Parameters.Add("@AID", SqlDbType.Int).Value = attemptID;
-    cmd.Parameters.Add("@QID", SqlDbType.Int).Value = qID;
-    cmd.Parameters.Add("@OID", SqlDbType.Int).Value = selectedOptionID > 0 ? (object)selectedOptionID : DBNull.Value;
-    cmd.Parameters.Add("@Correct", SqlDbType.Bit).Value = isCorrect;
-    cmd.ExecuteNonQuery();
-}
+"SELECT IsCorrect FROM ExamQuestionOptions WHERE OptionID=@OID AND ExamQuestionID=@QID"
 ```
 
-### 2.4 Finishing the exam: a transaction with a duplicate-XP guard
-
-On the last question (or on timeout), the final score is written and XP is awarded — all inside a single `SqlTransaction`, so either everything succeeds together or nothing is saved:
-
+Finishing the exam runs inside a transaction, so the score, XP, and badge either all succeed or all roll back together:
 ```csharp
 using (SqlTransaction tx = conn.BeginTransaction())
 {
-    using (SqlCommand cmd = new SqlCommand(
-        @"UPDATE ExamAttempts SET SubmittedAt=GETDATE(), ScorePercent=@Score,
-                                   IsPassed=@Passed, XPAwarded=@XP
-          WHERE ExamAttemptID=@AID", conn, tx))
-    {
-        cmd.Parameters.Add("@Score", SqlDbType.Decimal).Value = scorePercent;
-        cmd.Parameters.Add("@Passed", SqlDbType.Bit).Value = isPassed;
-        cmd.Parameters.Add("@XP", SqlDbType.Int).Value = xpAwarded;
-        cmd.Parameters.Add("@AID", SqlDbType.Int).Value = attemptID;
-        cmd.ExecuteNonQuery();
-    }
-
-    if (isPassed && xpAwarded > 0)
-    {
-        // Only award XP if this is the student's FIRST pass of this module —
-        // prevents earning XP repeatedly by retaking an already-passed exam.
-        int priorPasses;
-        using (SqlCommand cmd = new SqlCommand(
-            @"SELECT COUNT(*) FROM ExamAttempts
-              WHERE StudentID=@SID AND ModuleID=@MID AND IsPassed=1 AND ExamAttemptID<>@AID", conn, tx))
-        {
-            cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
-            cmd.Parameters.Add("@MID", SqlDbType.Int).Value = moduleID;
-            cmd.Parameters.Add("@AID", SqlDbType.Int).Value = attemptID;
-            priorPasses = Convert.ToInt32(cmd.ExecuteScalar());
-        }
-
-        if (priorPasses == 0)
-        {
-            using (SqlCommand cmd = new SqlCommand(
-                @"INSERT INTO XPTransactions (StudentID, SourceType, SourceID, XPAmount, CreatedAt)
-                  VALUES (@SID, 'ModuleExam', @MID, @XP, GETDATE())", conn, tx))
-            {
-                cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
-                cmd.Parameters.Add("@MID", SqlDbType.Int).Value = moduleID;
-                cmd.Parameters.Add("@XP", SqlDbType.Int).Value = xpAwarded;
-                cmd.ExecuteNonQuery();
-            }
-
-            using (SqlCommand cmd = new SqlCommand(
-                "UPDATE Students SET TotalXP = TotalXP + @XP WHERE StudentID=@SID", conn, tx))
-            {
-                cmd.Parameters.Add("@XP", SqlDbType.Int).Value = xpAwarded;
-                cmd.Parameters.Add("@SID", SqlDbType.Int).Value = studentID;
-                cmd.ExecuteNonQuery();
-            }
-        }
-    }
-
+    // UPDATE ExamAttempts SET ScorePercent=@Score, IsPassed=@Passed, XPAwarded=@XP ...
+    if (isPassed && priorPasses == 0) { /* INSERT XPTransactions; UPDATE Students.TotalXP */ }
+    if (isPassed) { /* INSERT UserBadges ... WHERE NOT EXISTS (already has it) */ }
     tx.Commit();
 }
 ```
+Without the transaction, a crash between the score update and the XP insert could leave a passed exam with no matching reward — an inconsistency that would be very hard to notice or repair later.
 
-**Explain in your own words for the report:** "A transaction guarantees the score update, the XP ledger entry, and the student's running total all succeed or fail together — if any step throws an exception, the whole update rolls back, so the database never ends up with a passed exam but no matching XP record, or vice versa."
+### 1.2 Boss Fight — server-tracked combat state
+
+HP is calculated and persisted server-side on every turn; the drag-and-drop UI only ever reflects it, never calculates it:
+```csharp
+bossHP   = Math.Max(0, bossHP   - dmgToBoss);
+playerHP = Math.Max(0, playerHP - dmgToPlayer);
+// UPDATE BattleSessions SET BossCurrentHP=@BHP, PlayerCurrentHP=@PHP WHERE SessionID=@SID
+```
+`Math.Max(0, ...)` stops HP going negative, which would otherwise break the health bar's width calculation. Saving before the page re-renders means refreshing mid-battle can never desync the displayed HP from the database's real HP. Ending the battle reuses the exact same transaction pattern as the exam (update outcome, then reward ledger, commit together) — a deliberate reuse of a proven pattern rather than writing bespoke logic twice.
+
+### 1.3 Achievement system — a real bug, found and fixed (the deepest SQL in this project)
+
+`Badges`, `UserBadges`, `Certifications`, and `UserCertifications` were fully designed and seeded (28 badges, one per module), and `Achievements.aspx`/`PathwayDetail.aspx` already had working display and "already earned?" read logic. But no code anywhere in the application ever executed an `INSERT INTO UserBadges` or `UserCertifications` — the write path simply didn't exist. A student could pass every exam in a pathway and their Achievements page would permanently show zero. This is exactly the kind of gap that's easy to miss during development, because every *other* part of the feature looks finished: schema correct, UI correct, read queries correct. Only the write path was missing, invisible until you actually play through the app as a student and notice the count never moves.
+
+The fix — badge award, guarded against duplicates by the `UNIQUE(StudentID, BadgeID)` constraint:
+```csharp
+INSERT INTO UserBadges (StudentID, BadgeID, AwardedAt)
+SELECT @SID, b.BadgeID, GETDATE() FROM Badges b
+WHERE b.ModuleID = @MID
+  AND NOT EXISTS (SELECT 1 FROM UserBadges ub WHERE ub.StudentID=@SID AND ub.BadgeID=b.BadgeID)
+```
+
+Certification is more interesting technically because it's a *cross-module* condition — only true once every module in the pathway has been passed, not just the one just finished:
+```sql
+INSERT INTO UserCertifications (StudentID, CertificationID, IssuedAt)
+SELECT @SID, c.CertificationID, GETDATE() FROM Certifications c
+INNER JOIN Modules m ON m.PathwayID = c.PathwayID
+WHERE m.ModuleID = @MID
+  AND NOT EXISTS (SELECT 1 FROM UserCertifications uc WHERE uc.StudentID=@SID AND uc.CertificationID=c.CertificationID)
+  AND NOT EXISTS (                                  -- any unpassed published module blocks the award
+      SELECT 1 FROM Modules m2 WHERE m2.PathwayID=c.PathwayID AND m2.IsPublished=1
+        AND NOT EXISTS (SELECT 1 FROM ExamAttempts ea2 WHERE ea2.StudentID=@SID AND ea2.ModuleID=m2.ModuleID AND ea2.IsPassed=1)
+  )
+```
+The double `NOT EXISTS` expresses "all modules must be passed" in SQL, which has no direct `FOR ALL` operator — it reads as "award unless there exists a module not yet passed." This runs after *every* exam pass rather than only on the last module, since the trigger has no way to know in advance which module will turn out to be the student's last one; checking unconditionally and letting the guards no-op until the condition is genuinely true is simpler than detecting "is this the final module" as a special case.
+
+Because this bug existed while the app was already in use, students who'd already passed every module in a pathway before the fix had no certification recorded, requiring a one-off backfill query — deliberately near-identical to the live-award query above — to retroactively award what they'd already earned. Worth naming as a trade-off: the same eligibility logic now exists in two places; a cleaner long-term design would extract it into one shared stored procedure rather than duplicating the SQL.
 
 ---
 
-## 3. Form Validation
+## 2. Form Validation
 
-CloudPhoria uses **two layers of validation** consistently: ASP.NET validator controls for immediate client-side feedback, and server-side checks that re-verify everything before touching the database (since client-side validation can always be bypassed).
+Two layers throughout the project: ASP.NET validator controls for immediate client-side feedback, and independent server-side re-verification before anything touches the database, since client-side checks can always be bypassed.
 
-### 3.1 Client-side: ASP.NET validator controls (from Register.aspx)
-
+**Client-side (Register.aspx / LogIn.aspx):**
 ```html
-<asp:TextBox ID="txtEmail" runat="server" CssClass="cp-reg-input" TextMode="Email"
-    placeholder="you@example.com" MaxLength="100" />
-<asp:RequiredFieldValidator ID="rfvEmail" runat="server" ControlToValidate="txtEmail"
-    CssClass="cp-reg-error" ErrorMessage="Email is required." Display="Dynamic" />
-
-<asp:TextBox ID="txtPassword" runat="server" CssClass="cp-reg-input" TextMode="Password"
-    placeholder="Min 6 characters" MaxLength="256" />
-<asp:RequiredFieldValidator ID="rfvPass" runat="server" ControlToValidate="txtPassword"
-    CssClass="cp-reg-error" ErrorMessage="Password is required." Display="Dynamic" />
-
-<asp:TextBox ID="txtConfirm" runat="server" CssClass="cp-reg-input" TextMode="Password"
-    placeholder="Repeat password" MaxLength="256" />
-<asp:CompareValidator ID="cvPass" runat="server" ControlToValidate="txtConfirm"
-    ControlToCompare="txtPassword" CssClass="cp-reg-error"
-    ErrorMessage="Passwords do not match." Display="Dynamic" />
+<asp:RequiredFieldValidator ControlToValidate="txtPassword" ErrorMessage="Password is required." />
+<asp:CompareValidator ControlToValidate="txtConfirm" ControlToCompare="txtPassword" ErrorMessage="Passwords do not match." />
+<asp:RegularExpressionValidator ControlToValidate="txtEmail" ValidationExpression="^[^@\s]+@[^@\s]+\.[^@\s]+$" />
 ```
 
-From `LogIn.aspx`, a `RegularExpressionValidator` checks the email format before the form can even submit:
-
-```html
-<asp:RegularExpressionValidator
-    ID="revEmail"
-    runat="server"
-    ControlToValidate="txtEmail"
-    CssClass="cp-field-error"
-    ErrorMessage="Please enter a valid email address."
-    ValidationExpression="^[^@\s]+@[^@\s]+\.[^@\s]+$"
-    Display="Dynamic"
-    EnableClientScript="true" />
-```
-
-### 3.2 Server-side: re-checking everything before it touches the database
-
-Every protected Student page starts with the same session/role guard — this runs on the server regardless of what the client sent, so a manipulated request can't skip authentication:
-
+**Server-side session/role guard**, repeated at the top of every protected Student page — this is the check client-side validators cannot provide, since they can't stop someone typing a URL directly into the address bar:
 ```csharp
-protected void Page_Load(object sender, EventArgs e)
-{
-    if (Session["UserID"] == null || Session["Role"] == null ||
-        Session["Role"].ToString() != "Student")
-    {
-        Response.Redirect("~/LogIn.aspx", true);
-        return;
-    }
-    ...
-}
+if (Session["UserID"] == null || Session["Role"]?.ToString() != "Student")
+{ Response.Redirect("~/LogIn.aspx", true); return; }
 ```
 
-And in `LogIn.aspx.cs`, even though client-side validators already checked the fields, the server independently re-validates before ever touching the database:
+**Business-rule validation specific to the Exam feature:** the exam's own answer-submission handler re-validates that the submitted `OptionID` genuinely belongs to the current question (shown in §1.1) before scoring it — a check that has nothing to do with ASP.NET validator controls, but is exactly the kind of server-side re-verification this criterion is looking for beyond simple required-field checks.
 
-```csharp
-protected void btnLogin_Click(object sender, EventArgs e)
-{
-    // Web Forms validators run before the event handler.
-    // If client validation was bypassed, stop here.
-    if (!Page.IsValid) { return; }
+**Two genuine gaps, discussed critically rather than hidden** — a marker who finds an unmentioned gap reads it as something missed; the same gap named and explained reads as awareness:
+1. `Admin/Courses.aspx.cs` parses numeric fields (XP reward, exam pass-mark %) with `int.TryParse(...)` defaulting to `0` on failure. An out-of-range value like `-500` or `9999%` is silently saved rather than rejected — a `RangeValidator` (`MinimumValue="0" MaximumValue="100"`) would close this.
+2. `Register.aspx.cs` leaks a raw database exception in one handler (`"Registration failed... (" + ex.Message + ")"`), while every other handler in the project deliberately shows a generic message — making this one inconsistency stand out as an oversight rather than a considered choice.
 
-    string email    = txtEmail.Text.Trim().ToLowerInvariant();
-    string password = txtPassword.Text; // Do NOT trim passwords.
-
-    if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
-    {
-        ShowError("Please enter your email and password.");
-        return;
-    }
-
-    AuthenticateUser(email, password);
-}
-```
-
-**Explain in your own words for the report:** "Client-side validators improve user experience by giving instant feedback, but they run in the browser and can be disabled or bypassed. The server repeats the same checks — and adds checks the client can't do at all, like whether the account is banned or whether an exam is actually unlocked — before any data is written."
+Finding these came from deliberately testing invalid input — empty forms, negative numbers, duplicate emails — rather than only the happy path. That is the practical difference between "my form has validators" and "my validation holds up under testing."
 
 ---
 
-## 4. CSS for Web Page Styling
+## 3. CSS for Web Page Styling
 
-CloudPhoria is built on **Bootstrap 5** as a base grid/utility framework, layered with a custom design system defined in `Content/Site.css` and page-specific `<style>` blocks. Below are two real examples relevant to the exam feature and the shared login form.
+CloudPhoria is built on **Bootstrap 5** as a base grid/utility framework, layered with a custom design system in `Content/Site.css` and page-specific `<style>` blocks.
 
-### 4.1 Live countdown timer colour change (Student/Exams.aspx)
-
+**Module Exam — live countdown timer:**
 ```css
 .battle-timer { font-size:22px; font-weight:800; color:#F59E0B; font-variant-numeric:tabular-nums; }
 ```
 ```javascript
-if (remaining <= 5) display.style.color = '#EF4444';   // turns red under 5 seconds
+if (remaining <= 5) display.style.color = '#EF4444'; // turns red under 5 seconds remaining
 ```
+`font-variant-numeric: tabular-nums` keeps every digit the same fixed width, so the countdown doesn't visually jitter as the numbers change each second. The colour switch from amber to red is a deliberate urgency cue, not just decoration.
 
-**Explain in your own words:** "`font-variant-numeric: tabular-nums` keeps each digit the same width, so the countdown doesn't visually jitter as the numbers change every second. The colour switches from amber to red in the last 5 seconds as an urgency cue."
-
-### 4.2 Login form styling (LogIn.aspx)
-
+**Boss Fight — server-driven HP bars:**
 ```css
-.cp-login-box {
-    background: #FFFFFF;
-    border-radius: 18px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-    width: 100%;
-    max-width: 420px;
-    overflow: hidden;
-}
-
-.cp-login-input {
-    display: block;
-    width: 100%;
-    padding: 10px 14px;
-    font-size: 14px;
-    background: #F4F7FB;
-    border: 1.5px solid #E2E8F0;
-    border-radius: 9px;
-    transition: border-color 0.15s, box-shadow 0.15s;
-}
-.cp-login-input:focus {
-    outline: none;
-    border-color: #0EA5E9;
-    box-shadow: 0 0 0 3px rgba(14,165,233,0.12);
-    background: #FFFFFF;
-}
-.cp-login-input.input-error {
-    border-color: #EF4444;
-}
+.boss-hp-bar-wrap { background:rgba(255,255,255,0.08); border-radius:4px; height:6px; margin:10px 0; }
+.boss-hp-bar      { height:100%; border-radius:4px; background-color:#EF4444; transition:width 0.3s; }
 ```
-
-**Explain in your own words:** "The `:focus` state adds a soft blue glow (`box-shadow`) around the active input for accessibility and visual feedback, matching the site's primary brand colour. The `.input-error` class swaps the border to red when server-side validation fails, giving a consistent visual language for valid vs invalid fields across the whole site."
+```csharp
+bossHPBar.Style["width"] = ((bossHP * 100) / Math.Max(1, bossMax)) + "%";
+```
+The width percentage is computed entirely server-side and written straight into the `style` attribute — there is no client-side JavaScript recalculating HP, which means the displayed bar can never disagree with the database's `BossCurrentHP` value. `Math.Max(1, bossMax)` in the denominator is a small defensive touch avoiding a divide-by-zero if a boss were ever configured with 0 max HP. The `transition:width 0.3s` gives the HP change a smooth animated feel without any JavaScript animation code.
 
 ---
 
-## 5. Summary Table (optional — use if your brief wants a quick overview)
+## 4. Optimisation note (supports "database operations" being optimized, not just correct)
 
-| Requirement | Where it's shown |
+The queries above are backed by explicit indexes documented in `CloudPhoria_DataSchema.md`: `ExamAttempts.StudentID`, `ExamAttempts.ModuleID`, `XPTransactions.StudentID`, `Modules.PathwayID`. These are exactly the columns used in the `WHERE`/`JOIN` clauses of every query shown above — without them, each lookup would become a full table scan as the tables grow with more students and attempts.
+
+---
+
+## 5. Mapping to the brief
+
+| Brief requirement | Satisfied by |
 |---|---|
-| SQL for database connectivity | Section 2 — 4 real parameterised query examples from `Exams.aspx.cs`, including a multi-step transaction |
-| Form validation | Section 3 — client-side validator controls (`RequiredFieldValidator`, `CompareValidator`, `RegularExpressionValidator`) + server-side session/role guards and re-validation |
-| CSS for styling | Section 4 — countdown timer styling and login form input states |
+| Detailed explanation of source code of major features | §1–3 across three features: Module Exam, Boss Fight, Achievement system |
+| CSS for web page styling | §3 — countdown timer and server-driven HP bar, both explained (not just shown) |
+| Form validation | §2 — client validators, server guards, business-rule re-validation, and two honestly-discussed real gaps |
+| SQL queries for database connectivity | §1 — parameterised queries, two multi-table transactions, one cross-module eligibility query, plus a real bug found/fixed/backfilled |
 
----
-
-## 6. A note on presenting this well (not just copy-pasting)
-
-Markers usually want to see that you **understand** the code, not just that it exists. For each snippet you use in your report:
-1. State what it does in plain English first.
-2. Then show the code.
-3. Then explain *why* it's written that way (the "Explain in your own words" lines above are a starting point — rephrase them so they sound like you, not like a template).
-
-Avoid just pasting a wall of code with no commentary — a short paragraph before/after each snippet is what turns "I found this in my project" into "I understand what my project does."
+**Presenting this well:** for every snippet, say what it does in plain English first, show the code, then explain *why* it's written that way — in your own words, not this template's. §1.3 (the achievement bug) is the single highest-impact part of this document: a marker reading "here is a bug I found in my own system, why it happened, and how I fixed and backfilled it" is seeing genuine understanding of the source code, which is precisely what "detailed explanation" is asking for — not just that the code exists, but that you know why it works the way it does.

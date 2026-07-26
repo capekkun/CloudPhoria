@@ -46,7 +46,7 @@ namespace CloudPhoria.Student
 
                     // Badges.
                     string badgeSql = @"
-                        SELECT b.BadgeName, ub.AwardedAt
+                        SELECT b.BadgeName, b.IconPath, ub.AwardedAt
                         FROM UserBadges ub
                         INNER JOIN Badges b ON b.BadgeID = ub.BadgeID
                         WHERE ub.StudentID = @SID

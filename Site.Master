@@ -114,16 +114,22 @@
     @media(max-width:768px) { .cp-main-content { padding:16px; } }
 
     /* Footer */
-    .cp-site-footer { background:#1A2332; border-top:1px solid rgba(255,255,255,0.06);
-        padding:16px 32px; display:flex; align-items:center; justify-content:space-between;
-        flex-wrap:wrap; gap:12px; }
-    .cp-site-footer-brand { display:flex; align-items:center; gap:8px; }
-    .cp-site-footer-logo { height:24px; width:auto; border-radius:6px; }
-    .cp-site-footer-text { font-size:12px; color:rgba(255,255,255,0.35); }
-    .cp-site-footer-text em { font-style:normal; color:#0EA5E9; }
-    .cp-site-footer-links { display:flex; gap:16px; }
-    .cp-site-footer-links a { font-size:12px; color:rgba(255,255,255,0.4); text-decoration:none; transition:color 0.15s; }
+    .cp-site-footer { background:#1A2332; border-top:1px solid rgba(255,255,255,0.08);
+        padding:28px 32px 0; margin-top:32px; }
+    .cp-site-footer-top { display:flex; align-items:flex-start; justify-content:space-between;
+        flex-wrap:wrap; gap:24px; padding-bottom:20px; }
+    .cp-site-footer-brand { display:flex; align-items:center; gap:10px; }
+    .cp-site-footer-logo { height:28px; width:auto; border-radius:6px; }
+    .cp-site-footer-tagline { font-size:12px; color:rgba(255,255,255,0.35); margin-top:2px; }
+    .cp-site-footer-links { display:flex; gap:28px; flex-wrap:wrap; }
+    .cp-site-footer-col { display:flex; flex-direction:column; gap:8px; }
+    .cp-site-footer-col-title { font-size:11px; font-weight:600; text-transform:uppercase;
+        letter-spacing:0.05em; color:rgba(255,255,255,0.3); margin-bottom:2px; }
+    .cp-site-footer-links a { font-size:13px; color:rgba(255,255,255,0.55); text-decoration:none; transition:color 0.15s; }
     .cp-site-footer-links a:hover { color:#0EA5E9; }
+    .cp-site-footer-bottom { border-top:1px solid rgba(255,255,255,0.06);
+        padding:14px 0; text-align:center; }
+    .cp-site-footer-copy { font-size:12px; color:rgba(255,255,255,0.3); }
     </style>
     <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
 </head>
@@ -294,28 +300,38 @@
 
 <%-- Footer --%>
 <footer class="cp-site-footer" role="contentinfo">
-    <div class="cp-site-footer-brand">
-        <img src="/Images/LogoCloudphoria.png" alt="CloudPhoria" class="cp-site-footer-logo" />
-        <span class="cp-site-footer-text">Cloud<em>Phoria</em> &copy; <%: DateTime.Now.Year %> &mdash; CT050-3-2-WAPP</span>
+    <div class="cp-site-footer-top">
+        <div class="cp-site-footer-brand">
+            <div>
+                <img src="/Images/LogoCloudphoria.png" alt="CloudPhoria" class="cp-site-footer-logo" />
+                <div class="cp-site-footer-tagline">Learn cloud computing, one module at a time.</div>
+            </div>
+        </div>
+        <div class="cp-site-footer-links">
+            <asp:Panel ID="pnlFooterStudentLinks" runat="server" Visible="false" CssClass="cp-site-footer-col">
+                <span class="cp-site-footer-col-title">Learning</span>
+                <a href="/Student/Dashboard.aspx">Dashboard</a>
+                <a href="/Student/Pathways.aspx">Pathways</a>
+                <a href="/Student/Achievements.aspx">Achievements</a>
+                <a href="/Student/Profile.aspx">Profile</a>
+            </asp:Panel>
+            <asp:Panel ID="pnlFooterInstructorLinks" runat="server" Visible="false" CssClass="cp-site-footer-col">
+                <span class="cp-site-footer-col-title">Teaching</span>
+                <a href="/Instructor/Dashboard.aspx">Dashboard</a>
+                <a href="/Instructor/Modules.aspx">Modules</a>
+                <a href="/Instructor/Classrooms.aspx">Classrooms</a>
+            </asp:Panel>
+            <asp:Panel ID="pnlFooterAdminLinks" runat="server" Visible="false" CssClass="cp-site-footer-col">
+                <span class="cp-site-footer-col-title">Administration</span>
+                <a href="/Admin/Dashboard.aspx">Dashboard</a>
+                <a href="/Admin/Users.aspx">Users</a>
+                <a href="/Admin/Reports.aspx">Reports</a>
+                <a href="/Admin/AuditLogs.aspx">Audit Logs</a>
+            </asp:Panel>
+        </div>
     </div>
-    <div class="cp-site-footer-links">
-        <asp:Panel ID="pnlFooterStudentLinks" runat="server" Visible="false">
-            <a href="/Student/Dashboard.aspx">Dashboard</a>
-            <a href="/Student/Pathways.aspx">Pathways</a>
-            <a href="/Student/Achievements.aspx">Achievements</a>
-            <a href="/Student/Profile.aspx">Profile</a>
-        </asp:Panel>
-        <asp:Panel ID="pnlFooterInstructorLinks" runat="server" Visible="false">
-            <a href="/Instructor/Dashboard.aspx">Dashboard</a>
-            <a href="/Instructor/Modules.aspx">Modules</a>
-            <a href="/Instructor/Classrooms.aspx">Classrooms</a>
-        </asp:Panel>
-        <asp:Panel ID="pnlFooterAdminLinks" runat="server" Visible="false">
-            <a href="/Admin/Dashboard.aspx">Dashboard</a>
-            <a href="/Admin/Users.aspx">Users</a>
-            <a href="/Admin/Reports.aspx">Reports</a>
-            <a href="/Admin/AuditLogs.aspx">Audit Logs</a>
-        </asp:Panel>
+    <div class="cp-site-footer-bottom">
+        <span class="cp-site-footer-copy">&copy; <%: DateTime.Now.Year %> CloudPhoria. All rights reserved.</span>
     </div>
 </footer>
 
