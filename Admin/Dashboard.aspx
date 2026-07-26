@@ -32,38 +32,38 @@
 
     <div class="cp-grid-4 cp-mb-lg">
         <div class="cp-stat-card">
-            <div class="cp-stat-icon blue"></div>
+            <img src="/Images/Total users.png" alt="" style="width:64px;height:64px;object-fit:contain;flex-shrink:0;" />
             <div><div class="cp-stat-value"><asp:Literal ID="litTotalUsers" runat="server" Text="0" /></div><div class="cp-stat-label">Total Users</div></div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon amber">&#x23F3;</div>
+            <img src="/Images/Pending Approval.png" alt="" style="width:64px;height:64px;object-fit:contain;flex-shrink:0;" />
             <div><div class="cp-stat-value"><asp:Literal ID="litPendingApprovals" runat="server" Text="0" /></div><div class="cp-stat-label">Pending Approvals</div></div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon red"></div>
+            <img src="/Images/open reports.png" alt="" style="width:64px;height:64px;object-fit:contain;flex-shrink:0;" />
             <div><div class="cp-stat-value"><asp:Literal ID="litOpenReports" runat="server" Text="0" /></div><div class="cp-stat-label">Open Reports</div></div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon green"></div>
+            <img src="/Images/Published Module.png" alt="" style="width:64px;height:64px;object-fit:contain;flex-shrink:0;" />
             <div><div class="cp-stat-value"><asp:Literal ID="litPublishedModules" runat="server" Text="0" /></div><div class="cp-stat-label">Published Modules</div></div>
         </div>
     </div>
 
     <div class="cp-grid-4 cp-mb-lg">
         <div class="cp-stat-card">
-            <div class="cp-stat-icon indigo"></div>
+            <img src="/Images/Pending Fun Rooms.png" alt="" style="width:64px;height:64px;object-fit:contain;flex-shrink:0;" />
             <div><div class="cp-stat-value"><asp:Literal ID="litPendingFunRooms" runat="server" Text="0" /></div><div class="cp-stat-label">Pending Fun Rooms</div></div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon blue"></div>
+            <img src="/Images/active challenges.png" alt="" style="width:64px;height:64px;object-fit:contain;flex-shrink:0;" />
             <div><div class="cp-stat-value"><asp:Literal ID="litActiveChallenges" runat="server" Text="0" /></div><div class="cp-stat-label">Active Challenges</div></div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon green"></div>
+            <img src="/Images/Boss Fight Rooms.png" alt="" style="width:64px;height:64px;object-fit:contain;flex-shrink:0;" />
             <div><div class="cp-stat-value"><asp:Literal ID="litBossFightRooms" runat="server" Text="0" /></div><div class="cp-stat-label">Boss Fight Rooms</div></div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon amber"></div>
+            <img src="/Images/Total users.png" alt="" style="width:64px;height:64px;object-fit:contain;flex-shrink:0;" />
             <div><div class="cp-stat-value"><asp:Literal ID="litTotalStudents" runat="server" Text="0" /></div><div class="cp-stat-label">Registered Students</div></div>
         </div>
     </div>

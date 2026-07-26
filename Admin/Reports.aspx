@@ -22,19 +22,19 @@
 
     <div class="cp-grid-4 cp-mb-lg">
         <div class="cp-stat-card">
-            <div class="cp-stat-icon red"></div>
+            <img src="/Images/open reports.png" alt="" style="width:64px;height:64px;object-fit:contain;flex-shrink:0;" />
             <div><div class="cp-stat-value"><asp:Literal ID="litOpenCount" runat="server" Text="0" /></div><div class="cp-stat-label">Open</div></div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon amber"></div>
+            <img src="/Images/Pending Approval.png" alt="" style="width:64px;height:64px;object-fit:contain;flex-shrink:0;" />
             <div><div class="cp-stat-value"><asp:Literal ID="litReviewedCount" runat="server" Text="0" /></div><div class="cp-stat-label">Reviewed</div></div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon green"></div>
+            <img src="/Images/active challenges.png" alt="" style="width:64px;height:64px;object-fit:contain;flex-shrink:0;" />
             <div><div class="cp-stat-value"><asp:Literal ID="litActionCount" runat="server" Text="0" /></div><div class="cp-stat-label">Action Taken</div></div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon blue"></div>
+            <img src="/Images/View Challenges.png" alt="" style="width:64px;height:64px;object-fit:contain;flex-shrink:0;" />
             <div><div class="cp-stat-value"><asp:Literal ID="litDismissedCount" runat="server" Text="0" /></div><div class="cp-stat-label">Dismissed</div></div>
         </div>
     </div>

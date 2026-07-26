@@ -98,10 +98,8 @@ namespace CloudPhoria
                         {
                             string tp = txtTPNumber.Text.Trim();
                             using (SqlCommand cmd = new SqlCommand(
-                                @"SET IDENTITY_INSERT Students ON;
-                                  INSERT INTO Students (StudentID, TPNumber, TotalXP)
-                                  VALUES (@SID, @TP, 0);
-                                  SET IDENTITY_INSERT Students OFF;", conn, tran))
+                                @"INSERT INTO Students (StudentID, TPNumber, TotalXP)
+                                  VALUES (@SID, @TP, 0);", conn, tran))
                             {
                                 cmd.Parameters.Add("@SID", SqlDbType.Int).Value = userID;
                                 cmd.Parameters.Add("@TP", SqlDbType.NVarChar, 20).Value =
@@ -130,10 +128,8 @@ namespace CloudPhoria
                             // New instructors need admin approval before they can teach
                             string qualification = txtQualification.Text.Trim();
                             using (SqlCommand cmd = new SqlCommand(
-                                @"SET IDENTITY_INSERT Instructors ON;
-                                  INSERT INTO Instructors (InstructorID, Qualification, LicenseStatus)
-                                  VALUES (@IID, @Qual, 'Pending');
-                                  SET IDENTITY_INSERT Instructors OFF;", conn, tran))
+                                @"INSERT INTO Instructors (InstructorID, Qualification, LicenseStatus)
+                                  VALUES (@IID, @Qual, 'Pending');", conn, tran))
                             {
                                 cmd.Parameters.Add("@IID", SqlDbType.Int).Value = userID;
                                 cmd.Parameters.Add("@Qual", SqlDbType.NVarChar, 200).Value = qualification;
