@@ -403,6 +403,8 @@ namespace CloudPhoria.Student
 
         protected void btnNextChQuestion_Click(object sender, EventArgs e)
         {
+            pnlQuizResult.Visible = false;
+            pnlQuizAnswer.Visible = false;
             LoadCurrentQuestion();
         }
 

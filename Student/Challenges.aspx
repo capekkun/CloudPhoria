@@ -259,12 +259,23 @@
             if (remaining <= 5) display.style.color = '#EF4444';
             if (remaining <= 0) {
                 clearInterval(window.chTimerInterval);
-                hdnField.value = hdnField.value || '0';
+                if (!hdnField.value || hdnField.value === '') hdnField.value = '0';
                 var submitBtn = document.getElementById('<%= btnSubmitChAnswer.ClientID %>');
-                if (submitBtn) submitBtn.click();
+                if (submitBtn && !submitBtn.disabled) {
+                    submitBtn.disabled = true;
+                    submitBtn.click();
+                }
             }
         }, 1000);
     };
+
+    // Stop timer immediately when any submit/next button is clicked
+    document.addEventListener('click', function(e) {
+        if (e.target && (e.target.id === '<%= btnSubmitChAnswer.ClientID %>' ||
+                         e.target.id === '<%= btnNextChQuestion.ClientID %>')) {
+            if (window.chTimerInterval) clearInterval(window.chTimerInterval);
+        }
+    });
 })();
 </script>
 </asp:Content>
