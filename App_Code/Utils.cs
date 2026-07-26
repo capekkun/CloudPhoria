@@ -1,20 +1,30 @@
 using System;
 using System.Data;
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.Data.SqlClient;
 
 namespace CloudPhoria
 {
-    /// <summary>
-    /// Shared helper methods used across Admin pages.
-    /// Kept in App_Code so it compiles into the site assembly
-    /// without needing a project reference change.
-    /// </summary>
     public static class Utils
     {
-        /// <summary>
-        /// Writes a row to AuditLogs. Never throws — audit logging
-        /// must not break the calling admin action.
-        /// </summary>
+        // Same hash used at registration (to store) and login (to verify),
+        // so accounts created through Register.aspx never touch plaintext.
+        public static string ComputeSHA256(string plainText)
+        {
+            using (SHA256 sha = SHA256.Create())
+            {
+                byte[] bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(plainText));
+                StringBuilder sb = new StringBuilder(64);
+                foreach (byte b in bytes)
+                {
+                    sb.Append(b.ToString("x2"));
+                }
+                return sb.ToString();
+            }
+        }
+
+        // Swallows failures - an audit log write shouldn't take down the admin action
         public static void LogAction(SqlConnection conn, int performedByUserID, string actionType,
             string targetTable, int? targetID, string details)
         {
@@ -35,13 +45,9 @@ namespace CloudPhoria
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (SqlException) { /* audit logging must not break the main action */ }
+            catch (SqlException) { /* don't let audit failures break the caller */ }
         }
 
-        /// <summary>
-        /// Maps a Pathway name to its uploaded background image in /uploads/modules/.
-        /// Falls back to the Cloud Foundations image if the name doesn't match.
-        /// </summary>
         public static string GetPathwayBgImage(string pathwayName)
         {
             switch (pathwayName)
@@ -57,10 +63,7 @@ namespace CloudPhoria
             }
         }
 
-        /// <summary>
-        /// Maps a Pathway name to its uploaded certification image in /uploads/Certification/.
-        /// Returns null if the pathway has no certification image (e.g. Cloud Foundations).
-        /// </summary>
+        // Null means no cert image for this pathway (e.g. Cloud Foundations)
         public static string GetCertificationImage(string pathwayName)
         {
             switch (pathwayName)
@@ -75,10 +78,6 @@ namespace CloudPhoria
             }
         }
 
-        /// <summary>
-        /// Sends a notification to a user. Never throws — notification
-        /// failures must not break the calling action.
-        /// </summary>
         public static void SendNotification(SqlConnection conn, int userID, string message, string notificationType)
         {
             try
@@ -95,7 +94,7 @@ namespace CloudPhoria
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (SqlException) { /* notification must not break the main action */ }
+            catch (SqlException) { /* don't let notification failures break the caller */ }
         }
     }
 }

@@ -8,7 +8,7 @@ namespace CloudPhoria.Instructor
 {
     public partial class Assignments
     {
-        // ── Section 1 — Assignment list ──────────────────────────────────────
+        // Section 1 — assignment list
         protected global::System.Web.UI.WebControls.Panel pnlCreateBtn;
         protected global::System.Web.UI.WebControls.DropDownList ddlClassroom;
         protected global::System.Web.UI.WebControls.Panel pnlSuccess;
@@ -19,7 +19,7 @@ namespace CloudPhoria.Instructor
         protected global::System.Web.UI.WebControls.Repeater rptAssignments;
         protected global::System.Web.UI.WebControls.Panel pnlEmpty;
 
-        // ── Section 2 — Submitted students ──────────────────────────────────
+        // Section 2 — submitted students
         protected global::System.Web.UI.WebControls.Panel pnlSection2;
         protected global::System.Web.UI.WebControls.Literal litSection2Title;
         protected global::System.Web.UI.WebControls.LinkButton btnBackToAssignments;
@@ -29,7 +29,7 @@ namespace CloudPhoria.Instructor
         protected global::System.Web.UI.WebControls.Repeater rptStudents;
         protected global::System.Web.UI.WebControls.Panel pnlNoStudents;
 
-        // ── Section 3 — Per-student detail ───────────────────────────────────
+        // Section 3 — per-student detail
         protected global::System.Web.UI.WebControls.Panel pnlSection3;
         protected global::System.Web.UI.WebControls.LinkButton btnBackToStudents;
         protected global::System.Web.UI.WebControls.HiddenField hfDetailStudentID;
@@ -44,12 +44,12 @@ namespace CloudPhoria.Instructor
         protected global::System.Web.UI.WebControls.Literal litDetailSubmittedAt;
         protected global::System.Web.UI.WebControls.Repeater rptDetail;
 
-        // ── Feedback modal ────────────────────────────────────────────────────
+        // Feedback modal
         protected global::System.Web.UI.WebControls.TextBox txtFeedback;
         protected global::System.Web.UI.WebControls.TextBox txtGrade;
         protected global::System.Web.UI.WebControls.Button btnSaveFeedback;
 
-        // ── Create assignment modal ───────────────────────────────────────────
+        // Create assignment modal
         protected global::System.Web.UI.WebControls.DropDownList ddlClassroomCreate;
         protected global::System.Web.UI.WebControls.TextBox txtTitle;
         protected global::System.Web.UI.WebControls.TextBox txtADesc;

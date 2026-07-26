@@ -14,11 +14,9 @@ namespace CloudPhoria.Student
             get { return ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString; }
         }
 
-        // Boss icon/background images are uploaded as a matching pair, e.g.
-        // "/uploads/bosses/firewall-beast-icon.png" and "...-bg.png".
-        // IconPath is stored in the database (Bosses.IconPath); the background
-        // path is derived from it by convention, avoiding a second DB column.
-        // Used by the rooms grid repeater markup to render each room's icon.
+        // Icon/bg images are uploaded in pairs, e.g. "firewall-beast-icon.png" +
+        // "-bg.png". Only IconPath is stored in the DB; the bg path is derived
+        // by convention so we don't need a second column.
         protected static string GetBossIconPath(object iconPath)
         {
             string path = iconPath != null && iconPath != DBNull.Value ? iconPath.ToString() : "";
@@ -252,7 +250,6 @@ namespace CloudPhoria.Student
                                 litBattleQText.Text = HttpUtility.HtmlEncode(qText);
                                 rdr.Close();
 
-                                // Load options (shuffled)
                                 DataTable dtOpts = new DataTable();
                                 using (SqlCommand optCmd = new SqlCommand(
                                     @"SELECT OptionID, OptionText FROM BossFightQuestionOptions
@@ -457,7 +454,7 @@ namespace CloudPhoria.Student
                     }
                 }
             }
-            catch (SqlException) { /* non-critical for display */ }
+            catch (SqlException) { /* battle already resolved client-side, don't block the result screen */ }
 
             pnlBattleActive.Visible = false;
             pnlTurnResult.Visible = false;

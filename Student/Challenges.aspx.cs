@@ -54,7 +54,6 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    // Active challenges (StartDate <= now <= EndDate).
                     string activeSql = @"
                         SELECT c.ChallengeID, c.Title, c.Description,
                                c.XPReward, c.EndDate,
@@ -84,7 +83,6 @@ namespace CloudPhoria.Student
                     }
                     else { pnlNoActive.Visible = true; }
 
-                    // Past participation.
                     string pastSql = @"
                         SELECT c.ChallengeID, c.Title, cp.Score, cp.CompletedAt
                         FROM ChallengeParticipation cp
@@ -114,10 +112,6 @@ namespace CloudPhoria.Student
                 pnlError.Visible = true;
             }
         }
-
-        // -----------------------------------------------------------
-        // ENTER CHALLENGE FLOW
-        // -----------------------------------------------------------
 
         private void LoadChallengeIntro(int challengeID)
         {
@@ -226,7 +220,7 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    // Re-check in case of a double-click / duplicate submit.
+                    // Re-check here too, in case of a double-click submitting twice.
                     using (SqlCommand cmd = new SqlCommand(
                         "SELECT COUNT(*) FROM ChallengeParticipation WHERE ChallengeID=@CID AND StudentID=@SID", conn))
                     {
@@ -348,7 +342,7 @@ namespace CloudPhoria.Student
         {
             int selectedOptionID;
             if (!int.TryParse(hdnSelectedOption.Value, out selectedOptionID))
-                selectedOptionID = 0; // timeout / no selection
+                selectedOptionID = 0; // timed out or nothing selected
 
             int points = (int)ViewState["CurrentPoints"];
             int score = (int)ViewState["Score"];
@@ -421,7 +415,7 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    // Guard against a duplicate insert (unique constraint on ChallengeID+StudentID).
+                    // ChallengeID+StudentID is unique, so guard against inserting twice.
                     bool alreadyParticipated;
                     using (SqlCommand cmd = new SqlCommand(
                         "SELECT COUNT(*) FROM ChallengeParticipation WHERE ChallengeID=@CID AND StudentID=@SID", conn))
@@ -485,10 +479,6 @@ namespace CloudPhoria.Student
             }
         }
 
-        // -----------------------------------------------------------
-        // LEADERBOARD
-        // -----------------------------------------------------------
-
         private void BindLeaderboard(int challengeID)
         {
             try
@@ -517,7 +507,7 @@ namespace CloudPhoria.Student
                     }
                 }
             }
-            catch (SqlException) { /* leaderboard is a nice-to-have, fail quietly */ }
+            catch (SqlException) { /* leaderboard is a nice-to-have, don't break the page over it */ }
         }
 
         private void LoadLeaderboardOnly(int challengeID)

@@ -8,9 +8,8 @@ using Microsoft.Data.SqlClient;
 
 namespace CloudPhoria.Instructor
 {
-    // READ-ONLY per the current authority model: only Admin can create, edit,
-    // or delete Questions (Admin/Courses.aspx?subTopicID=). Instructors can
-    // only view questions on subtopics belonging to modules assigned to them.
+    // Read-only: Admin owns Questions via Admin/Courses.aspx?subTopicID=.
+    // Instructors only see questions on subtopics assigned to them.
     public partial class Questions : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)

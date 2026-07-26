@@ -19,7 +19,7 @@
     <div class="cp-alert cp-alert-danger cp-mb-md"><asp:Literal ID="litError" runat="server" /></div>
 </asp:Panel>
 
-<%-- ============== TOP-LEVEL: Pathways + Modules (default view) ============== --%>
+<%-- Top level: pathways + modules (default view) --%>
 <asp:Panel ID="pnlModulesSection" runat="server" Visible="true">
 
 <h3 style="font-size:15px;font-weight:600;margin:0 0 12px;">Pathways</h3>
@@ -74,6 +74,9 @@
         <div class="cp-form-group">
             <label class="cp-label" for="<%= txtModuleXP.ClientID %>">XP Reward</label>
             <asp:TextBox ID="txtModuleXP" runat="server" CssClass="cp-input" TextMode="Number" Text="100" />
+            <asp:RangeValidator runat="server" ControlToValidate="txtModuleXP" Type="Integer"
+                MinimumValue="0" MaximumValue="10000" Display="Dynamic" CssClass="cp-form-error"
+                ValidationGroup="CreateModule" ErrorMessage="XP Reward must be between 0 and 10000." />
         </div>
     </div>
 
@@ -81,10 +84,16 @@
         <div class="cp-form-group">
             <label class="cp-label" for="<%= txtModuleExamDuration.ClientID %>">Exam Duration (min)</label>
             <asp:TextBox ID="txtModuleExamDuration" runat="server" CssClass="cp-input" TextMode="Number" Text="60" />
+            <asp:RangeValidator runat="server" ControlToValidate="txtModuleExamDuration" Type="Integer"
+                MinimumValue="1" MaximumValue="480" Display="Dynamic" CssClass="cp-form-error"
+                ValidationGroup="CreateModule" ErrorMessage="Exam duration must be between 1 and 480 minutes." />
         </div>
         <div class="cp-form-group">
             <label class="cp-label" for="<%= txtModulePassMark.ClientID %>">Pass Mark (%)</label>
             <asp:TextBox ID="txtModulePassMark" runat="server" CssClass="cp-input" TextMode="Number" Text="70" />
+            <asp:RangeValidator runat="server" ControlToValidate="txtModulePassMark" Type="Integer"
+                MinimumValue="0" MaximumValue="100" Display="Dynamic" CssClass="cp-form-error"
+                ValidationGroup="CreateModule" ErrorMessage="Pass mark must be between 0 and 100." />
         </div>
     </div>
 
@@ -135,7 +144,7 @@
 
 </asp:Panel>
 
-<%-- ============== DRILL-DOWN: Manage SubTopics (?moduleID=) ============== --%>
+<%-- Drill-down: manage subtopics (?moduleID=) --%>
 <asp:Panel ID="pnlManageSubTopics" runat="server" Visible="false">
     <div class="cp-page-header-row" style="margin-bottom:16px;">
         <div>
@@ -219,7 +228,7 @@
     </asp:Panel>
 </asp:Panel>
 
-<%-- ============== DRILL-DOWN: Manage Questions (?subTopicID=) ============== --%>
+<%-- Drill-down: manage questions (?subTopicID=) --%>
 <asp:Panel ID="pnlManageQuestions" runat="server" Visible="false">
     <div class="cp-page-header-row" style="margin-bottom:16px;">
         <div>

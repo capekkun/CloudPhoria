@@ -65,9 +65,7 @@
         </div>
     </div>
 
-    <%-- ═══════════════════════════════════════════
-         SECTION 1 — Upload choice cards
-    ═══════════════════════════════════════════ --%>
+    <%-- Section 1 — upload choice cards --%>
     <div class="cp-upload-cards">
 
         <%-- Card: Upload for Subtopic --%>
@@ -106,9 +104,7 @@
             <asp:Literal ID="litError" runat="server" /></div>
     </asp:Panel>
 
-    <%-- ═══════════════════════════════════════════
-         SECTION 2 — Filter + Uploaded Materials table
-    ═══════════════════════════════════════════ --%>
+    <%-- Section 2 — filter + uploaded materials table --%>
     <h3 style="font-size:15px;font-weight:700;color:var(--cp-text);margin:0 0 14px;">
         Uploaded Materials
     </h3>
@@ -202,9 +198,7 @@
         </div>
     </asp:Panel>
 
-    <%-- ═══════════════════════════════════════════
-         MODAL — Upload for Subtopic
-    ═══════════════════════════════════════════ --%>
+    <%-- Modal — upload for subtopic --%>
     <div id="uploadSubtopicModal" class="cp-modal-backdrop" role="dialog"
          aria-modal="true" aria-labelledby="stUploadTitle">
         <div class="cp-modal">
@@ -263,9 +257,7 @@
         </div>
     </div>
 
-    <%-- ═══════════════════════════════════════════
-         MODAL — Upload for Classroom
-    ═══════════════════════════════════════════ --%>
+    <%-- Modal — upload for classroom --%>
     <div id="uploadClassroomModal" class="cp-modal-backdrop" role="dialog"
          aria-modal="true" aria-labelledby="clUploadTitle">
         <div class="cp-modal">

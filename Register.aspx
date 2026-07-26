@@ -78,6 +78,10 @@
                     placeholder="Your full name" MaxLength="100" />
                 <asp:RequiredFieldValidator ID="rfvName" runat="server" ControlToValidate="txtFullName"
                     CssClass="cp-reg-error" ErrorMessage="Name is required." Display="Dynamic" />
+                <asp:RegularExpressionValidator ID="revName" runat="server" ControlToValidate="txtFullName"
+                    CssClass="cp-reg-error" Display="Dynamic"
+                    ErrorMessage="Enter your full name (letters and spaces, at least 2 words)."
+                    ValidationExpression="^[A-Za-z]+([ '\-][A-Za-z]+)+$" />
             </div>
 
             <div class="cp-reg-field">
@@ -86,15 +90,23 @@
                     placeholder="you@example.com" MaxLength="100" />
                 <asp:RequiredFieldValidator ID="rfvEmail" runat="server" ControlToValidate="txtEmail"
                     CssClass="cp-reg-error" ErrorMessage="Email is required." Display="Dynamic" />
+                <asp:RegularExpressionValidator ID="revEmail" runat="server" ControlToValidate="txtEmail"
+                    CssClass="cp-reg-error" Display="Dynamic"
+                    ErrorMessage="Please enter a valid email address."
+                    ValidationExpression="^[^@\s]+@[^@\s]+\.[^@\s]+$" />
             </div>
 
             <div class="cp-reg-row">
                 <div class="cp-reg-field">
                     <label class="cp-reg-label">Password <span style="color:#EF4444;">*</span></label>
                     <asp:TextBox ID="txtPassword" runat="server" CssClass="cp-reg-input" TextMode="Password"
-                        placeholder="Min 6 characters" MaxLength="256" />
+                        placeholder="Min 6 characters, letters and numbers" MaxLength="256" />
                     <asp:RequiredFieldValidator ID="rfvPass" runat="server" ControlToValidate="txtPassword"
                         CssClass="cp-reg-error" ErrorMessage="Password is required." Display="Dynamic" />
+                    <asp:RegularExpressionValidator ID="revPass" runat="server" ControlToValidate="txtPassword"
+                        CssClass="cp-reg-error" Display="Dynamic"
+                        ErrorMessage="Password must be at least 6 characters and include a letter and a number."
+                        ValidationExpression="^(?=.*[A-Za-z])(?=.*\d).{6,}$" />
                 </div>
                 <div class="cp-reg-field">
                     <label class="cp-reg-label">Confirm Password <span style="color:#EF4444;">*</span></label>

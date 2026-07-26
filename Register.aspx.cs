@@ -11,7 +11,6 @@ namespace CloudPhoria
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // If already logged in, redirect to dashboard
             if (Session["UserID"] != null && Session["Role"] != null)
             {
                 string role = Session["Role"].ToString();
@@ -35,20 +34,31 @@ namespace CloudPhoria
             string password = txtPassword.Text;
             string role = ddlRole.SelectedValue;
 
-            // Basic validation
             if (string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
                 ShowError("Please fill in all required fields.");
                 return;
             }
 
-            if (password.Length < 6)
+            // Re-check format server-side — client validators can be bypassed.
+            if (!System.Text.RegularExpressions.Regex.IsMatch(fullName, @"^[A-Za-z]+([ '\-][A-Za-z]+)+$"))
             {
-                ShowError("Password must be at least 6 characters.");
+                ShowError("Please enter your full name (letters and spaces, at least 2 words).");
                 return;
             }
 
-            // Instructor validation
+            if (!System.Text.RegularExpressions.Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
+                ShowError("Please enter a valid email address.");
+                return;
+            }
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch(password, @"^(?=.*[A-Za-z])(?=.*\d).{6,}$"))
+            {
+                ShowError("Password must be at least 6 characters and include a letter and a number.");
+                return;
+            }
+
             if (role == "Instructor")
             {
                 if (string.IsNullOrEmpty(txtQualification.Text.Trim()))
@@ -69,7 +79,6 @@ namespace CloudPhoria
                 {
                     conn.Open();
 
-                    // Check if email already exists
                     using (SqlCommand cmd = new SqlCommand(
                         "SELECT COUNT(*) FROM Users WHERE Email=@Email", conn))
                     {
@@ -85,7 +94,6 @@ namespace CloudPhoria
                     {
                         int userID;
 
-                        // Insert into Users
                         using (SqlCommand cmd = new SqlCommand(
                             @"INSERT INTO Users (FullName, Email, PasswordHash, Role, IsActive, IsBanned, CreatedAt)
                               VALUES (@Name, @Email, @Pass, @Role, 1, 0, GETDATE());
@@ -93,14 +101,14 @@ namespace CloudPhoria
                         {
                             cmd.Parameters.Add("@Name", SqlDbType.NVarChar, 100).Value = fullName;
                             cmd.Parameters.Add("@Email", SqlDbType.NVarChar, 100).Value = email;
-                            cmd.Parameters.Add("@Pass", SqlDbType.NVarChar, 256).Value = password; // Demo only — use hash in production
+                            // Hash before saving - never store plaintext passwords
+                            cmd.Parameters.Add("@Pass", SqlDbType.NVarChar, 256).Value = Utils.ComputeSHA256(password);
                             cmd.Parameters.Add("@Role", SqlDbType.NVarChar, 20).Value = role;
                             userID = Convert.ToInt32(cmd.ExecuteScalar());
                         }
 
                         if (role == "Student")
                         {
-                            // Insert into Students
                             string tp = txtTPNumber.Text.Trim();
                             using (SqlCommand cmd = new SqlCommand(
                                 @"INSERT INTO Students (StudentID, TPNumber, TotalXP)
@@ -112,7 +120,7 @@ namespace CloudPhoria
                                 cmd.ExecuteNonQuery();
                             }
 
-                            // Give Free subscription
+                            // New students start on the free plan (PlanID 1)
                             using (SqlCommand cmd = new SqlCommand(
                                 @"INSERT INTO UserSubscriptions (StudentID, PlanID, StartDate, EndDate, IsActive)
                                   VALUES (@SID, 1, GETDATE(), NULL, 1)", conn, tran))
@@ -123,7 +131,6 @@ namespace CloudPhoria
 
                             tran.Commit();
 
-                            // Auto-login
                             Session["UserID"] = userID;
                             Session["Role"] = "Student";
                             Session["FullName"] = fullName;
@@ -131,7 +138,7 @@ namespace CloudPhoria
                         }
                         else if (role == "Instructor")
                         {
-                            // Insert into Instructors with Pending status
+                            // New instructors need admin approval before they can teach
                             string qualification = txtQualification.Text.Trim();
                             using (SqlCommand cmd = new SqlCommand(
                                 @"INSERT INTO Instructors (InstructorID, Qualification, LicenseStatus)
@@ -142,7 +149,7 @@ namespace CloudPhoria
                                 cmd.ExecuteNonQuery();
                             }
 
-                            // Create notification for admin
+                            // Notify every admin, not just one
                             using (SqlCommand cmd = new SqlCommand(
                                 @"INSERT INTO Notifications (UserID, Message, NotificationType, IsRead, CreatedAt)
                                   SELECT AdminID, @Msg, 'InstructorPending', 0, GETDATE() FROM Admins", conn, tran))
@@ -154,7 +161,7 @@ namespace CloudPhoria
 
                             tran.Commit();
 
-                            // Show success but don't auto-login (needs approval)
+                            // No auto-login here - account isn't usable until approved
                             pnlForm.Visible = false;
                             litSuccess.Text = "Your instructor account has been created! An admin will review your credentials and approve your account. " +
                                 "You'll be able to sign in once approved. Check back soon!";
@@ -163,9 +170,10 @@ namespace CloudPhoria
                     }
                 }
             }
-            catch (SqlException ex)
+            catch (SqlException)
             {
-                ShowError("Registration failed. Please try again. (" + ex.Message + ")");
+                // Do not expose database error details to the user.
+                ShowError("Registration failed. Please try again.");
             }
         }
 

@@ -53,14 +53,18 @@ namespace CloudPhoria.Student
             System.Web.UI.WebControls.Panel pnlHas,
             System.Web.UI.WebControls.Panel pnlNone)
         {
+            // ProgressPct here is the PATHWAY's overall completion (completed
+            // modules / total modules), same definition PathwayDetail.aspx uses —
+            // not this single module's own subtopic progress. TotalSubs/CompletedSubs
+            // are still this module's own subtopic counts, shown as "x / y subtopics"
+            // text, separate from the ProgressPct bar.
             string sql = @"
                 SELECT m.ModuleID, m.ModuleName, m.DifficultyLevel,
                        p.PathwayName,
                        ISNULL(total.TotalSubs, 0) AS TotalSubs,
                        ISNULL(done.DoneSubs, 0) AS CompletedSubs,
-                       CASE WHEN ISNULL(total.TotalSubs, 0) = 0 THEN 0
-                            ELSE CAST(ISNULL(done.DoneSubs, 0) AS INT) * 100
-                                 / ISNULL(total.TotalSubs, 1)
+                       CASE WHEN pathwayTotal.TotalModules = 0 THEN 0
+                            ELSE pathwayDone.DoneModules * 100 / pathwayTotal.TotalModules
                        END AS ProgressPct
                 FROM ModuleProgress mp
                 INNER JOIN Modules m  ON m.ModuleID  = mp.ModuleID
@@ -72,6 +76,18 @@ namespace CloudPhoria.Student
                              WHERE stp.StudentID = @StudentID
                                AND st2.ModuleID  = m.ModuleID
                                AND stp.Status    = 'Completed') done
+                CROSS APPLY (
+                    SELECT COUNT(*) AS TotalModules
+                    FROM Modules m2 WHERE m2.PathwayID = m.PathwayID AND m2.IsPublished = 1
+                ) pathwayTotal
+                CROSS APPLY (
+                    SELECT COUNT(*) AS DoneModules
+                    FROM ModuleProgress mp2
+                    INNER JOIN Modules m3 ON m3.ModuleID = mp2.ModuleID
+                    WHERE mp2.StudentID = @StudentID
+                      AND m3.PathwayID  = m.PathwayID
+                      AND mp2.Status    = 'Completed'
+                ) pathwayDone
                 WHERE mp.StudentID = @StudentID
                   AND mp.Status    = @Status
                 ORDER BY mp.ProgressID DESC";
@@ -85,7 +101,6 @@ namespace CloudPhoria.Student
                 using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     da.Fill(dt);
 
-                // Add colour column for difficulty.
                 dt.Columns.Add("DiffColour", typeof(string));
                 foreach (DataRow row in dt.Rows)
                 {

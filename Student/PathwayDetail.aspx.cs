@@ -38,7 +38,6 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    // Pathway info
                     string pathwayName = "";
                     string description = "";
                     bool isFoundation = false;
@@ -64,7 +63,7 @@ namespace CloudPhoria.Student
                         }
                     }
 
-                    // Subscription check — Free tier can only access Foundation pathway
+                    // Free tier is restricted to the Foundation pathway
                     bool isFreeTier = false;
                     if (!isFoundation && !isGuest)
                     {
@@ -81,7 +80,7 @@ namespace CloudPhoria.Student
 
                         if (isFoundationOnly)
                         {
-                            isFreeTier = true; // Don't return — let them see the page but block enrollment
+                            isFreeTier = true; // still let them view the page, just block enrolling
                         }
                     }
 
@@ -93,7 +92,6 @@ namespace CloudPhoria.Student
                     if (isFoundation)
                         litFoundationBadge.Text = "<span style='background:rgba(34,197,94,0.15);color:#22C55E;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;'>Free</span>";
 
-                    // Certification info
                     int certID = 0;
                     string certName = "";
                     using (SqlCommand cmd = new SqlCommand(
@@ -123,7 +121,6 @@ namespace CloudPhoria.Student
                             imgCert.Visible = true;
                         }
 
-                        // Check if student already earned it
                         using (SqlCommand cmd2 = new SqlCommand(
                             "SELECT COUNT(*) FROM UserCertifications WHERE StudentID=@SID AND CertificationID=@CID", conn))
                         {
@@ -134,7 +131,6 @@ namespace CloudPhoria.Student
                         }
                     }
 
-                    // Modules for this pathway with student progress
                     DataTable dtMods = new DataTable();
                     using (SqlCommand cmd = new SqlCommand(
                         @"SELECT m.ModuleID, m.ModuleName, m.DifficultyLevel, m.XPReward,
@@ -151,7 +147,6 @@ namespace CloudPhoria.Student
                         using (SqlDataAdapter da = new SqlDataAdapter(cmd)) da.Fill(dtMods);
                     }
 
-                    // Display columns
                     dtMods.Columns.Add("StatusText", typeof(string));
                     dtMods.Columns.Add("BadgeColour", typeof(string));
 
@@ -198,13 +193,11 @@ namespace CloudPhoria.Student
                         rptModules.DataBind();
                         pnlModules.Visible = true;
 
-                        // Exam info
                         litExamDuration.Text = (avgDuration / totalModules).ToString();
                         litExamPass.Text = (avgPass / totalModules).ToString();
                         litExamModules.Text = totalModules.ToString();
                         pnlExamInfo.Visible = true;
 
-                        // Per-module exam list (only if enrolled)
                         if (hasEnrolled)
                         {
                             DataTable dtExams = new DataTable();
@@ -232,7 +225,6 @@ namespace CloudPhoria.Student
                                 using (SqlDataAdapter da = new SqlDataAdapter(cmd)) da.Fill(dtExams);
                             }
 
-                            // Filter to only modules that have exam questions
                             DataTable dtExamsFiltered = dtExams.Clone();
                             foreach (DataRow row in dtExams.Rows)
                             {
@@ -253,17 +245,14 @@ namespace CloudPhoria.Student
                         pnlNoModules.Visible = true;
                     }
 
-                    // Enrollment state
                     if (isGuest)
                     {
-                        // Guest — show register prompt
                         pnlUpgradeNeeded.Visible = true;
                     }
                     else if (hasEnrolled)
                     {
                         pnlAlreadyEnrolled.Visible = true;
 
-                        // Progress
                         int pct = totalModules > 0 ? (completedModules * 100 / totalModules) : 0;
                         litProgressPct.Text = pct.ToString();
                         pwProgressBar.Style["width"] = pct + "%";
@@ -272,7 +261,6 @@ namespace CloudPhoria.Student
                     }
                     else if (isFreeTier)
                     {
-                        // Show upgrade prompt instead of enroll
                         pnlUpgradeNeeded.Visible = true;
                     }
                     else
@@ -302,7 +290,6 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    // Enroll student in all published modules of the pathway
                     using (SqlCommand cmd = new SqlCommand(
                         @"INSERT INTO ModuleProgress (StudentID, ModuleID, Status)
                           SELECT @SID, m.ModuleID, 'InProgress'
@@ -319,7 +306,6 @@ namespace CloudPhoria.Student
                     }
                 }
 
-                // Refresh page
                 Response.Redirect(Request.Url.ToString());
             }
             catch (SqlException)

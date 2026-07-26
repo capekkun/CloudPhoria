@@ -8,34 +8,34 @@ namespace CloudPhoria.Instructor
 {
     public partial class Materials
     {
-        // ── Upload choice cards ───────────────────────────────────────────────
+        // Upload choice cards
         protected global::System.Web.UI.WebControls.Panel pnlSubtopicCard;
         protected global::System.Web.UI.WebControls.Panel pnlClassroomCard;
 
-        // ── Feedback banners ──────────────────────────────────────────────────
+        // Feedback banners
         protected global::System.Web.UI.WebControls.Panel pnlSuccess;
         protected global::System.Web.UI.WebControls.Literal litSuccess;
         protected global::System.Web.UI.WebControls.Panel pnlError;
         protected global::System.Web.UI.WebControls.Literal litError;
 
-        // ── Filter row ────────────────────────────────────────────────────────
+        // Filter row
         protected global::System.Web.UI.WebControls.DropDownList ddlTypeFilter;
         protected global::System.Web.UI.WebControls.Literal litSecondaryLabel;
         protected global::System.Web.UI.WebControls.DropDownList ddlSecondaryFilter;
 
-        // ── Uploaded Materials table ──────────────────────────────────────────
+        // Uploaded materials table
         protected global::System.Web.UI.WebControls.Panel pnlMaterials;
         protected global::System.Web.UI.WebControls.Repeater rptMaterials;
         protected global::System.Web.UI.WebControls.Panel pnlEmpty;
 
-        // ── Subtopic upload modal ─────────────────────────────────────────────
+        // Subtopic upload modal
         protected global::System.Web.UI.WebControls.DropDownList ddlSubTopicUpload;
         protected global::System.Web.UI.WebControls.FileUpload fuMaterial;
         protected global::System.Web.UI.WebControls.TextBox txtSubtopicDisplayName;
         protected global::System.Web.UI.WebControls.TextBox txtDescription;
         protected global::System.Web.UI.WebControls.Button btnUploadSubtopic;
 
-        // ── Classroom upload modal ────────────────────────────────────────────
+        // Classroom upload modal
         protected global::System.Web.UI.WebControls.DropDownList ddlClassroomUpload;
         protected global::System.Web.UI.WebControls.FileUpload fuClassroomMaterial;
         protected global::System.Web.UI.WebControls.TextBox txtClassroomDisplayName;

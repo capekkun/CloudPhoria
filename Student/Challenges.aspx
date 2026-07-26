@@ -33,7 +33,7 @@
         </div>
     </asp:Panel>
 
-    <%-- ============== LEADERBOARD-ONLY VIEW (?leaderboard=) ============== --%>
+    <%-- Leaderboard-only view (?leaderboard=) --%>
     <asp:Panel ID="pnlLeaderboardOnlyView" runat="server" Visible="false">
         <div class="cp-page-header">
             <h2>Leaderboard &mdash; <asp:Literal ID="litLeaderboardOnlyTitle" runat="server" /></h2>
@@ -41,7 +41,7 @@
         </div>
     </asp:Panel>
 
-    <%-- ============== CHALLENGE INTRO / RESULT SCREEN (?challengeID=) ============== --%>
+    <%-- Challenge intro / result screen (?challengeID=) --%>
     <asp:Panel ID="pnlIntro" runat="server" Visible="false">
         <div class="cp-page-header">
             <h2><asp:Literal ID="litIntroTitle" runat="server" /></h2>
@@ -70,7 +70,7 @@
         </asp:Panel>
     </asp:Panel>
 
-    <%-- ============== QUIZ ARENA ============== --%>
+    <%-- Quiz arena --%>
     <asp:Panel ID="pnlQuiz" runat="server" Visible="false">
         <div class="quiz-arena">
 
@@ -106,7 +106,7 @@
         </div>
     </asp:Panel>
 
-    <%-- ============== FINAL RESULT + LEADERBOARD ============== --%>
+    <%-- Final result + leaderboard --%>
     <asp:Panel ID="pnlFinalResult" runat="server" Visible="false">
         <div class="cp-card quiz-final">
             <span style="font-size:48px;display:block;margin-bottom:12px;"></span>
@@ -140,7 +140,7 @@
         </div>
     </asp:Panel>
 
-    <%-- ============== CHALLENGE LISTING (default view) ============== --%>
+    <%-- Challenge listing (default view) --%>
     <asp:Panel ID="pnlListingView" runat="server" Visible="true">
     <div class="cp-page-header">
         <h2>Challenges</h2>

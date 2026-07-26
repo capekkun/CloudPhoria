@@ -127,8 +127,7 @@ namespace CloudPhoria.Admin
 
             int adminID = Convert.ToInt32(Session["UserID"]);
 
-            // We need the AdminID from the Admins table for ReviewedByAdminID.
-            // In the shared-PK pattern AdminID == UserID, so adminID is correct.
+            // AdminID shares the PK with UserID, so this is safe to reuse directly
             string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
 
             try
@@ -137,7 +136,6 @@ namespace CloudPhoria.Admin
                 {
                     conn.Open();
 
-                    // Verify the fun room exists and get creator UserID for notification.
                     int    creatorUserID = 0;
                     string roomTitle     = "";
                     string verifySQL     = @"
@@ -164,7 +162,6 @@ namespace CloudPhoria.Admin
                     {
                         try
                         {
-                            // Update FunRooms status and reviewer.
                             string updateSQL = newStatus == "Pending"
                                 ? @"UPDATE FunRooms
                                     SET Status             = @Status,
@@ -184,7 +181,6 @@ namespace CloudPhoria.Admin
                                 updateCmd.ExecuteNonQuery();
                             }
 
-                            // Notify the creator.
                             string notifMsg = newStatus == "Approved"
                                 ? $"Your Fun Room \"{roomTitle}\" has been approved and is now visible to everyone."
                                 : newStatus == "Rejected"
@@ -204,7 +200,6 @@ namespace CloudPhoria.Admin
                                 notifCmd.ExecuteNonQuery();
                             }
 
-                            // Audit log.
                             string auditSQL = @"
                                 INSERT INTO AuditLogs
                                     (PerformedByUserID, ActionType, TargetTable, TargetID, Details, CreatedAt)

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Configuration;
 using System.Data;
-using System.Security.Cryptography;
-using System.Text;
 using System.Web;
 using System.Web.UI;
 using Microsoft.Data.SqlClient;
@@ -11,9 +9,6 @@ namespace CloudPhoria
 {
     public partial class LogIn : System.Web.UI.Page
     {
-        // -------------------------------------------------------
-        // Page load – redirect already-authenticated users.
-        // -------------------------------------------------------
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -22,10 +17,6 @@ namespace CloudPhoria
             }
         }
 
-        // -------------------------------------------------------
-        // If a valid session already exists, send the user to
-        // the appropriate dashboard without showing the login form.
-        // -------------------------------------------------------
         private void RedirectAuthenticatedUser()
         {
             object sessionUserID = Session["UserID"];
@@ -40,20 +31,14 @@ namespace CloudPhoria
             RedirectByRole(role, null);
         }
 
-        // -------------------------------------------------------
-        // Login button click – validate, authenticate, redirect.
-        // -------------------------------------------------------
         protected void btnLogin_Click(object sender, EventArgs e)
         {
-            // Web Forms validators run before the event handler.
-            // If client validation was bypassed, stop here.
+            // Validators run client-side first, but check again in case JS was bypassed
             if (!Page.IsValid) { return; }
 
-            // Read and sanitise inputs.
             string email    = txtEmail.Text.Trim().ToLowerInvariant();
-            string password = txtPassword.Text; // Do NOT trim passwords.
+            string password = txtPassword.Text; // don't trim - spaces can be part of a password
 
-            // Server-side input checks (defensive — validators should catch these first).
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
                 ShowError("Please enter your email and password.");
@@ -63,15 +48,10 @@ namespace CloudPhoria
             AuthenticateUser(email, password);
         }
 
-        // -------------------------------------------------------
-        // Query the Users table and verify credentials.
-        // -------------------------------------------------------
         private void AuthenticateUser(string email, string password)
         {
             string connString = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
 
-            // Select only the columns needed for authentication.
-            // Do NOT use SELECT *.
             string sql = @"SELECT UserID, FullName, PasswordHash, Role, IsActive, IsBanned
                            FROM   Users
                            WHERE  Email = @Email";
@@ -90,8 +70,7 @@ namespace CloudPhoria
                         {
                             if (!reader.Read())
                             {
-                                // No account found – use a generic message to avoid
-                                // revealing whether the email exists.
+                                // Keep this message generic - don't reveal if the email exists
                                 ShowError("Invalid email or password.");
                                 return;
                             }
@@ -105,16 +84,14 @@ namespace CloudPhoria
 
                             reader.Close();
 
-                            // ---- Verify password ----
                             if (!VerifyPassword(password, storedHash))
                             {
                                 ShowError("Invalid email or password.");
                                 return;
                             }
 
-                            // ---- Check account status ----
-                            // Check banned first – a banned user should not be told their
-                            // account is merely inactive.
+                            // Check banned before inactive - a banned user shouldn't think
+                            // their account is just inactive
                             if (isBanned)
                             {
                                 ShowStatus("Your account has been restricted. Please contact the administrator.");
@@ -127,27 +104,25 @@ namespace CloudPhoria
                                 return;
                             }
 
-                            // ---- Validate role ----
                             if (role != "Student" && role != "Instructor" && role != "Admin")
                             {
                                 ShowError("Your account role is not supported. Please contact the administrator.");
                                 return;
                             }
 
-                            // ---- Instructor licence check ----
                             if (role == "Instructor")
                             {
                                 string licenseStatus = GetInstructorLicenseStatus(userID, conn);
 
                                 if (licenseStatus == null)
                                 {
-                                    // Instructor record is missing – treat as restricted.
+                                    // No Instructors row for this user - treat as restricted
                                     ShowStatus("Your instructor account is not fully set up. Please contact the administrator.");
                                     return;
                                 }
 
-                                // Create session for all instructors so the Master Page
-                                // can show the correct status in the sidebar.
+                                // Session is created regardless of license status so the
+                                // Master Page can show the right restricted/approved nav
                                 CreateSession(userID, fullName, role);
                                 Session["LicenseStatus"] = licenseStatus;
 
@@ -157,10 +132,7 @@ namespace CloudPhoria
                                 }
                                 else if (licenseStatus == "Pending")
                                 {
-                                    // Pending instructors see the dashboard which will
-                                    // show a restricted view via the Master Page.
                                     ShowStatus("Your instructor licence is pending approval. Some features are restricted until an administrator approves your account.");
-                                    // Redirect to dashboard — the Master Page will show restricted nav.
                                     Response.Redirect("~/Instructor/Dashboard.aspx", true);
                                 }
                                 else if (licenseStatus == "Rejected")
@@ -170,13 +142,11 @@ namespace CloudPhoria
                                 }
                                 else
                                 {
-                                    // Unknown status — restrict.
                                     ShowStatus("Your instructor account status could not be determined. Please contact the administrator.");
                                 }
                                 return;
                             }
 
-                            // ---- All other roles ----
                             CreateSession(userID, fullName, role);
                             RedirectByRole(role, null);
                         }
@@ -185,16 +155,12 @@ namespace CloudPhoria
             }
             catch (SqlException)
             {
-                // Do not expose database error details to the user.
+                // Keep DB error details away from the user
                 ShowError("We could not sign you in at the moment. Please try again.");
             }
         }
 
-        // -------------------------------------------------------
-        // Read the LicenseStatus for the given instructor from DB.
-        // Returns null if no Instructor record exists.
-        // Reuses the existing open connection.
-        // -------------------------------------------------------
+        // Returns null if no Instructor record exists for this user
         private string GetInstructorLicenseStatus(int instructorID, SqlConnection conn)
         {
             string sql = @"SELECT LicenseStatus
@@ -215,32 +181,19 @@ namespace CloudPhoria
             }
         }
 
-        // -------------------------------------------------------
-        // Verify the submitted password against the stored value.
-        //
-        // PASSWORD STORAGE NOTE:
-        // The seed database stores plaintext 'password123' in the
-        // PasswordHash column for demo purposes only.
-        // New accounts should store SHA-256 hashes.
-        //
-        // This method attempts SHA-256 comparison first.
-        // If that fails, it falls back to a plaintext comparison
-        // so the seed demo accounts still work during development.
-        //
-        // BEFORE PRODUCTION: remove the plaintext fallback and
-        // update all seed accounts to store SHA-256 hashes.
-        // -------------------------------------------------------
+        // Seed data stores plaintext 'password123' in PasswordHash for demo
+        // accounts, so we try a hash match first, then fall back to plaintext.
+        // TODO: re-hash the seed accounts and drop the plaintext fallback before prod.
         private bool VerifyPassword(string submittedPassword, string storedHash)
         {
-            // First attempt: compare SHA-256 hash of submitted password.
-            string submittedHash = ComputeSHA256(submittedPassword);
+            // Accounts made through Register.aspx are always hashed
+            string submittedHash = Utils.ComputeSHA256(submittedPassword);
             if (string.Equals(submittedHash, storedHash, StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }
 
-            // Development fallback: plaintext comparison for seed demo accounts.
-            // TODO: Remove before production deployment.
+            // Only old seed accounts hit this path
             if (string.Equals(submittedPassword, storedHash, StringComparison.Ordinal))
             {
                 return true;
@@ -249,31 +202,9 @@ namespace CloudPhoria
             return false;
         }
 
-        // -------------------------------------------------------
-        // Compute a SHA-256 hex string for the given plain text.
-        // -------------------------------------------------------
-        private string ComputeSHA256(string plainText)
-        {
-            using (SHA256 sha = SHA256.Create())
-            {
-                byte[] bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(plainText));
-                StringBuilder sb = new StringBuilder(64);
-                foreach (byte b in bytes)
-                {
-                    sb.Append(b.ToString("x2"));
-                }
-                return sb.ToString();
-            }
-        }
-
-        // -------------------------------------------------------
-        // Create the authenticated session.
-        // Clear any previous session values first to prevent
-        // session fixation.
-        // -------------------------------------------------------
         private void CreateSession(int userID, string fullName, string role)
         {
-            // Clear any previous session values to prevent carrying over old data.
+            // Clear old session data first to avoid session fixation
             Session.Clear();
 
             Session["UserID"]   = userID;
@@ -281,13 +212,9 @@ namespace CloudPhoria
             Session["FullName"] = fullName;
         }
 
-        // -------------------------------------------------------
-        // Redirect to the dashboard matching the authenticated role.
-        // -------------------------------------------------------
         private void RedirectByRole(string role, string returnUrl)
         {
-            // Return URL is not currently implemented.
-            // Placeholder for future safe return-URL handling.
+            // returnUrl isn't wired up yet - reserved for future use
 
             if (role == "Student")
             {
@@ -301,12 +228,8 @@ namespace CloudPhoria
             {
                 Response.Redirect("~/Admin/Dashboard.aspx", true);
             }
-            // Unknown roles fall through silently – caller handles messaging.
         }
 
-        // -------------------------------------------------------
-        // Show a general error message (wrong credentials, etc.)
-        // -------------------------------------------------------
         private void ShowError(string message)
         {
             litError.Text     = HttpUtility.HtmlEncode(message);
@@ -314,9 +237,6 @@ namespace CloudPhoria
             pnlStatus.Visible = false;
         }
 
-        // -------------------------------------------------------
-        // Show an account-status message (inactive, pending, etc.)
-        // -------------------------------------------------------
         private void ShowStatus(string message)
         {
             litStatus.Text    = HttpUtility.HtmlEncode(message);

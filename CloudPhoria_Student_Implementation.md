@@ -102,11 +102,39 @@ if (Session["UserID"] == null || Session["Role"]?.ToString() != "Student")
 
 **Business-rule validation specific to the Exam feature:** the exam's own answer-submission handler re-validates that the submitted `OptionID` genuinely belongs to the current question (shown in §1.1) before scoring it — a check that has nothing to do with ASP.NET validator controls, but is exactly the kind of server-side re-verification this criterion is looking for beyond simple required-field checks.
 
-**Two genuine gaps, discussed critically rather than hidden** — a marker who finds an unmentioned gap reads it as something missed; the same gap named and explained reads as awareness:
-1. `Admin/Courses.aspx.cs` parses numeric fields (XP reward, exam pass-mark %) with `int.TryParse(...)` defaulting to `0` on failure. An out-of-range value like `-500` or `9999%` is silently saved rather than rejected — a `RangeValidator` (`MinimumValue="0" MaximumValue="100"`) would close this.
-2. `Register.aspx.cs` leaks a raw database exception in one handler (`"Registration failed... (" + ex.Message + ")"`), while every other handler in the project deliberately shows a generic message — making this one inconsistency stand out as an oversight rather than a considered choice.
+**Password hashing, kept consistent between registration and login:** passwords are never stored in plaintext. `Register.aspx.cs` hashes with SHA-256 before the `INSERT`, and `LogIn.aspx.cs` calls the exact same shared method to verify — one implementation, used in both places, rather than two copies that could drift out of sync:
+```csharp
+public static string ComputeSHA256(string plainText)
+{
+    using (SHA256 sha = SHA256.Create())
+    {
+        byte[] bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(plainText));
+        // ... converted to a hex string, stored in PasswordHash
+    }
+}
+```
+```csharp
+cmd.Parameters.Add("@Pass", SqlDbType.NVarChar, 256).Value = Utils.ComputeSHA256(password);
+```
 
-Finding these came from deliberately testing invalid input — empty forms, negative numbers, duplicate emails — rather than only the happy path. That is the practical difference between "my form has validators" and "my validation holds up under testing."
+**Format validation on registration, both layers:** the original build only checked that Full Name, Email, and Password were *not empty* — a value like `"aaaaaa"` passed as a valid name, and any 6-character string passed as a password. Deliberately testing with junk input surfaced this, so both layers were tightened:
+```html
+<asp:RegularExpressionValidator ControlToValidate="txtFullName"
+    ValidationExpression="^[A-Za-z]+([ '\-][A-Za-z]+)+$"
+    ErrorMessage="Enter your full name (letters and spaces, at least 2 words)." />
+<asp:RegularExpressionValidator ControlToValidate="txtPassword"
+    ValidationExpression="^(?=.*[A-Za-z])(?=.*\d).{6,}$"
+    ErrorMessage="Password must be at least 6 characters and include a letter and a number." />
+```
+```csharp
+// Register.aspx.cs — re-checked server-side, since client validators can be bypassed
+if (!Regex.IsMatch(fullName, @"^[A-Za-z]+([ '\-][A-Za-z]+)+$")) { ShowError("..."); return; }
+if (!Regex.IsMatch(password, @"^(?=.*[A-Za-z])(?=.*\d).{6,}$")) { ShowError("..."); return; }
+```
+
+**A second gap, found and closed the same way:** `Admin/Courses.aspx.cs` parsed numeric fields (XP reward, exam pass-mark %) with `int.TryParse(...)` defaulting to `0` on failure, so an out-of-range value like `-500` or `9999%` was silently saved instead of rejected. Fixed with `RangeValidator` controls on each field (`MinimumValue="0" MaximumValue="100"` for pass mark, similar bounds for XP and exam duration).
+
+Both gaps were found the same way — deliberately testing invalid input (empty forms, junk strings, negative numbers, duplicate emails) rather than only the happy path. That is the practical difference between "my form has validators" and "my validation holds up under testing."
 
 ---
 
@@ -147,7 +175,7 @@ The queries above are backed by explicit indexes documented in `CloudPhoria_Data
 |---|---|
 | Detailed explanation of source code of major features | §1–3 across three features: Module Exam, Boss Fight, Achievement system |
 | CSS for web page styling | §3 — countdown timer and server-driven HP bar, both explained (not just shown) |
-| Form validation | §2 — client validators, server guards, business-rule re-validation, and two honestly-discussed real gaps |
+| Form validation | §2 — client validators, server guards, business-rule re-validation, and two real gaps found by testing invalid input and then fixed |
 | SQL queries for database connectivity | §1 — parameterised queries, two multi-table transactions, one cross-module eligibility query, plus a real bug found/fixed/backfilled |
 
 **Presenting this well:** for every snippet, say what it does in plain English first, show the code, then explain *why* it's written that way — in your own words, not this template's. §1.3 (the achievement bug) is the single highest-impact part of this document: a marker reading "here is a bug I found in my own system, why it happened, and how I fixed and backfilled it" is seeing genuine understanding of the source code, which is precisely what "detailed explanation" is asking for — not just that the code exists, but that you know why it works the way it does.

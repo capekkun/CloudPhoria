@@ -1,16 +1,14 @@
-<%@ Page Title="CloudPhoria – Master the Cloud" Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="CloudPhoria._Default" %>
+<%@ Page Title="CloudPhoria ï¿½ Master the Cloud" Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="CloudPhoria._Default" %>
 
 <!DOCTYPE html>
 <html lang="en">
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CloudPhoria – Master the Cloud</title>
+    <title>CloudPhoria ï¿½ Master the Cloud</title>
     <link href="Content/bootstrap.css" rel="stylesheet" type="text/css" />
     <style>
-        /* =========================================================
-           RESET & BASE
-           ========================================================= */
+        /* Reset & base */
         *, *::before, *::after { box-sizing: border-box; }
 
         html, body {
@@ -23,9 +21,7 @@
 
         a { text-decoration: none; }
 
-        /* =========================================================
-           PAGE WRAPPER
-           ========================================================= */
+        /* Page wrapper */
         .lp-page {
             min-height: 100vh;
             display: flex;
@@ -36,9 +32,7 @@
         }
 
 
-        /* =========================================================
-           TOP NAVIGATION
-           ========================================================= */
+        /* Top navigation */
         .lp-nav {
             position: relative;
             z-index: 10;
@@ -154,9 +148,7 @@
             color: #FFFFFF;
         }
 
-        /* =========================================================
-           HERO SECTION
-           ========================================================= */
+        /* Hero section */
         .lp-hero {
             position: relative;
             z-index: 1;
@@ -270,9 +262,7 @@
             position: relative;
         }
 
-        /* =========================================================
-           FOOTER STRIP
-           ========================================================= */
+        /* Footer strip */
         .lp-footer {
             position: relative;
             z-index: 1;
@@ -291,9 +281,7 @@
         }
         .lp-footer a:hover { color: rgba(255,255,255,0.7); }
 
-        /* =========================================================
-           RESPONSIVE
-           ========================================================= */
+        /* Responsive */
         @media (max-width: 1024px) {
             .lp-hero-visual { flex: 0 0 340px; }
             .lp-cloud-char  { width: 300px; height: 300px; }
@@ -319,9 +307,7 @@
 <form id="form1" runat="server">
 <div class="lp-page">
 
-    <%-- =====================================================
-         TOP NAVIGATION
-         ===================================================== --%>
+    <%-- Top navigation --%>
     <nav class="lp-nav" aria-label="Main navigation">
 
         <%-- Brand --%>
@@ -331,7 +317,7 @@
             <div class="lp-brand-icon" style="display:none;" aria-hidden="true">CP</div>
         </a>
 
-        <%-- Centre navigation links — mirror TryHackMe's category nav --%>
+        <%-- Centre navigation links ï¿½ mirror TryHackMe's category nav --%>
         <ul class="lp-nav-links" role="list">
             <li>
                 <a href="Student/Pathways.aspx">
@@ -367,9 +353,7 @@
 
     </nav>
 
-    <%-- =====================================================
-         HERO — split layout: text left, visual right
-         ===================================================== --%>
+    <%-- Hero: split layout, text left, visual right --%>
     <section class="lp-hero" aria-labelledby="heroHeadline">
 
         <%-- Left: headline + CTA --%>
@@ -517,9 +501,7 @@
 
     </section>
 
-    <%-- =====================================================
-         GUEST BROWSE — Read-only pathway/module preview
-         ===================================================== --%>
+    <%-- Guest browse: read-only pathway/module preview --%>
     <section id="browse" style="position:relative;z-index:1;padding:60px 32px;max-width:1100px;margin:0 auto;">
         <h2 style="font-size:28px;font-weight:800;text-align:center;margin:0 0 8px;">
             Explore Learning Pathways
@@ -539,9 +521,7 @@
         </div>
     </section>
 
-    <%-- =====================================================
-         FOOTER STRIP
-         ===================================================== --%>
+    <%-- Footer strip --%>
     <footer class="lp-footer">
         <span>&copy; <%: DateTime.Now.Year %> CloudPhoria</span>
         <a href="Default.aspx">Home</a>
