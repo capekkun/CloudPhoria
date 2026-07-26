@@ -31,12 +31,14 @@ namespace CloudPhoria.Instructor
         // ── Subtopic upload modal ─────────────────────────────────────────────
         protected global::System.Web.UI.WebControls.DropDownList ddlSubTopicUpload;
         protected global::System.Web.UI.WebControls.FileUpload fuMaterial;
+        protected global::System.Web.UI.WebControls.TextBox txtSubtopicDisplayName;
         protected global::System.Web.UI.WebControls.TextBox txtDescription;
         protected global::System.Web.UI.WebControls.Button btnUploadSubtopic;
 
         // ── Classroom upload modal ────────────────────────────────────────────
         protected global::System.Web.UI.WebControls.DropDownList ddlClassroomUpload;
         protected global::System.Web.UI.WebControls.FileUpload fuClassroomMaterial;
+        protected global::System.Web.UI.WebControls.TextBox txtClassroomDisplayName;
         protected global::System.Web.UI.WebControls.TextBox txtClassroomDescription;
         protected global::System.Web.UI.WebControls.Button btnUploadClassroom;
     }

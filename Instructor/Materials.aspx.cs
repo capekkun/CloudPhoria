@@ -19,7 +19,7 @@ namespace CloudPhoria.Instructor
                 ".txt", ".png", ".jpg", ".jpeg"
             };
 
-        private const int MaxFileSizeBytes = 10 * 1024 * 1024; // 10 MB
+        private const int MaxFileSizeBytes = 40 * 1024 * 1024; // 40 MB
 
         // ── Page lifecycle ────────────────────────────────────────────────────
         protected void Page_Load(object sender, EventArgs e)
@@ -315,6 +315,10 @@ namespace CloudPhoria.Instructor
                     fuMaterial.PostedFile.SaveAs(Path.Combine(uploadDir, storedName));
                     string webPath = "/uploads/materials/" + storedName;
 
+                    // Use custom display name if provided, otherwise use original file name.
+                    string displayName = txtSubtopicDisplayName.Text.Trim();
+                    if (string.IsNullOrEmpty(displayName)) displayName = originalName;
+
                     using (SqlCommand cmd = new SqlCommand(
                         @"INSERT INTO LearningMaterials
                             (SubTopicID, InstructorID, FileName, FilePath, UploadedAt)
@@ -322,7 +326,7 @@ namespace CloudPhoria.Instructor
                     {
                         cmd.Parameters.Add("@SID",   SqlDbType.Int).Value           = subTopicID;
                         cmd.Parameters.Add("@IID",   SqlDbType.Int).Value           = instructorID;
-                        cmd.Parameters.Add("@FName", SqlDbType.NVarChar, 255).Value = originalName;
+                        cmd.Parameters.Add("@FName", SqlDbType.NVarChar, 255).Value = displayName;
                         cmd.Parameters.Add("@FPath", SqlDbType.NVarChar, 500).Value = webPath;
                         cmd.ExecuteNonQuery();
                     }
@@ -375,6 +379,10 @@ namespace CloudPhoria.Instructor
                     fuClassroomMaterial.PostedFile.SaveAs(Path.Combine(uploadDir, storedName));
                     string webPath = "/uploads/classroom/" + classroomID + "/" + storedName;
 
+                    // Use custom display name if provided, otherwise use original file name.
+                    string displayName = txtClassroomDisplayName.Text.Trim();
+                    if (string.IsNullOrEmpty(displayName)) displayName = originalName;
+
                     using (SqlCommand cmd = new SqlCommand(
                         @"INSERT INTO ClassroomMaterials
                             (ClassroomID, InstructorID, FileName, FilePath, Description, UploadedAt)
@@ -382,7 +390,7 @@ namespace CloudPhoria.Instructor
                     {
                         cmd.Parameters.Add("@CID",   SqlDbType.Int).Value           = classroomID;
                         cmd.Parameters.Add("@IID",   SqlDbType.Int).Value           = instructorID;
-                        cmd.Parameters.Add("@FName", SqlDbType.NVarChar, 255).Value = originalName;
+                        cmd.Parameters.Add("@FName", SqlDbType.NVarChar, 255).Value = displayName;
                         cmd.Parameters.Add("@FPath", SqlDbType.NVarChar, 500).Value = webPath;
                         cmd.Parameters.Add("@Desc",  SqlDbType.NVarChar, 500).Value =
                             string.IsNullOrEmpty(description) ? (object)DBNull.Value : description;
@@ -530,7 +538,7 @@ namespace CloudPhoria.Instructor
 
             if (fu.PostedFile.ContentLength > MaxFileSizeBytes)
             {
-                ShowError("File exceeds the 10 MB size limit.");
+                ShowError("File exceeds the 40 MB size limit.");
                 return false;
             }
 

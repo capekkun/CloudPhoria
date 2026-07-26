@@ -75,7 +75,8 @@
             <div class="cp-upload-card" role="button" tabindex="0"
                  onclick="showModal('uploadSubtopicModal')"
                  onkeydown="if(event.key==='Enter'||event.key===' ')showModal('uploadSubtopicModal')">
-                <div class="cp-uc-icon"></div>
+                <img src="/uploads/instructordashboard/upload-subtopic-icon.png"
+                     alt="" style="width:64px;height:64px;object-fit:contain;" />
                 <div class="cp-uc-title">Upload for Subtopic</div>
                 <div class="cp-uc-sub">Attach a file to a specific lesson subtopic</div>
             </div>
@@ -86,7 +87,8 @@
             <div class="cp-upload-card" role="button" tabindex="0"
                  onclick="showModal('uploadClassroomModal')"
                  onkeydown="if(event.key==='Enter'||event.key===' ')showModal('uploadClassroomModal')">
-                <div class="cp-uc-icon"></div>
+                <img src="/uploads/instructordashboard/upload-classroom-icon.png"
+                     alt="" style="width:64px;height:64px;object-fit:contain;" />
                 <div class="cp-uc-title">Upload for Classroom</div>
                 <div class="cp-uc-sub">Share a file with students in a classroom</div>
             </div>
@@ -214,7 +216,7 @@
 
             <div class="cp-alert cp-alert-info" style="margin-bottom:16px;">
                 <span>&#x2139;</span>
-                <span>Allowed: PDF, DOCX, PPTX, TXT, PNG, JPG &mdash; Max 10 MB</span>
+                <span>Allowed: PDF, DOCX, PPTX, TXT, PNG, JPG &mdash; Max 40 MB</span>
             </div>
 
             <div class="cp-form-group">
@@ -229,6 +231,17 @@
                     File <span class="required">*</span>
                 </label>
                 <asp:FileUpload ID="fuMaterial" runat="server" CssClass="cp-input" />
+            </div>
+
+            <div class="cp-form-group">
+                <label class="cp-label" for="<%= txtSubtopicDisplayName.ClientID %>">
+                    Display Name (optional)
+                    <span style="font-weight:400;color:var(--cp-text-muted);font-size:11px;">
+                        &mdash; rename how the file appears. Leave blank to use original file name.
+                    </span>
+                </label>
+                <asp:TextBox ID="txtSubtopicDisplayName" runat="server" CssClass="cp-input"
+                             MaxLength="255" placeholder="e.g. Week 1 Slides" />
             </div>
 
             <div class="cp-form-group">
@@ -264,7 +277,7 @@
 
             <div class="cp-alert cp-alert-info" style="margin-bottom:16px;">
                 <span>&#x2139;</span>
-                <span>Allowed: PDF, DOCX, PPTX, TXT, PNG, JPG &mdash; Max 10 MB</span>
+                <span>Allowed: PDF, DOCX, PPTX, TXT, PNG, JPG &mdash; Max 40 MB</span>
             </div>
 
             <div class="cp-form-group">
@@ -279,6 +292,17 @@
                     File <span class="required">*</span>
                 </label>
                 <asp:FileUpload ID="fuClassroomMaterial" runat="server" CssClass="cp-input" />
+            </div>
+
+            <div class="cp-form-group">
+                <label class="cp-label" for="<%= txtClassroomDisplayName.ClientID %>">
+                    Display Name (optional)
+                    <span style="font-weight:400;color:var(--cp-text-muted);font-size:11px;">
+                        &mdash; rename how the file appears. Leave blank to use original file name.
+                    </span>
+                </label>
+                <asp:TextBox ID="txtClassroomDisplayName" runat="server" CssClass="cp-input"
+                             MaxLength="255" placeholder="e.g. Lecture Notes Chapter 3" />
             </div>
 
             <div class="cp-form-group">
