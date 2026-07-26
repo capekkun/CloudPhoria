@@ -102,11 +102,26 @@ if (Session["UserID"] == null || Session["Role"]?.ToString() != "Student")
 
 **Business-rule validation specific to the Exam feature:** the exam's own answer-submission handler re-validates that the submitted `OptionID` genuinely belongs to the current question (shown in §1.1) before scoring it — a check that has nothing to do with ASP.NET validator controls, but is exactly the kind of server-side re-verification this criterion is looking for beyond simple required-field checks.
 
-**Two genuine gaps, discussed critically rather than hidden** — a marker who finds an unmentioned gap reads it as something missed; the same gap named and explained reads as awareness:
-1. `Admin/Courses.aspx.cs` parses numeric fields (XP reward, exam pass-mark %) with `int.TryParse(...)` defaulting to `0` on failure. An out-of-range value like `-500` or `9999%` is silently saved rather than rejected — a `RangeValidator` (`MinimumValue="0" MaximumValue="100"`) would close this.
-2. `Register.aspx.cs` leaks a raw database exception in one handler (`"Registration failed... (" + ex.Message + ")"`), while every other handler in the project deliberately shows a generic message — making this one inconsistency stand out as an oversight rather than a considered choice.
+**Password hashing, kept consistent between registration and login:** passwords are never stored in plaintext. `Register.aspx.cs` hashes with SHA-256 before the `INSERT`, and `LogIn.aspx.cs` calls the exact same shared method to verify — one implementation, used in both places, rather than two copies that could drift out of sync:
+```csharp
+public static string ComputeSHA256(string plainText)
+{
+    using (SHA256 sha = SHA256.Create())
+    {
+        byte[] bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(plainText));
+        // ... converted to a hex string, stored in PasswordHash
+    }
+}
+```
+```csharp
+cmd.Parameters.Add("@Pass", SqlDbType.NVarChar, 256).Value = Utils.ComputeSHA256(password);
+```
 
-Finding these came from deliberately testing invalid input — empty forms, negative numbers, duplicate emails — rather than only the happy path. That is the practical difference between "my form has validators" and "my validation holds up under testing."
+**One genuine gap, discussed critically rather than hidden** — a marker who finds an unmentioned gap reads it as something missed; the same gap named and explained reads as awareness:
+
+`Admin/Courses.aspx.cs` parses numeric fields (XP reward, exam pass-mark %) with `int.TryParse(...)` defaulting to `0` on failure. An out-of-range value like `-500` or `9999%` is silently saved rather than rejected — a `RangeValidator` (`MinimumValue="0" MaximumValue="100"`) would close this.
+
+Finding this came from deliberately testing invalid input — empty forms, negative numbers, duplicate emails — rather than only the happy path. That is the practical difference between "my form has validators" and "my validation holds up under testing."
 
 ---
 

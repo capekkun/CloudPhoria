@@ -37,7 +37,6 @@ namespace CloudPhoria.Admin
             {
                 int subTopicID, moduleID;
 
-                // Drill-down: manage questions for a specific subtopic.
                 if (int.TryParse(Request.QueryString["subTopicID"], out subTopicID) && subTopicID > 0)
                 {
                     ViewState["ManageSubTopicID"] = subTopicID;
@@ -47,7 +46,6 @@ namespace CloudPhoria.Admin
                     return;
                 }
 
-                // Drill-down: manage subtopics for a specific module.
                 if (int.TryParse(Request.QueryString["moduleID"], out moduleID) && moduleID > 0)
                 {
                     ViewState["ManageModuleID"] = moduleID;
@@ -73,9 +71,7 @@ namespace CloudPhoria.Admin
             rptQOptions.DataBind();
         }
 
-        // -----------------------------------------------------------
-        // TOP-LEVEL: Pathways overview + Modules list (assign/publish)
-        // -----------------------------------------------------------
+        // Pathways overview + modules list (assign/publish)
 
         private void LoadPathwayDropdown()
         {
@@ -253,9 +249,8 @@ namespace CloudPhoria.Admin
 
                         if (instructorID > 0)
                         {
-                            // Full ownership transfer: reassigning a module hands over
-                            // management of everything inside it (subtopics, questions,
-                            // materials, practice/exam questions) to the new instructor.
+                            // Reassigning ownership cascades to everything under
+                            // the module - subtopics, questions, materials, exams.
                             using (SqlTransaction tx = conn.BeginTransaction())
                             {
                                 using (SqlCommand cmd = new SqlCommand(
@@ -366,9 +361,7 @@ namespace CloudPhoria.Admin
             }
         }
 
-        // -----------------------------------------------------------
-        // DRILL-DOWN: Manage SubTopics for a Module (?moduleID=)
-        // -----------------------------------------------------------
+        // Manage subtopics for a module (?moduleID=)
 
         private void LoadManageSubTopics(int moduleID)
         {
@@ -519,9 +512,7 @@ namespace CloudPhoria.Admin
             }
         }
 
-        // -----------------------------------------------------------
-        // DRILL-DOWN: Manage Questions for a SubTopic (?subTopicID=)
-        // -----------------------------------------------------------
+        // Manage questions for a subtopic (?subTopicID=)
 
         private void LoadManageQuestions(int subTopicID)
         {
@@ -705,10 +696,6 @@ namespace CloudPhoria.Admin
                 ShowError("Could not remove the question.");
             }
         }
-
-        // -----------------------------------------------------------
-        // Shared helpers
-        // -----------------------------------------------------------
 
         private void LogAction(SqlConnection conn, string actionType, string targetTable, int? targetID)
         {

@@ -122,7 +122,7 @@ namespace CloudPhoria.Admin
             }
 
             string difficulty = ddlDifficulty.SelectedValue;
-            // Validate difficulty against the allowed check constraint values.
+            // Must match the DB check constraint values
             if (difficulty != "Easy" && difficulty != "Medium" &&
                 difficulty != "Hard" && difficulty != "Legendary")
             {
@@ -166,7 +166,6 @@ namespace CloudPhoria.Admin
                                 newRoomID = Convert.ToInt32(insertCmd.ExecuteScalar());
                             }
 
-                            // Audit log.
                             string auditSQL = @"
                                 INSERT INTO AuditLogs
                                     (PerformedByUserID, ActionType, TargetTable, TargetID, Details, CreatedAt)
@@ -183,7 +182,6 @@ namespace CloudPhoria.Admin
 
                             tx.Commit();
 
-                            // Clear form.
                             txtTitle.Text    = "";
                             txtXPReward.Text = "";
                             txtPlayerHP.Text = "";
@@ -232,7 +230,6 @@ namespace CloudPhoria.Admin
                 {
                     conn.Open();
 
-                    // Verify room exists.
                     string verifySQL  = "SELECT Title FROM BossFightRooms WHERE RoomID = @RID";
                     string roomTitle  = "";
                     using (SqlCommand verifyCmd = new SqlCommand(verifySQL, conn))
@@ -247,7 +244,7 @@ namespace CloudPhoria.Admin
                         roomTitle = r.ToString();
                     }
 
-                    // When publishing, ensure a boss record exists for this room.
+                    // Can't publish a room with no boss
                     if (publish)
                     {
                         string bossCheck = "SELECT COUNT(*) FROM Bosses WHERE RoomID = @RID";

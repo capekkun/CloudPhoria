@@ -34,7 +34,6 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    // User + Student info.
                     string sql = @"
                         SELECT u.FullName, u.Email, u.CreatedAt,
                                s.TPNumber, s.TotalXP
@@ -56,7 +55,6 @@ namespace CloudPhoria.Student
                                 litCreatedAt.Text = Convert.ToDateTime(rdr["CreatedAt"]).ToString("dd MMM yyyy");
                                 litXP.Text       = rdr["TotalXP"].ToString();
 
-                                // Initials.
                                 string[] parts = fullName.Trim().Split(' ');
                                 string initials = parts.Length >= 2
                                     ? (parts[0][0].ToString() + parts[parts.Length-1][0].ToString()).ToUpper()
@@ -66,7 +64,6 @@ namespace CloudPhoria.Student
                         }
                     }
 
-                    // Subscription plan.
                     using (SqlCommand cmd = new SqlCommand(
                         @"SELECT TOP 1 sp.PlanName
                           FROM UserSubscriptions us
@@ -80,7 +77,6 @@ namespace CloudPhoria.Student
                             plan != null && plan != DBNull.Value ? plan.ToString() : "Free");
                     }
 
-                    // Modules completed.
                     using (SqlCommand cmd = new SqlCommand(
                         "SELECT COUNT(*) FROM ModuleProgress WHERE StudentID=@SID AND Status='Completed'", conn))
                     {
@@ -88,7 +84,6 @@ namespace CloudPhoria.Student
                         litModules.Text = cmd.ExecuteScalar().ToString();
                     }
 
-                    // Badges.
                     using (SqlCommand cmd = new SqlCommand(
                         "SELECT COUNT(*) FROM UserBadges WHERE StudentID=@SID", conn))
                     {
@@ -96,7 +91,6 @@ namespace CloudPhoria.Student
                         litBadges.Text = cmd.ExecuteScalar().ToString();
                     }
 
-                    // Certifications.
                     using (SqlCommand cmd = new SqlCommand(
                         "SELECT COUNT(*) FROM UserCertifications WHERE StudentID=@SID", conn))
                     {

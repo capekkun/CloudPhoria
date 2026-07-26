@@ -85,7 +85,6 @@ namespace CloudPhoria.Student
                 using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     da.Fill(dt);
 
-                // Add colour column for difficulty.
                 dt.Columns.Add("DiffColour", typeof(string));
                 foreach (DataRow row in dt.Rows)
                 {

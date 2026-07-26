@@ -1,20 +1,30 @@
 using System;
 using System.Data;
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.Data.SqlClient;
 
 namespace CloudPhoria
 {
-    /// <summary>
-    /// Shared helper methods used across Admin pages.
-    /// Kept in App_Code so it compiles into the site assembly
-    /// without needing a project reference change.
-    /// </summary>
     public static class Utils
     {
-        /// <summary>
-        /// Writes a row to AuditLogs. Never throws — audit logging
-        /// must not break the calling admin action.
-        /// </summary>
+        // Same hash used at registration (to store) and login (to verify),
+        // so accounts created through Register.aspx never touch plaintext.
+        public static string ComputeSHA256(string plainText)
+        {
+            using (SHA256 sha = SHA256.Create())
+            {
+                byte[] bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(plainText));
+                StringBuilder sb = new StringBuilder(64);
+                foreach (byte b in bytes)
+                {
+                    sb.Append(b.ToString("x2"));
+                }
+                return sb.ToString();
+            }
+        }
+
+        // Swallows failures - an audit log write shouldn't take down the admin action
         public static void LogAction(SqlConnection conn, int performedByUserID, string actionType,
             string targetTable, int? targetID, string details)
         {
@@ -35,13 +45,39 @@ namespace CloudPhoria
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (SqlException) { /* audit logging must not break the main action */ }
+            catch (SqlException) { /* don't let audit failures break the caller */ }
         }
 
-        /// <summary>
-        /// Sends a notification to a user. Never throws — notification
-        /// failures must not break the calling action.
-        /// </summary>
+        public static string GetPathwayBgImage(string pathwayName)
+        {
+            switch (pathwayName)
+            {
+                case "Cloud Foundations":       return "/uploads/modules/cloud-foundations.png";
+                case "Cloud Architecture":       return "/uploads/modules/cloud-architecture.png";
+                case "Cloud Security":           return "/uploads/modules/cloud-security.png";
+                case "DevOps Engineering":       return "/uploads/modules/devops-engineering.png";
+                case "Data Engineering":         return "/uploads/modules/data-engineering.png";
+                case "Cloud Networking":         return "/uploads/modules/cloud-networking.png";
+                case "Serverless & Containers":  return "/uploads/modules/serverless-containers.png";
+                default:                          return "/uploads/modules/cloud-foundations.png";
+            }
+        }
+
+        // Null means no cert image for this pathway (e.g. Cloud Foundations)
+        public static string GetCertificationImage(string pathwayName)
+        {
+            switch (pathwayName)
+            {
+                case "Cloud Architecture":       return "/uploads/Certification/cloud-architecture-cert.png";
+                case "Cloud Security":           return "/uploads/Certification/cloud-security-cert.png";
+                case "DevOps Engineering":       return "/uploads/Certification/devops-engineering-cert.png";
+                case "Data Engineering":         return "/uploads/Certification/data-engineering-cert.png";
+                case "Cloud Networking":         return "/uploads/Certification/cloud-networking-cert.png";
+                case "Serverless & Containers":  return "/uploads/Certification/serverless-containers-cert.png";
+                default:                          return null;
+            }
+        }
+
         public static void SendNotification(SqlConnection conn, int userID, string message, string notificationType)
         {
             try
@@ -58,7 +94,7 @@ namespace CloudPhoria
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch (SqlException) { /* notification must not break the main action */ }
+            catch (SqlException) { /* don't let notification failures break the caller */ }
         }
 
         /// <summary>

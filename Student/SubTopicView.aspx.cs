@@ -36,7 +36,6 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    // Subtopic info
                     int moduleID = 0;
                     bool isFoundation = false;
                     using (SqlCommand cmd = new SqlCommand(
@@ -63,7 +62,7 @@ namespace CloudPhoria.Student
 
                                 string content = rdr["ContentBody"] != DBNull.Value
                                     ? rdr["ContentBody"].ToString() : "<em>No content available yet.</em>";
-                                // Content may contain HTML from trusted instructor
+                                // Not HTML-encoded on purpose — instructors author this as rich HTML
                                 litContent.Text = content;
                                 pnlContent.Visible = true;
                             }
@@ -76,7 +75,7 @@ namespace CloudPhoria.Student
                         }
                     }
 
-                    // Subscription check — Free tier can only access Foundation subtopics
+                    // Free tier is restricted to Foundation subtopics
                     if (!isFoundation && !isGuest)
                     {
                         bool isFoundationOnly = true;
@@ -98,7 +97,6 @@ namespace CloudPhoria.Student
                         }
                     }
 
-                    // Check progress status (skip for guests)
                     if (!isGuest)
                     {
                         string status = "NotStarted";
@@ -121,7 +119,6 @@ namespace CloudPhoria.Student
                             litStatus.Text = "<span class='cp-badge cp-badge-blue'>In Progress</span>";
                             pnlComplete.Visible = true;
 
-                            // Mark as InProgress if not started
                             if (status == "NotStarted")
                             {
                                 using (SqlCommand cmd = new SqlCommand(
@@ -141,7 +138,6 @@ namespace CloudPhoria.Student
                         litStatus.Text = "<span class='cp-badge cp-badge-grey'>Guest Preview</span>";
                     }
 
-                    // Materials
                     DataTable dtMat = new DataTable();
                     using (SqlCommand cmd = new SqlCommand(
                         "SELECT FileName, FilePath FROM LearningMaterials WHERE SubTopicID=@STID", conn))
@@ -156,7 +152,6 @@ namespace CloudPhoria.Student
                         pnlMaterials.Visible = true;
                     }
 
-                    // Questions for this subtopic (hide for guests)
                     if (!isGuest)
                     {
                         DataTable dtQ = new DataTable();
@@ -182,7 +177,6 @@ namespace CloudPhoria.Student
                     }
                     else
                     {
-                        // Guest — show register prompt instead of questions
                         pnlGuestPrompt.Visible = true;
                     }
                 }
@@ -194,7 +188,6 @@ namespace CloudPhoria.Student
             }
         }
 
-        // Helper to render MCQ options for a question
         protected string GetMCQOptions(int questionID)
         {
             string cs = ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
@@ -249,7 +242,6 @@ namespace CloudPhoria.Student
                     conn.Open();
                     using (SqlTransaction tran = conn.BeginTransaction())
                     {
-                        // Update progress to Completed
                         using (SqlCommand cmd = new SqlCommand(
                             @"UPDATE SubTopicProgress SET Status='Completed', XPEarned=@XP, CompletedAt=GETDATE()
                               WHERE SubTopicID=@STID AND StudentID=@SID", conn, tran))
@@ -260,7 +252,6 @@ namespace CloudPhoria.Student
                             cmd.ExecuteNonQuery();
                         }
 
-                        // Award XP
                         if (xpReward > 0)
                         {
                             using (SqlCommand cmd = new SqlCommand(
@@ -282,7 +273,7 @@ namespace CloudPhoria.Student
                             }
                         }
 
-                        // Check if all subtopics in the module are now completed -> update ModuleProgress
+                        // If this was the last subtopic, roll the module itself over to Completed
                         if (moduleID > 0)
                         {
                             using (SqlCommand cmd = new SqlCommand(
@@ -308,7 +299,6 @@ namespace CloudPhoria.Student
                     }
                 }
 
-                // Refresh page to show completed state
                 Response.Redirect(Request.Url.ToString());
             }
             catch (SqlException)

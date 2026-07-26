@@ -9,12 +9,11 @@ namespace CloudPhoria
 {
     public class BundleConfig
     {
-        // For more information on Bundling, visit https://go.microsoft.com/fwlink/?LinkID=303951
         public static void RegisterBundles(BundleCollection bundles)
         {
             RegisterJQueryScriptManager();
 
-            // CSS bundle – must be registered here so webopt:BundleReference works.
+            // Must be registered here for webopt:BundleReference to resolve it
             bundles.Add(new StyleBundle("~/Content/css").Include(
                             "~/Content/bootstrap.css",
                             "~/Content/Site.css"));
@@ -29,15 +28,14 @@ namespace CloudPhoria
                             "~/Scripts/WebForms/TreeView.js",
                             "~/Scripts/WebForms/WebParts.js"));
 
-            // Order is very important for these files to work, they have explicit dependencies
+            // Order matters here - these scripts depend on each other
             bundles.Add(new ScriptBundle("~/bundles/MsAjaxJs").Include(
                     "~/Scripts/WebForms/MsAjax/MicrosoftAjax.js",
                     "~/Scripts/WebForms/MsAjax/MicrosoftAjaxApplicationServices.js",
                     "~/Scripts/WebForms/MsAjax/MicrosoftAjaxTimer.js",
                     "~/Scripts/WebForms/MsAjax/MicrosoftAjaxWebForms.js"));
 
-            // Use the Development version of Modernizr to develop with and learn from. Then, when you’re
-            // ready for production, use the build tool at https://modernizr.com to pick only the tests you need
+            // Switch to a custom build from modernizr.com before shipping to prod
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                             "~/Scripts/modernizr-*"));
         }

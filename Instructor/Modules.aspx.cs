@@ -7,11 +7,8 @@ using Microsoft.Data.SqlClient;
 
 namespace CloudPhoria.Instructor
 {
-    // READ-ONLY per the current authority model: only Admin can create, edit,
-    // publish, or delete Modules (Admin/Courses.aspx). Instructors can only
-    // view whatever modules an Admin has assigned to them via the
-    // "Assign Instructor" cascade — this page no longer offers Create/Edit/
-    // Publish/Delete actions.
+    // Read-only: only Admin can create/edit/publish/delete Modules.
+    // Instructors just see whatever they've been assigned via Admin/Courses.
     public partial class Modules : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
@@ -39,7 +36,6 @@ namespace CloudPhoria.Instructor
             }
         }
 
-        // Helper used in markup to map difficulty to a badge colour class.
         protected string GetDifficultyBadge(string difficulty)
         {
             switch (difficulty)

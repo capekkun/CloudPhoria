@@ -11,7 +11,6 @@ namespace CloudPhoria.Instructor
 {
     public partial class Challenges : System.Web.UI.Page
     {
-        // Repeater item count for MCQ options when adding a challenge question.
         private const int OPTION_COUNT = 4;
 
         protected void Page_Load(object sender, EventArgs e)
@@ -48,8 +47,8 @@ namespace CloudPhoria.Instructor
 
                 LoadChallenges();
             }
-            // Do NOT rebind rptChOptions on postback — rebinding destroys
-            // the typed option text values before btnAddChQuestion_Click can read them.
+            // Rebinding rptChOptions on postback would wipe the typed option
+            // text before btnAddChQuestion_Click gets a chance to read it.
         }
 
         private void BindOptionRows()
@@ -140,7 +139,6 @@ namespace CloudPhoria.Instructor
                 {
                     conn.Open();
 
-                    // Verify ownership.
                     using (SqlCommand chk = new SqlCommand(
                         "SELECT COUNT(*) FROM Challenges WHERE ChallengeID=@CID AND CreatedByInstructorID=@IID", conn))
                     {
@@ -153,7 +151,6 @@ namespace CloudPhoria.Instructor
                         }
                     }
 
-                    // Collect options — all 4 text boxes.
                     List<string> optionTexts = new List<string>();
                     foreach (RepeaterItem item in rptChOptions.Items)
                     {
@@ -168,13 +165,12 @@ namespace CloudPhoria.Instructor
                         return;
                     }
 
-                    // Correct answer index from dropdown (1-based → 0-based).
+                    // Dropdown is 1-based, options list is 0-based.
                     int correctIndex = 0;
                     int selectedVal;
                     if (int.TryParse(ddlCorrectOption.SelectedValue, out selectedVal))
                         correctIndex = selectedVal - 1;
 
-                    // Make sure the selected correct option actually has text.
                     if (correctIndex >= optionTexts.Count)
                     {
                         ShowError("The selected correct option has no text. Please fill it in.");
@@ -220,7 +216,6 @@ namespace CloudPhoria.Instructor
                 txtChQText.Text = string.Empty;
                 txtChQPoints.Text = "10";
                 txtChQTime.Text = "30";
-                // Rebind options only after successful save so the form resets.
                 BindOptionRows();
 
                 ShowSuccess("Question added to challenge.");
@@ -247,7 +242,8 @@ namespace CloudPhoria.Instructor
                 {
                     conn.Open();
 
-                    // Ownership check via the parent Challenge before deleting.
+                    // Challenge questions have no InstructorID column, so check
+                    // ownership through the parent Challenge before deleting.
                     using (SqlCommand chk = new SqlCommand(
                         @"SELECT COUNT(*) FROM ChallengeQuestions cq
                           INNER JOIN Challenges c ON c.ChallengeID = cq.ChallengeID
@@ -282,7 +278,6 @@ namespace CloudPhoria.Instructor
             }
         }
 
-        // Returns an HTML badge string for use inside the Repeater.
         protected string GetChallengeStatus(object startObj, object endObj)
         {
             DateTime now   = DateTime.Now;

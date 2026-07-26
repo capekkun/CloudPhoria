@@ -43,7 +43,7 @@
     .boss-hp-bar-wrap { background:rgba(255,255,255,0.08); border-radius:4px; height:6px; margin:10px 0; }
     .boss-hp-bar      { height:100%; border-radius:4px; background-color:#EF4444; }
 
-    /* ================= BATTLE ARENA (drag & drop) ================= */
+    /* Battle arena (drag & drop) */
     .battle-arena { background-color:#0B0F1A;
         border-radius:8px; padding:32px; color:#fff; position:relative; overflow:hidden;
         border:1px solid rgba(220,38,38,0.15); }
@@ -154,7 +154,7 @@
         </div>
     </asp:Panel>
 
-    <%-- ============== DRAG & DROP BATTLE ARENA ============== --%>
+    <%-- Drag & drop battle arena --%>
     <asp:Panel ID="pnlBattle" runat="server" Visible="false">
         <div class="battle-arena">
 

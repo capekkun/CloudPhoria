@@ -21,7 +21,6 @@ namespace CloudPhoria.Instructor
         private string ConnStr =>
             ConfigurationManager.ConnectionStrings["CloudPhoria"].ConnectionString;
 
-        // ── Page lifecycle ────────────────────────────────────────────────────
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["UserID"] == null || Session["Role"] == null ||
@@ -44,11 +43,9 @@ namespace CloudPhoria.Instructor
             if (!IsPostBack)
                 LoadClassrooms();
             else if (SelectedClassroomID > 0 && pnlChatRoom.Visible)
-                // Refresh messages on every postback while chat is open.
                 LoadMessages(SelectedClassroomID);
         }
 
-        // ── Section 1: classroom list ─────────────────────────────────────────
         private void LoadClassrooms()
         {
             string sql = @"
@@ -105,10 +102,8 @@ namespace CloudPhoria.Instructor
             }
         }
 
-        // ── Section 2: open chat room ─────────────────────────────────────────
         private void OpenChatRoom(int classroomID, string classroomName)
         {
-            // Verify ownership before loading anything.
             if (!OwnsClassroom(classroomID)) return;
 
             SelectedClassroomID         = classroomID;
@@ -126,7 +121,6 @@ namespace CloudPhoria.Instructor
                 LoadMembers(classroomID, conn);
             }
 
-            // Emit JS to start polling.
             string script = string.Format(
                 "window.addEventListener('load',function(){{" +
                 "startPolling({0},{1},{2});scrollChat();}});",
@@ -134,7 +128,6 @@ namespace CloudPhoria.Instructor
             ScriptManager.RegisterStartupScript(this, GetType(), "startPoll", script, true);
         }
 
-        // ── Close chat room ───────────────────────────────────────────────────
         protected void btnCloseChat_Click(object sender, EventArgs e)
         {
             SelectedClassroomID     = 0;
@@ -144,7 +137,6 @@ namespace CloudPhoria.Instructor
                 "stopPolling();", true);
         }
 
-        // ── Chat: send message ────────────────────────────────────────────────
         protected void btnSend_Click(object sender, EventArgs e)
         {
             string message = txtMessage.Text.Trim();
@@ -174,10 +166,9 @@ namespace CloudPhoria.Instructor
                 ScriptManager.RegisterStartupScript(this, GetType(), "scrollAfterSend",
                     "setTimeout(scrollChat,80);", true);
             }
-            catch (SqlException) { /* silent — message will appear on next poll */ }
+            catch (SqlException) { /* the next poll will pick it up */ }
         }
 
-        // ── Load messages (server-side render) ────────────────────────────────
         private void LoadMessages(int classroomID)
         {
             try
@@ -226,7 +217,6 @@ namespace CloudPhoria.Instructor
                     bool isMine   = senderID == InstructorUserID;
                     string init   = GetInitials(name);
 
-                    // Date separator.
                     if (date != lastDate)
                     {
                         sb.AppendFormat(
@@ -268,7 +258,6 @@ namespace CloudPhoria.Instructor
             }
         }
 
-        // ── Load files (read-only) ────────────────────────────────────────────
         private void LoadFiles(int classroomID, SqlConnection conn)
         {
             DataTable dt = new DataTable();
@@ -318,7 +307,6 @@ namespace CloudPhoria.Instructor
             litFiles.Text = sb.ToString();
         }
 
-        // ── Load assignments (read-only) ──────────────────────────────────────
         private void LoadAssignments(int classroomID, SqlConnection conn)
         {
             DataTable dt = new DataTable();
@@ -377,13 +365,11 @@ namespace CloudPhoria.Instructor
             litAssignments.Text = sb.ToString();
         }
 
-        // ── Load members ──────────────────────────────────────────────────────
         private void LoadMembers(int classroomID, SqlConnection conn)
         {
             var sb = new StringBuilder();
             sb.Append("<div class='inst-members-list'>");
 
-            // Instructor row (self).
             string fullName = Session["FullName"] != null ? Session["FullName"].ToString() : "Instructor";
             sb.AppendFormat(
                 "<div class='inst-member-item'>" +
@@ -397,7 +383,6 @@ namespace CloudPhoria.Instructor
                 HttpUtility.HtmlEncode(GetInitials(fullName)),
                 HttpUtility.HtmlEncode(fullName));
 
-            // Students.
             using (SqlCommand cmd = new SqlCommand(
                 @"SELECT u.FullName, ce.EnrolledAt
                   FROM ClassroomEnrollments ce
@@ -430,7 +415,6 @@ namespace CloudPhoria.Instructor
             litMembers.Text = sb.ToString();
         }
 
-        // ── Delete classroom ──────────────────────────────────────────────────
         private void DeleteClassroom(int classroomID)
         {
             try
@@ -463,7 +447,6 @@ namespace CloudPhoria.Instructor
             }
         }
 
-        // ── Create classroom ──────────────────────────────────────────────────
         protected void btnCreate_Click(object sender, EventArgs e)
         {
             if (!Page.IsValid) return;
@@ -512,7 +495,6 @@ namespace CloudPhoria.Instructor
             }
         }
 
-        // ── Helpers ───────────────────────────────────────────────────────────
         private bool OwnsClassroom(int classroomID)
         {
             using (SqlConnection conn = new SqlConnection(ConnStr))

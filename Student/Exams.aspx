@@ -28,7 +28,7 @@
         </div>
     </asp:Panel>
 
-    <%-- ============== EXAM INTRO / LOCKED MESSAGE (?moduleID=) ============== --%>
+    <%-- Exam intro & start --%>
     <asp:Panel ID="pnlExamIntro" runat="server" Visible="false">
         <div class="cp-page-header">
             <h2><asp:Literal ID="litExamIntroTitle" runat="server" /></h2>
@@ -59,7 +59,7 @@
         </asp:Panel>
     </asp:Panel>
 
-    <%-- ============== EXAM ARENA ============== --%>
+    <%-- Exam arena --%>
     <asp:Panel ID="pnlExamArena" runat="server" Visible="false">
         <div class="examq-arena">
             <asp:Panel ID="pnlExamAnswer" runat="server" Visible="false">
@@ -83,7 +83,7 @@
         </div>
     </asp:Panel>
 
-    <%-- ============== FINAL RESULT ============== --%>
+    <%-- Final result --%>
     <asp:Panel ID="pnlExamFinalResult" runat="server" Visible="false">
         <div class="cp-card examq-final">
             <span style="font-size:48px;display:block;margin-bottom:12px;"><asp:Literal ID="litExamFinalIcon" runat="server" /></span>
@@ -108,7 +108,7 @@
         </div>
     </asp:Panel>
 
-    <%-- ============== EXAM LISTING (default view) ============== --%>
+    <%-- Listing & past attempts --%>
     <asp:Panel ID="pnlListing" runat="server" Visible="true">
     <div class="cp-page-header">
         <h2>Module Exams</h2>

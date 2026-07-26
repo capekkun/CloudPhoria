@@ -44,7 +44,6 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    // Assignment info + verify student is enrolled in the classroom
                     string title = "", desc = "", classroom = "", instructor = "";
                     DateTime? dueDate = null;
                     int classroomID = 0;
@@ -79,7 +78,6 @@ namespace CloudPhoria.Student
                         }
                     }
 
-                    // Verify enrollment
                     using (SqlCommand cmd = new SqlCommand(
                         "SELECT COUNT(*) FROM ClassroomEnrollments WHERE ClassroomID=@CID AND StudentID=@SID", conn))
                     {
@@ -101,7 +99,6 @@ namespace CloudPhoria.Student
                         ? "<span>&#x23F0; Due: " + dueDate.Value.ToString("dd MMM yyyy") + "</span>"
                         : "";
 
-                    // Load questions
                     DataTable dtQ = new DataTable();
                     using (SqlCommand cmd = new SqlCommand(
                         @"SELECT AssignmentQuestionID, QuestionText, QuestionType, OrderIndex
@@ -119,7 +116,6 @@ namespace CloudPhoria.Student
                         return;
                     }
 
-                    // Check if already submitted
                     bool alreadySubmitted = false;
                     using (SqlCommand cmd = new SqlCommand(
                         "SELECT COUNT(*) FROM AssignmentSubmissions WHERE AssignmentID=@AID AND StudentID=@SID", conn))
@@ -129,7 +125,6 @@ namespace CloudPhoria.Student
                         alreadySubmitted = Convert.ToInt32(cmd.ExecuteScalar()) > 0;
                     }
 
-                    // Build questions HTML
                     var sb = new System.Text.StringBuilder();
                     int qNum = 1;
 
@@ -139,7 +134,6 @@ namespace CloudPhoria.Student
                         string qText = HttpUtility.HtmlEncode(qRow["QuestionText"].ToString());
                         string qType = qRow["QuestionType"].ToString();
 
-                        // Check for existing submission
                         string existingAnswer = null;
                         if (alreadySubmitted)
                         {
@@ -161,7 +155,6 @@ namespace CloudPhoria.Student
 
                         if (qType == "Objective")
                         {
-                            // Load options
                             DataTable dtOpts = new DataTable();
                             using (SqlCommand optCmd = new SqlCommand(
                                 "SELECT OptionID, OptionText FROM AssignmentQuestionOptions WHERE AssignmentQuestionID=@QID ORDER BY OptionID", conn))
@@ -242,7 +235,6 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    // Get all questions for this assignment
                     DataTable dtQ = new DataTable();
                     using (SqlCommand cmd = new SqlCommand(
                         "SELECT AssignmentQuestionID FROM AssignmentQuestions WHERE AssignmentID=@AID ORDER BY OrderIndex", conn))
@@ -276,7 +268,6 @@ namespace CloudPhoria.Student
                     }
                 }
 
-                // Reload to show submitted state
                 Response.Redirect(Request.Url.ToString());
             }
             catch (SqlException)

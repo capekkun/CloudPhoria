@@ -59,7 +59,6 @@ namespace CloudPhoria.Instructor
                                 string approvedAt    = r["ApprovedAt"] != DBNull.Value
                                                        ? Convert.ToDateTime(r["ApprovedAt"]).ToString("dd MMM yyyy") : "—";
 
-                                // Avatar initials.
                                 string[] parts    = fullName.Trim().Split(' ');
                                 string initials   = parts.Length >= 2
                                     ? (parts[0].Substring(0, 1) + parts[parts.Length - 1].Substring(0, 1)).ToUpper()
@@ -74,7 +73,6 @@ namespace CloudPhoria.Instructor
                                 litMemberSince.Text   = createdAt.ToString("dd MMM yyyy");
                                 litApprovedAt.Text    = HttpUtility.HtmlEncode(approvedAt);
 
-                                // Licence badge.
                                 switch (licenseStatus)
                                 {
                                     case "Approved":
@@ -91,7 +89,6 @@ namespace CloudPhoria.Instructor
                                         break;
                                 }
 
-                                // Pre-fill edit fields.
                                 txtFullName.Text      = fullName;
                                 txtQualification.Text = qualification;
                             }
@@ -121,7 +118,6 @@ namespace CloudPhoria.Instructor
                     conn.Open();
                     using (SqlTransaction tx = conn.BeginTransaction())
                     {
-                        // Update Users.FullName.
                         using (SqlCommand cmd = new SqlCommand(
                             "UPDATE Users SET FullName=@Name WHERE UserID=@UID", conn, tx))
                         {
@@ -130,7 +126,6 @@ namespace CloudPhoria.Instructor
                             cmd.ExecuteNonQuery();
                         }
 
-                        // Update Instructors.Qualification.
                         using (SqlCommand cmd = new SqlCommand(
                             "UPDATE Instructors SET Qualification=@Qual WHERE InstructorID=@UID", conn, tx))
                         {
@@ -144,7 +139,7 @@ namespace CloudPhoria.Instructor
                     }
                 }
 
-                // Refresh the session name so the topbar updates.
+                // Topbar reads FullName from session, so update it here too.
                 Session["FullName"] = fullName;
 
                 ShowSuccess("Profile updated successfully.");
@@ -185,7 +180,6 @@ namespace CloudPhoria.Instructor
                 {
                     conn.Open();
 
-                    // Verify current password.
                     using (SqlCommand chk = new SqlCommand(
                         "SELECT PasswordHash FROM Users WHERE UserID=@UID", conn))
                     {
@@ -198,8 +192,7 @@ namespace CloudPhoria.Instructor
                         }
                     }
 
-                    // Update password.
-                    // NOTE: In production, hash the new password before storing.
+                    // Passwords are stored in plaintext here — needs hashing before prod.
                     using (SqlCommand cmd = new SqlCommand(
                         "UPDATE Users SET PasswordHash=@Hash WHERE UserID=@UID", conn))
                     {

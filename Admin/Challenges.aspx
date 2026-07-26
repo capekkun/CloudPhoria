@@ -89,21 +89,21 @@
     <%-- Stats row --%>
     <div class="cp-grid-3 cp-mb-lg">
         <div class="cp-stat-card">
-            <div class="cp-stat-icon amber" aria-hidden="true"></div>
+            <img src="/Images/active challenges.png" alt="" style="width:64px;height:64px;object-fit:contain;flex-shrink:0;" />
             <div>
                 <div class="cp-stat-value"><asp:Literal ID="litActiveCount" runat="server" Text="0" /></div>
                 <div class="cp-stat-label">Active Now</div>
             </div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon blue" aria-hidden="true">&#x23F3;</div>
+            <img src="/Images/Pending Approval.png" alt="" style="width:64px;height:64px;object-fit:contain;flex-shrink:0;" />
             <div>
                 <div class="cp-stat-value"><asp:Literal ID="litUpcomingCount" runat="server" Text="0" /></div>
                 <div class="cp-stat-label">Upcoming</div>
             </div>
         </div>
         <div class="cp-stat-card">
-            <div class="cp-stat-icon green" aria-hidden="true"></div>
+            <img src="/Images/View Challenges.png" alt="" style="width:64px;height:64px;object-fit:contain;flex-shrink:0;" />
             <div>
                 <div class="cp-stat-value"><asp:Literal ID="litEndedCount" runat="server" Text="0" /></div>
                 <div class="cp-stat-label">Ended</div>

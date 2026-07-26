@@ -11,7 +11,6 @@ namespace CloudPhoria.Student
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Verify the current user is a Student.
             if (Session["UserID"] == null || Session["Role"] == null ||
                 Session["Role"].ToString() != "Student")
             {
@@ -19,7 +18,6 @@ namespace CloudPhoria.Student
                 return;
             }
 
-            // Set topbar title via Master Page property.
             ((SiteMaster)Master).PageHeading = "Dashboard";
 
             if (!IsPostBack)
@@ -39,28 +37,20 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    // Welcome name from session (already loaded by Master Page).
                     string fullName = Session["FullName"] != null
                                       ? Session["FullName"].ToString() : "Student";
                     string firstName = fullName.Split(' ')[0];
                     litWelcomeName.Text = HttpUtility.HtmlEncode(firstName);
 
-                    // TotalXP, badges, classrooms.
                     LoadStatCards(conn, studentID);
-
-                    // In-progress modules.
                     LoadInProgressModules(conn, studentID);
-
-                    // Recent XP transactions (last 5).
                     LoadRecentXP(conn, studentID);
-
-                    // Recent notifications (last 5).
                     LoadRecentNotifications(conn, studentID);
                 }
             }
             catch (SqlException)
             {
-                // Non-critical failure — show defaults already set in markup.
+                // Markup already has sensible defaults, so just keep the welcome name working.
                 string fn = Session["FullName"] != null ? Session["FullName"].ToString() : "Student";
                 litWelcomeName.Text = HttpUtility.HtmlEncode(fn.Split(' ')[0]);
             }
@@ -68,7 +58,6 @@ namespace CloudPhoria.Student
 
         private void LoadStatCards(SqlConnection conn, int studentID)
         {
-            // TotalXP from Students table.
             using (SqlCommand cmd = new SqlCommand(
                 "SELECT TotalXP FROM Students WHERE StudentID = @StudentID", conn))
             {
@@ -77,7 +66,6 @@ namespace CloudPhoria.Student
                 litTotalXP.Text = (r != null && r != DBNull.Value) ? r.ToString() : "0";
             }
 
-            // Modules completed.
             using (SqlCommand cmd = new SqlCommand(
                 @"SELECT COUNT(*) FROM ModuleProgress
                   WHERE StudentID = @StudentID AND Status = 'Completed'", conn))
@@ -87,7 +75,6 @@ namespace CloudPhoria.Student
                 litModulesCompleted.Text = (r != null && r != DBNull.Value) ? r.ToString() : "0";
             }
 
-            // Badges earned.
             using (SqlCommand cmd = new SqlCommand(
                 "SELECT COUNT(*) FROM UserBadges WHERE StudentID = @StudentID", conn))
             {
@@ -96,7 +83,6 @@ namespace CloudPhoria.Student
                 litBadgesEarned.Text = (r != null && r != DBNull.Value) ? r.ToString() : "0";
             }
 
-            // Classrooms joined.
             using (SqlCommand cmd = new SqlCommand(
                 "SELECT COUNT(*) FROM ClassroomEnrollments WHERE StudentID = @StudentID", conn))
             {
@@ -113,7 +99,6 @@ namespace CloudPhoria.Student
                     m.ModuleID,
                     m.ModuleName,
                     p.PathwayName,
-                    -- Calculate percentage of completed subtopics out of total subtopics.
                     CASE WHEN total.TotalSubs = 0 THEN 0
                          ELSE CAST(done.DoneSubs AS INT) * 100 / total.TotalSubs
                     END AS ProgressPct

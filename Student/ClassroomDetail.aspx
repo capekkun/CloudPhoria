@@ -4,9 +4,7 @@
 
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-/* ================================================================
-   CLASSROOM — Microsoft Teams-style layout
-   ================================================================ */
+/* Classroom — Microsoft Teams-style layout */
 .teams-layout{display:grid;grid-template-columns:260px 1fr;height:calc(100vh - 80px);
     margin:-24px -32px;overflow:hidden;background:#F5F5F5;}
 

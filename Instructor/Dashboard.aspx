@@ -62,28 +62,28 @@ a.cp-stat-card-link:hover {
     <asp:Panel ID="pnlStats" runat="server" Visible="false">
         <div class="cp-grid-4 cp-mb-lg">
             <a href="Classrooms.aspx" class="cp-stat-card cp-stat-card-link" aria-label="Go to My Classrooms">
-                <div class="cp-stat-icon indigo" aria-hidden="true"></div>
+                <div class="cp-stat-icon" style="background-image:url('/uploads/instructordashboard/classrooms-icon.png');background-size:cover;background-position:center;" aria-hidden="true"></div>
                 <div>
                     <div class="cp-stat-value"><asp:Literal ID="litClassroomCount" runat="server" Text="0" /></div>
                     <div class="cp-stat-label">My Classrooms</div>
                 </div>
             </a>
             <a href="Modules.aspx" class="cp-stat-card cp-stat-card-link" aria-label="Go to Modules">
-                <div class="cp-stat-icon blue" aria-hidden="true"></div>
+                <div class="cp-stat-icon" style="background-image:url('/uploads/instructordashboard/modules-icon.png');background-size:cover;background-position:center;" aria-hidden="true"></div>
                 <div>
                     <div class="cp-stat-value"><asp:Literal ID="litModuleCount" runat="server" Text="0" /></div>
                     <div class="cp-stat-label">Modules Created</div>
                 </div>
             </a>
             <a href="Classrooms.aspx" class="cp-stat-card cp-stat-card-link" aria-label="Go to Classrooms to see students">
-                <div class="cp-stat-icon green" aria-hidden="true"></div>
+                <div class="cp-stat-icon" style="background-image:url('/uploads/instructordashboard/total-students-icon.png');background-size:cover;background-position:center;" aria-hidden="true"></div>
                 <div>
                     <div class="cp-stat-value"><asp:Literal ID="litStudentCount" runat="server" Text="0" /></div>
                     <div class="cp-stat-label">Total Students</div>
                 </div>
             </a>
             <a href="Assignments.aspx" class="cp-stat-card cp-stat-card-link" aria-label="Go to Assignments">
-                <div class="cp-stat-icon amber" aria-hidden="true"></div>
+                <div class="cp-stat-icon" style="background-image:url('/uploads/instructordashboard/pending-submissions-icon.png');background-size:cover;background-position:center;" aria-hidden="true"></div>
                 <div>
                     <div class="cp-stat-value"><asp:Literal ID="litPendingAssignments" runat="server" Text="0" /></div>
                     <div class="cp-stat-label">Pending Submissions</div>

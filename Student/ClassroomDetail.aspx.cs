@@ -31,7 +31,7 @@ namespace CloudPhoria.Student
             }
             else
             {
-                // On postback reload messages to keep chat fresh
+                // Reload messages on postback so chat stays fresh
                 if (ClassroomID > 0)
                     LoadMessages(ClassroomID);
             }
@@ -53,7 +53,6 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    // Get classroom info
                     bool hasAccess = false;
                     string className = "";
                     string instructorName = "";
@@ -79,7 +78,6 @@ namespace CloudPhoria.Student
                         }
                     }
 
-                    // Check student enrollment
                     if (!hasAccess && role == "Student")
                     {
                         using (SqlCommand cmd = new SqlCommand(
@@ -102,8 +100,7 @@ namespace CloudPhoria.Student
                     litInstructor.Text = HttpUtility.HtmlEncode(instructorName);
                     pnlContent.Visible = true;
 
-                    // Member count
-                    int memberCount = 1; // instructor
+                    int memberCount = 1; // instructor counts as a member too
                     using (SqlCommand cmd = new SqlCommand(
                         "SELECT COUNT(*) FROM ClassroomEnrollments WHERE ClassroomID=@CID", conn))
                     {
@@ -112,7 +109,6 @@ namespace CloudPhoria.Student
                     }
                     litMemberCount.Text = memberCount.ToString();
 
-                    // Load all sections
                     LoadMessages(classroomID);
                     LoadFiles(classroomID, conn);
                     LoadAssignments(classroomID, conn);
@@ -182,7 +178,6 @@ namespace CloudPhoria.Student
                         bool isInstructor = senderID == instructorID;
                         string initials = GetInitials(row["SenderName"].ToString());
 
-                        // Date separator
                         if (date != lastDate)
                         {
                             sb.AppendFormat("<div style='text-align:center;padding:8px 0;'>" +
@@ -315,7 +310,6 @@ namespace CloudPhoria.Student
             var sb = new System.Text.StringBuilder();
             sb.Append("<div class='teams-members'>");
 
-            // Instructor
             using (SqlCommand cmd = new SqlCommand(
                 @"SELECT u.FullName FROM Classrooms c
                   INNER JOIN Users u ON u.UserID = c.InstructorID
@@ -338,7 +332,6 @@ namespace CloudPhoria.Student
                 }
             }
 
-            // Students
             using (SqlCommand cmd = new SqlCommand(
                 @"SELECT u.FullName FROM ClassroomEnrollments ce
                   INNER JOIN Users u ON u.UserID = ce.StudentID

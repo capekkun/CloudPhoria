@@ -36,7 +36,6 @@ namespace CloudPhoria.Student
                 {
                     conn.Open();
 
-                    // Module info
                     bool isFoundation = false;
                     using (SqlCommand cmd = new SqlCommand(
                         @"SELECT m.ModuleName, m.Description, m.DifficultyLevel, m.XPReward,
@@ -70,7 +69,7 @@ namespace CloudPhoria.Student
                         }
                     }
 
-                    // Subscription check — Free tier can only access Foundation modules
+                    // Free tier is restricted to Foundation modules
                     if (!isFoundation && !isGuest)
                     {
                         bool isFoundationOnly = true;
@@ -91,7 +90,7 @@ namespace CloudPhoria.Student
                         }
                     }
 
-                    // Check if student is enrolled in this pathway (has ModuleProgress for any module in the same pathway)
+                    // Enrolled = has ModuleProgress for any module in this pathway
                     if (!isGuest)
                     {
                         bool isEnrolled = false;
@@ -108,7 +107,6 @@ namespace CloudPhoria.Student
 
                         if (!isEnrolled)
                         {
-                            // Student hasn't enrolled in this pathway — redirect to pathway detail
                             int pathwayID = 0;
                             using (SqlCommand cmd = new SqlCommand("SELECT PathwayID FROM Modules WHERE ModuleID=@MID", conn))
                             {
@@ -121,7 +119,6 @@ namespace CloudPhoria.Student
                         }
                     }
 
-                    // Subtopics with student progress
                     DataTable dtSubs = new DataTable();
                     using (SqlCommand cmd = new SqlCommand(
                         @"SELECT st.SubTopicID, st.SubTopicName, st.XPReward, st.OrderIndex,
@@ -137,7 +134,6 @@ namespace CloudPhoria.Student
                         using (SqlDataAdapter da = new SqlDataAdapter(cmd)) da.Fill(dtSubs);
                     }
 
-                    // Add display columns
                     dtSubs.Columns.Add("StatusClass", typeof(string));
                     dtSubs.Columns.Add("StatusIcon", typeof(string));
                     dtSubs.Columns.Add("StatusText", typeof(string));
@@ -181,7 +177,6 @@ namespace CloudPhoria.Student
                         rptSubtopics.DataBind();
                         pnlSubtopics.Visible = true;
 
-                        // Progress
                         int pct = total > 0 ? (completed * 100 / total) : 0;
                         litProgressPct.Text = pct.ToString();
                         progressBar.Style["width"] = pct + "%";

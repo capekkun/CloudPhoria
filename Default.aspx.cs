@@ -11,7 +11,7 @@ namespace CloudPhoria
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // If the user is already logged in, send them to the right dashboard.
+            // Already logged in - skip the guest landing page
             if (Session["UserID"] != null && Session["Role"] != null)
             {
                 string role = Session["Role"].ToString();
@@ -74,7 +74,6 @@ namespace CloudPhoria
                             isFree ? "<span style='background:rgba(34,197,94,0.15);color:#22C55E;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600;margin-left:8px;'>Free</span>"
                                    : "<span style='background:rgba(99,102,241,0.15);color:#A78BFA;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600;margin-left:8px;'>Pro</span>");
 
-                        // Load modules for this pathway
                         DataTable dtMods = new DataTable();
                         using (SqlCommand modCmd = new SqlCommand(
                             @"SELECT ModuleName, DifficultyLevel, XPReward
